@@ -139,7 +139,7 @@ function D(){let b=bk(v.id);if(!b){v.p='home';return H()}
  <div class="row" style="align-items:flex-start;gap:14px">${cv(b,'cvl')}<div class="fl"><h1 style="font-size:24px;margin:0">${esc(b.t)}</h1><div class="mu">${esc(b.a)}${b.sr?' · '+esc(b.sr):''}</div><select class="in" onchange="setSt('${id}',this.value)">${[['toread','To read'],['reading','Reading'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b.st===k?'selected':''}>${l}</option>`).join('')}</select></div></div>
  ${meta(b)}<div style="text-align:center;margin-top:10px">${[1,2,3,4,5].map(n=>`<span onclick="rate('${id}',${n})" style="font-size:28px;cursor:pointer;color:${n<=(b.r||0)?'#e0a030':'var(--bd)'}">★</span>`).join('')}</div><div class="big">${p.toFixed(0)}%</div><div class="bar"><i style="width:${p}%"></i></div>${eta}
  <div class="seg">${[['pages','Pages'],['pct','Percent'],['ch','Chapters']].map(([k,l])=>`<b class="${b.m===k?'on':''}" onclick="setM('${id}','${k}')">${l}</b>`).join('')}</div>${ctl}
- <h2>Reading timer</h2>${run?`<div class="big"><span class="tm"></span></div><button class="bt" style="width:100%;margin-bottom:8px" onclick="tpause()">${S.t.p?'▶ Resume':'⏸ Pause'}</button><button class="bt pr" style="width:100%" onclick="v.sh='stop';R()">Stop and log session</button><button class="bt" style="width:100%;margin-top:8px" onclick="tdisc()">Discard</button>`:`<button class="bt pr" style="width:100%" onclick="tstart('${id}')" ${S.t?'disabled':''}>▶ Start reading session</button>`}
+ <h2>Reading timer</h2>${nfLine()}${run?`<div class="big"><span class="tm"></span></div><button class="bt" style="width:100%;margin-bottom:8px" onclick="tpause()">${S.t.p?'▶ Resume':'⏸ Pause'}</button><button class="bt pr" style="width:100%" onclick="v.sh='stop';R()">Stop and log session</button><button class="bt" style="width:100%;margin-top:8px" onclick="tdisc()">Discard</button>`:`<button class="bt pr" style="width:100%" onclick="tstart('${id}')" ${S.t?'disabled':''}>▶ Start reading session</button>`}
  ${ba?`<p class="mu">Your speed on this book: <b>${ba.toFixed(1)} ${U(u)}</b>${oa?` (${ba>=oa?'<span class="g">▲ ':'<span class="r">▼ '}${Math.abs((ba/oa-1)*100).toFixed(0)}% vs your overall average</span>)`:''}</p>`:''}
  ${ss.map(s=>{let sp=s.d>0&&s.k>30?s.d/s.k*3600:0,a=avg(s.u);return `<div class="ses"><span>${new Date(s.s).toLocaleDateString()}<br><span class="mu">${fm(s.k)}${s.d?` · +${s.d}${s.u==='%'?'%':' pages'}`:''}</span></span><span style="text-align:right">${sp?sp.toFixed(1)+' '+U(s.u):'-'}${sp&&a?`<br>${sp>=a?'<span class="g">▲ ':'<span class="r">▼ '}${Math.abs((sp/a-1)*100).toFixed(0)}% vs avg</span>`:''}</span></div>`}).join('')}<h2>Notes</h2><textarea class="in" rows="4" placeholder="Thoughts, quotes, favorite parts…" onchange="note('${id}',this.value)">${esc(b.nt||'')}</textarea>`}
 function T(){let ss=S.s,tot=ss.reduce((a,s)=>a+s.k,0),pa=avg('p'),qa=avg('%'),days=[...Array(7)].map((_,i)=>{let d=new Date();d.setDate(d.getDate()-6+i);d.setHours(0,0,0,0);let e=d.getTime()+864e5;return{l:d.toLocaleDateString(undefined,{weekday:'narrow'}),m:ss.filter(s=>s.s>=d.getTime()&&s.s<e).reduce((a,s)=>a+s.k,0)/60}}),mx=Math.max(1,...days.map(d=>d.m));
@@ -203,25 +203,55 @@ R();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
 /* ---- Timer in the notification panel ---- */
-let SWR=null;
-const nfOK=()=>'Notification' in window&&Notification.permission==='granted'&&SWR;
+var NF={sw:null,err:''};
+async function nfInit(){
+ try{
+  if(!('serviceWorker' in navigator)){NF.err='This browser has no service worker support.';return}
+  let r=await navigator.serviceWorker.getRegistration();
+  if(!r)r=await navigator.serviceWorker.register('./sw.js');
+  try{r.update()}catch(e){}
+  NF.sw=await Promise.race([navigator.serviceWorker.ready,new Promise((_,j)=>setTimeout(()=>j(new Error('sw.js did not start. Is sw.js uploaded next to index.html?')),6000))]);
+  NF.err='';
+ }catch(e){NF.err=e.message||String(e)}
+}
+const nfOK=()=>'Notification' in window&&Notification.permission==='granted'&&NF.sw;
 async function nf(){
  try{
   if(!S.t){return nfClose()}
-  if(!nfOK())return;
+  if(!nfOK()){if('Notification' in window&&Notification.permission==='granted'&&!NF.sw)await nfInit();if(!nfOK())return}
   let b=bk(S.t.id),paused=!!S.t.p,st=new Date(S.t.s).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
-  await SWR.showNotification((paused?'⏸ Paused · ':'📖 Reading · ')+(b?b.t:'Shelfie'),{
+  await NF.sw.showNotification((paused?'⏸ Paused · ':'📖 Reading · ')+(b?b.t:'Shelfie'),{
    body:clk(el())+(paused?' (paused)':' so far')+' · started '+st,
-   tag:'shelfie-timer',renotify:false,silent:true,requireInteraction:true,
-   icon:'icon-192.png',badge:'icon-192.png',timestamp:S.t.s,
+   tag:'shelfie-timer',renotify:false,icon:'icon-192.png',badge:'icon-192.png',
    actions:[{action:'pause',title:paused?'▶ Resume':'⏸ Pause'},{action:'stop',title:'⏹ Stop'}]
   });
- }catch(e){}
+ }catch(e){NF.err=e.message||String(e)}
 }
-async function nfClose(){try{if(!SWR)return;(await SWR.getNotifications({tag:'shelfie-timer'})).forEach(n=>n.close())}catch(e){}}
+async function nfClose(){try{if(!NF.sw)return;(await NF.sw.getNotifications({tag:'shelfie-timer'})).forEach(n=>n.close())}catch(e){}}
 async function nfAsk(){
  try{if('Notification' in window&&Notification.permission==='default')await Notification.requestPermission()}catch(e){}
  nf();
+}
+function nfLine(){
+ try{
+  let m;
+  if(!('Notification' in window))m='❌ This browser can’t show notifications. On iPhone: Share → Add to Home Screen, then open Shelfie from the home screen.';
+  else if(Notification.permission==='denied')m='❌ Notifications are blocked. Turn them on in your phone settings for this app/site.';
+  else if(Notification.permission==='default')m='Notifications are off. Tap Test to allow them.';
+  else if(!NF.sw)m='⚠️ Allowed, but the helper (sw.js) isn’t running'+(NF.err?': '+esc(NF.err):'')+'.';
+  else m='✅ Notifications ready.'+(NF.err?' Last error: '+esc(NF.err):'');
+  return `<p class="mu" style="font-size:13px;margin:4px 0 8px">${m} <a href="#" onclick="nfTest();return false" style="color:var(--ac)">Test notification</a></p>`;
+ }catch(e){return ''}
+}
+async function nfTest(){
+ try{
+  if(!('Notification' in window)){alert('This browser can’t show notifications. On iPhone: Share → Add to Home Screen, then open Shelfie from the home screen.');return}
+  if(Notification.permission!=='granted'){let p=await Notification.requestPermission();if(p!=='granted'){alert('Notifications are '+p+'. Enable them in your phone settings for this app/site.');R();return}}
+  if(!NF.sw)await nfInit();
+  if(!NF.sw){alert('Helper not running: '+NF.err);R();return}
+  await NF.sw.showNotification('Shelfie test',{body:'If you can see this, notifications work 🎉',tag:'shelfie-test',icon:'icon-192.png'});
+  alert('Sent. Swipe down to check your notification panel.');R();
+ }catch(e){alert('Error: '+(e.message||e));NF.err=e.message||String(e);R()}
 }
 function tdisc(){S.t=null;save();R();nfClose()}
 function nfAct(a){
@@ -230,13 +260,11 @@ function nfAct(a){
  else if(a==='stop'){v.sh='stop';R();scrollTo(0,0)}
  else{v.sh=null;R()}
 }
-if('serviceWorker' in navigator){
- navigator.serviceWorker.ready.then(r=>{SWR=r;nf();
-  let a=new URLSearchParams(location.search).get('act');
-  if(a){history.replaceState(null,'',location.pathname);nfAct(a)}
- }).catch(()=>{});
- navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.shelfie)nfAct(e.data.shelfie)});
-}
+nfInit().then(()=>{nf();R();
+ let a=new URLSearchParams(location.search).get('act');
+ if(a){history.replaceState(null,'',location.pathname);nfAct(a)}
+});
+if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.shelfie)nfAct(e.data.shelfie)});
 setInterval(()=>{if(S.t&&!S.t.p)nf()},20000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)nf()});
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
