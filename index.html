@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Shelfie</title><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2553a"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#faf6f0;--cd:#fff;--tx:#2b2420;--mu:#8a7d72;--ac:#c2553a;--ac2:#f1e1d6;--bd:#eadfd3;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1613;--cd:#26201c;--tx:#f1e8df;--mu:#a09186;--ac:#e8836a;--ac2:#3a2b25;--bd:#372d27;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1a1613;--cd:#26201c;--tx:#f1e8df;--mu:#a09186;--ac:#e8836a;--ac2:#3a2b25;--bd:#372d27;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}h1,h2,.big,.t{font-family:Georgia,'Iowan Old Style',serif}
+#app{max-width:560px;margin:0 auto;padding:18px 16px 110px}
+h1{font-size:30px;margin:6px 0 12px}h2{font-size:18px;margin:20px 0 8px}
+button,input,select{font:inherit;color:inherit}
+.in{width:100%;padding:11px 13px;border:1px solid var(--bd);border-radius:12px;background:var(--cd);margin:4px 0}
+.bt{border:1px solid var(--bd);background:var(--cd);border-radius:12px;padding:9px 13px;cursor:pointer}
+.pr{background:var(--ac);color:#fff;border-color:var(--ac)}.mu{color:var(--mu);font-size:14px}
+.tabs{display:flex;gap:6px;margin:12px 0;overflow-x:auto}.tab{white-space:nowrap;padding:7px 13px;border-radius:99px;background:var(--cd);border:1px solid var(--bd);cursor:pointer;font-size:14px}.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.card{display:flex;gap:12px;background:var(--cd);border:1px solid var(--bd);border-radius:16px;padding:10px;margin:10px 0;cursor:pointer}
+.cv{width:56px;height:82px;border-radius:7px;object-fit:cover;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px}
+.cvl{width:104px;height:152px;border-radius:10px;object-fit:cover;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:44px;box-shadow:0 6px 16px #0003}
+.bar{height:8px;background:var(--ac2);border-radius:9px;overflow:hidden;margin:7px 0 3px}.bar i{display:block;height:100%;background:var(--ac);border-radius:9px}
+.fl{flex:1;min-width:0}.t{font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}.row>.in{flex:1;min-width:70px;width:auto}
+.seg{display:flex;background:var(--ac2);border-radius:12px;padding:3px;margin:12px 0}.seg b{flex:1;text-align:center;padding:7px;border-radius:9px;cursor:pointer;font-weight:normal;font-size:14px}.seg b.on{background:var(--cd);font-weight:bold}
+.big{font-size:44px;font-weight:bold;color:var(--ac);text-align:center;margin:8px 0 0}
+.nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:10px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--bd)}
+.nav .bt{flex:1;max-width:170px}
+.pill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom,0px));background:var(--ac);color:#fff;padding:9px 18px;border-radius:99px;cursor:pointer;box-shadow:0 4px 14px #0004;z-index:3}
+.sh{position:fixed;inset:0;background:#0007;z-index:5;display:flex;align-items:flex-end;justify-content:center}.sh>div{background:var(--bg);width:100%;max-width:560px;border-radius:22px 22px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px));max-height:90%;overflow:auto}
+.ch{display:flex;gap:6px;align-items:center;margin:6px 0}.ch .in{margin:0}.ch .cp{width:70px;flex:none}
+.ses{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--bd);font-size:14px}
+.g{color:#3a9a5c}.r{color:#c2553a}
+.wk{display:flex;gap:6px;align-items:flex-end;height:110px;margin:8px 0}.wk div{flex:1;text-align:center;font-size:11px;color:var(--mu);display:flex;flex-direction:column;justify-content:flex-end;height:100%}.wk i{display:block;background:var(--ac);border-radius:5px 5px 0 0;min-height:2px}
+.st{display:grid;grid-template-columns:1fr 1fr;gap:10px}.st>div{background:var(--cd);border:1px solid var(--bd);border-radius:14px;padding:12px}.st b{font-size:22px;display:block;color:var(--ac)}
+input[type=range]{width:100%;accent-color:var(--ac)}
+.card,.st>div{box-shadow:0 2px 12px #0000000f}.bar i{background:linear-gradient(90deg,var(--ac),#e0a030)}.nav{backdrop-filter:blur(10px)}
+.gd{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.cvg{width:100%;aspect-ratio:2/3;height:auto;border-radius:9px;object-fit:cover;display:flex;align-items:center;justify-content:center;color:#fff;font-size:34px;box-shadow:0 4px 12px #0003}
+</style></head><body><div id="app"></div>
+<script>
+const $=s=>document.querySelector(s);
+let S={b:[],s:[],t:null},v={p:'home',tab:'reading',id:null,q:'',sh:null,cv:''};
+try{S=JSON.parse(localStorage.getItem('shf'))||S}catch(e){}
+const SEED=[];
+if(!S.sd){SEED.forEach(x=>{if(!S.b.some(b=>b.t===x.t&&b.a===x.a))S.b.push({id:Math.random().toString(36).slice(2,9),...x,m:'pages',cur:x.st==='done'?x.pages:0,cover:'',ch:[]})});S.sd=1;try{localStorage.setItem('shf',JSON.stringify(S))}catch(e){}}
+const save=()=>{try{localStorage.setItem('shf',JSON.stringify(S))}catch(e){alert('Storage is full. Try smaller covers.')}};
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const bk=id=>S.b.find(b=>b.id==id);
+const fm=k=>k<60?k+'s':k>=3600?Math.floor(k/3600)+'h '+Math.round(k%3600/60)+'m':Math.round(k/60)+'m';
+function pc(b){if(b.st==='done')return 100;if(b.m==='pct')return Math.min(100,+b.cur||0);
+ if(b.m==='ch'&&b.ch.length){let w=b.ch.every(c=>+c.p>0),t=w?b.ch.reduce((a,c)=>a+ +c.p,0):b.ch.length,d=b.ch.filter(c=>c.d).reduce((a,c)=>a+(w?+c.p:1),0);return d/t*100}
+ return b.pages?Math.min(100,b.cur/b.pages*100):0}
+const cv=(b,c)=>b.cover?`<img class="${c}" src="${b.cover}">`:`<div class="${c}" style="background:hsl(${[...b.t].reduce((a,x)=>a+x.charCodeAt(0),0)%360} 40% 42%)">${esc(b.t.slice(0,1))}</div>`;
+function avg(u,id){let x=S.s.filter(s=>s.u===u&&s.d>0&&s.k>30&&(!id||s.b===id)),d=x.reduce((a,s)=>a+s.d,0),k=x.reduce((a,s)=>a+s.k,0);return k?d/k*3600:null}
+const U=u=>u==='p'?'pages/hr':'%/hr';
+function R(){$('#app').innerHTML=(v.p==='home'?H():v.p==='book'?D():T())+nav()+(S.t&&v.p!=='book'?`<div class="pill" onclick="op('${S.t.id}')">⏱ <span class="tm"></span></div>`:'')+(v.sh?SH():'');tk()}
+const el=()=>Math.max(0,Math.round(((S.t.p||Date.now())-S.t.s-(S.t.g||0))/1000));
+const clk=k=>{let h=Math.floor(k/3600),m=Math.floor(k%3600/60),s=k%60,p=n=>String(n).padStart(2,'0');return (h?h+':'+p(m):m)+':'+p(s)};
+const tk=()=>{if(S.t)document.querySelectorAll('.tm').forEach(e=>e.textContent=clk(el())+(S.t.p?' ⏸':''))};
+setInterval(tk,1000);
+function tpause(){let t=S.t;if(t.p){t.g=(t.g||0)+Date.now()-t.p;t.p=null}else t.p=Date.now();save();R()}
+const nav=()=>`<div class="nav"><button class="bt ${v.p==='home'?'pr':''}" onclick="go('home')">📚 Shelf</button><button class="bt" onclick="v.sh='add';v.cv='';R()">＋ Add</button><button class="bt ${v.p==='stats'?'pr':''}" onclick="go('stats')">📈 Stats</button></div>`;
+const go=p=>{v.p=p;if(p!=='home')v.msg='';R();scrollTo(0,0)};const op=id=>{v.id=id;go('book')};
+function lst(){let so=S.so||'new',l=S.b.filter(b=>(v.tab==='all'||b.st===v.tab)&&(b.t+' '+b.a).toLowerCase().includes(v.q.toLowerCase()));
+ if(so!=='new')l.sort((x,y)=>so==='title'?x.t.localeCompare(y.t):so==='author'?x.a.localeCompare(y.a):so==='prog'?pc(y)-pc(x):(y.r||0)-(x.r||0));
+ if(!l.length)return '<p class="mu">Nothing here yet. Add a book or import from Goodreads.</p>';
+ if(S.gr)return '<div class="gd">'+l.map(b=>`<div onclick="op('${b.id}')" style="cursor:pointer">${cv(b,'cvg')}<div class="bar" style="height:5px"><i style="width:${pc(b).toFixed(0)}%"></i></div><div class="t" style="font-size:13px">${esc(b.t)}</div></div>`).join('')+'</div>';
+ return l.map(b=>`<div class="card" onclick="op('${b.id}')">${cv(b,'cv')}<div class="fl"><div class="t">${esc(b.t)}</div><div class="mu">${esc(b.a)}${b.sr?' · '+esc(b.sr):''}</div><div class="bar"><i style="width:${pc(b).toFixed(0)}%"></i></div><div class="mu">${pc(b).toFixed(0)}%${b.m==='pages'&&b.pages?` · ${b.cur||0}/${b.pages} pages`:''}${b.r?' · '+'★'.repeat(b.r):''}</div></div></div>`).join('')}
+function stk(){let d=new Set(S.s.map(x=>new Date(x.s).toDateString())),n=0,t=new Date();if(!d.has(t.toDateString()))t.setDate(t.getDate()-1);while(d.has(t.toDateString())){n++;t.setDate(t.getDate()-1)}return n}
+function H(){const n=s=>S.b.filter(b=>b.st===s).length,y=new Date().getFullYear(),dn=S.b.filter(b=>b.st==='done'&&b.fd&&new Date(b.fd).getFullYear()===y).length,k=stk(),ex=(S.gl||0)*((Date.now()-new Date(y,0,1))/864e5)/365,gt=S.gl?(dn>=S.gl?'Goal reached! 🎉':dn>=ex?'on track':'about '+Math.ceil(ex-dn)+' behind pace'):'';
+ return `<h1>My shelf</h1>${v.msg?`<p class="g">${esc(v.msg)}</p>`:''}
+ <div class="card" style="display:block;cursor:default"><div class="row" style="margin:0"><b>🎯 ${y} reading goal</b><span style="flex:1"></span><input class="in" style="width:90px;flex:none;margin:0" type="number" value="${S.gl||''}" placeholder="books" onchange="S.gl=+this.value||0;save();R()"></div>${S.gl?`<div class="bar"><i style="width:${Math.min(100,dn/S.gl*100)}%"></i></div><div class="mu">${dn} of ${S.gl} books · ${gt}</div>`:''}<div class="mu" style="margin-top:6px">${k?'🔥 '+k+' day reading streak':'Log a session today to start a streak'}</div></div>
+ <input class="in" placeholder="Search your books" value="${esc(v.q)}" oninput="v.q=this.value;$('#ls').innerHTML=lst()"><div class="tabs">${[['reading','Reading'],['toread','To read'],['done','Finished'],['dnf','Did not finish'],['all','All']].map(([k,l])=>`<span class="tab ${v.tab===k?'on':''}" onclick="v.tab='${k}';R()">${l}${k!=='all'?' '+n(k):''}</span>`).join('')}</div>
+ <div class="row"><select class="in" style="flex:1" onchange="S.so=this.value;save();R()">${[['new','Newest'],['title','Title'],['author','Author'],['prog','Progress'],['rate','Rating']].map(([a,c])=>`<option value="${a}" ${(S.so||'new')===a?'selected':''}>Sort: ${c}</option>`).join('')}</select><button class="bt" onclick="S.gr=!S.gr;save();R()">${S.gr?'☰ List':'▦ Grid'}</button></div>
+ <div id="ls">${lst()}</div>
+ <h2>Import from Goodreads</h2><p class="mu">On a computer: Goodreads → My Books → Import and export → Export Library. Then pick that CSV file here.</p><input type="file" onchange="imp(event)"><p class="mu">Can’t pick the file? Open the CSV in any text or notes app, copy everything, and paste it here:</p><textarea class="in" id="pt" rows="3"></textarea><button class="bt pr" onclick="imp(null,$('#pt').value)">Import pasted text</button>
+ <h2>Covers</h2><p class="mu">Finds covers online for every book that doesn’t have one. Keep this page open while it works.</p><button class="bt pr" onclick="allcov()">Find all covers</button><p class="mu" id="cvst"></p>
+ <h2>Backup</h2><p class="mu">Copy your whole library (books, progress, sessions) or restore one. Restoring replaces what is on this device.</p><div class="row"><button class="bt" onclick="bkup()">Copy backup</button><button class="bt" onclick="rest()">Restore from box</button></div><textarea class="in" id="bk" rows="3" placeholder="Backup text goes here"></textarea>`}
+function D(){let b=bk(v.id);if(!b){v.p='home';return H()}
+ let p=pc(b),run=S.t&&S.t.id===b.id,ss=S.s.filter(s=>s.b===b.id).reverse(),u=b.m==='pct'?'%':'p',ba=avg(u,b.id),oa=avg(u),id=b.id,ctl='',spd=ba||oa,rem=b.m==='pct'?100-(+b.cur||0):b.m==='pages'&&b.pages?b.pages-(+b.cur||0):0,eta=spd&&rem>0&&b.st!=='done'?'<p class="mu" style="text-align:center">⏳ About '+fm(Math.round(rem/spd*3600))+' left at your pace</p>':'';
+ if(b.m==='pages')ctl=`<div class="row"><button class="bt" onclick="bump('${id}',-10)">−10</button><button class="bt" onclick="bump('${id}',-1)">−1</button><input class="in" type="number" value="${b.cur||0}" onchange="setCur('${id}',this.value)"><button class="bt" onclick="bump('${id}',1)">+1</button><button class="bt" onclick="bump('${id}',10)">+10</button></div><div class="row"><span class="mu">Total pages in your edition</span><input class="in" type="number" value="${b.pages||''}" placeholder="?" onchange="setTot('${id}',this.value)"></div>`;
+ else if(b.m==='pct')ctl=`<div class="big" id="pv">${b.cur||0}%</div><input type="range" min="0" max="100" value="${b.cur||0}" oninput="$('#pv').textContent=this.value+'%'" onchange="setCur('${id}',this.value)">`;
+ else ctl=b.ch.map((c,i)=>`<div class="ch"><input type="checkbox" ${c.d?'checked':''} onchange="chT('${id}',${i})"><input class="in" value="${esc(c.n)}" onchange="chN('${id}',${i},this.value)"><input class="in cp" type="number" placeholder="pages" value="${c.p||''}" onchange="chP('${id}',${i},this.value)"><button class="bt" onclick="chX('${id}',${i})">✕</button></div>`).join('')+`<div class="row"><input class="in" id="f-cn" type="number" placeholder="How many chapters?"><input class="in" id="f-cp" type="number" placeholder="Pages each (optional)"><button class="bt pr" onclick="chA('${id}')">Add</button></div><p class="mu">Add page counts to chapters for more accurate progress. Leave blank to count chapters equally.</p>`;
+ return `<div class="row"><button class="bt" onclick="go('home')">← Back</button><span style="flex:1"></span><button class="bt" onclick="v.sh='edit';v.cv='';R()">Edit</button></div>
+ <div class="row" style="align-items:flex-start;gap:14px">${cv(b,'cvl')}<div class="fl"><h1 style="font-size:24px;margin:0">${esc(b.t)}</h1><div class="mu">${esc(b.a)}${b.sr?' · '+esc(b.sr):''}</div><select class="in" onchange="setSt('${id}',this.value)">${[['toread','To read'],['reading','Reading'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b.st===k?'selected':''}>${l}</option>`).join('')}</select></div></div>
+ <div style="text-align:center;margin-top:10px">${[1,2,3,4,5].map(n=>`<span onclick="rate('${id}',${n})" style="font-size:28px;cursor:pointer;color:${n<=(b.r||0)?'#e0a030':'var(--bd)'}">★</span>`).join('')}</div><div class="big">${p.toFixed(0)}%</div><div class="bar"><i style="width:${p}%"></i></div>${eta}
+ <div class="seg">${[['pages','Pages'],['pct','Percent'],['ch','Chapters']].map(([k,l])=>`<b class="${b.m===k?'on':''}" onclick="setM('${id}','${k}')">${l}</b>`).join('')}</div>${ctl}
+ <h2>Reading timer</h2>${run?`<div class="big"><span class="tm"></span></div><button class="bt" style="width:100%;margin-bottom:8px" onclick="tpause()">${S.t.p?'▶ Resume':'⏸ Pause'}</button><button class="bt pr" style="width:100%" onclick="v.sh='stop';R()">Stop and log session</button><button class="bt" style="width:100%;margin-top:8px" onclick="S.t=null;save();R()">Discard</button>`:`<button class="bt pr" style="width:100%" onclick="tstart('${id}')" ${S.t?'disabled':''}>▶ Start reading session</button>`}
+ ${ba?`<p class="mu">Your speed on this book: <b>${ba.toFixed(1)} ${U(u)}</b>${oa?` (${ba>=oa?'<span class="g">▲ ':'<span class="r">▼ '}${Math.abs((ba/oa-1)*100).toFixed(0)}% vs your overall average</span>)`:''}</p>`:''}
+ ${ss.map(s=>{let sp=s.d>0&&s.k>30?s.d/s.k*3600:0,a=avg(s.u);return `<div class="ses"><span>${new Date(s.s).toLocaleDateString()}<br><span class="mu">${fm(s.k)}${s.d?` · +${s.d}${s.u==='%'?'%':' pages'}`:''}</span></span><span style="text-align:right">${sp?sp.toFixed(1)+' '+U(s.u):'-'}${sp&&a?`<br>${sp>=a?'<span class="g">▲ ':'<span class="r">▼ '}${Math.abs((sp/a-1)*100).toFixed(0)}% vs avg</span>`:''}</span></div>`}).join('')}<h2>Notes</h2><textarea class="in" rows="4" placeholder="Thoughts, quotes, favorite parts…" onchange="note('${id}',this.value)">${esc(b.nt||'')}</textarea>`}
+function T(){let ss=S.s,tot=ss.reduce((a,s)=>a+s.k,0),pa=avg('p'),qa=avg('%'),days=[...Array(7)].map((_,i)=>{let d=new Date();d.setDate(d.getDate()-6+i);d.setHours(0,0,0,0);let e=d.getTime()+864e5;return{l:d.toLocaleDateString(undefined,{weekday:'narrow'}),m:ss.filter(s=>s.s>=d.getTime()&&s.s<e).reduce((a,s)=>a+s.k,0)/60}}),mx=Math.max(1,...days.map(d=>d.m));
+ let per=S.b.map(b=>({b,a:avg(b.m==='pct'?'%':'p',b.id),u:b.m==='pct'?'%':'p'})).filter(x=>x.a);
+ return `<h1>Stats</h1><div class="st"><div><b>${S.b.filter(b=>b.st==='done').length}</b>books finished</div><div><b>${fm(tot)}</b>total reading time</div><div><b>${pa?pa.toFixed(1):'-'}</b>pages per hour</div><div><b>${qa?qa.toFixed(1):'-'}</b>percent per hour</div><div><b>${stk()}</b>day streak</div><div><b>${ss.length}</b>sessions logged</div></div>
+ <h2>Last 7 days (minutes)</h2><div class="wk">${days.map(d=>`<div><span>${Math.round(d.m)||''}</span><i style="height:${d.m/mx*80}%"></i>${d.l}</div>`).join('')}</div>
+ <h2>Speed by book</h2>${per.length?per.map(x=>{let o=avg(x.u);return `<div class="ses"><span>${esc(x.b.t)}</span><span>${x.a.toFixed(1)} ${U(x.u)} ${o?(x.a>=o?'<span class="g">▲':'<span class="r">▼')+Math.abs((x.a/o-1)*100).toFixed(0)+'%</span>':''}</span></div>`}).join(''):'<p class="mu">Log a few timed sessions to see how fast you read.</p>'}`}
+function SH(){let b=v.sh==='edit'?bk(v.id):null;
+ if(v.sh==='stop'){let bb=bk(S.t.id),q=bb.m==='pct'?'What percent are you at now?':bb.m==='pages'?'What page are you on now?':'Pages read this session (optional)';
+  return `<div class="sh"><div><h2 style="margin-top:0">Nice session! ${fm(el())}</h2><p class="mu">${q}</p><input class="in" id="f-n" type="number" value="${bb.m==='ch'?'':bb.cur||0}"><div class="row"><button class="bt" onclick="v.sh=null;R()">Cancel</button><button class="bt pr" style="flex:1" onclick="tstop()">Save session</button></div></div></div>`}
+ return `<div class="sh"><div><h2 style="margin-top:0">${b?'Edit book':'Add a book'}</h2><div class="row"><input class="in" id="q" placeholder="Search title or author" onkeydown="if(event.key==='Enter')srch()"><button class="bt pr" onclick="srch()">Search</button></div><div id="res"></div><input class="in" id="f-t" placeholder="Title" value="${b?esc(b.t):''}"><input class="in" id="f-a" placeholder="Author" value="${b?esc(b.a):''}"><input class="in" id="f-p" type="number" placeholder="Total pages (optional)" value="${b&&b.pages?b.pages:''}">
+ <select class="in" id="f-s">${[['reading','Reading now'],['toread','Want to read'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b&&b.st===k?'selected':''}>${l}</option>`).join('')}</select>
+ <select class="in" id="f-m">${[['pages','Track by pages'],['pct','Track by percent (Kindle)'],['ch','Track by chapters']].map(([k,l])=>`<option value="${k}" ${b&&b.m===k?'selected':''}>${l}</option>`).join('')}</select>
+ <p class="mu" style="margin-bottom:2px">Cover (photo or image from your device)</p><input type="file" accept="image/*" onchange="cov(event)">
+ <div class="row"><button class="bt" onclick="v.sh=null;R()">Cancel</button>${b?`<button class="bt" onclick="del()">Delete</button>`:''}<button class="bt pr" style="flex:1" onclick="sv()">Save</button></div></div></div>`}
+function cov(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas'),k=Math.min(1,240/i.width);c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);v.cv=c.toDataURL('image/jpeg',.7)};i.src=r.result};r.readAsDataURL(f)}
+function bkup(){let t=$('#bk');t.value=JSON.stringify(S);t.focus();t.select();try{document.execCommand('copy')}catch(e){}}
+function rest(){try{let x=JSON.parse($('#bk').value);if(!x.b)throw 0;S=x;S.sd=1;save();v.msg='Backup restored ('+S.b.length+' books)';v.tab='all';R();scrollTo(0,0)}catch(e){v.msg='That is not a valid backup.';R();scrollTo(0,0)}}
+async function c2d(u){try{let b=await (await fetch(u)).blob();return await new Promise(ok=>{let f=new FileReader();f.onload=()=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas'),k=Math.min(1,240/i.width);c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.7))};i.onerror=()=>ok(u);i.src=f.result};f.readAsDataURL(b)})}catch(e){return u}}
+async function srch(){let q=$('#q').value.trim(),r=$('#res');if(!q)return;r.innerHTML='<p class="mu">Searching…</p>';
+try{let j=await (await fetch('https://openlibrary.org/search.json?limit=10&fields=title,author_name,number_of_pages_median,cover_i,first_publish_year&q='+encodeURIComponent(q))).json();
+v.res=j.docs||[];r.innerHTML=v.res.length?v.res.map((d,i)=>`<div class="card" onclick="pick(${i})">${d.cover_i?`<img class="cv" src="https://covers.openlibrary.org/b/id/${d.cover_i}-M.jpg">`:`<div class="cv" style="background:var(--mu)">?</div>`}<div class="fl"><div class="t">${esc(d.title)}</div><div class="mu">${esc((d.author_name||[]).slice(0,2).join(', '))}</div><div class="mu">${d.first_publish_year||''}${d.number_of_pages_median?' · '+d.number_of_pages_median+' pages':''}</div></div></div>`).join(''):'<p class="mu">No results. Try just the title.</p>'}catch(e){r.innerHTML='<p class="mu">Search failed. Check your internet connection.</p>'}}
+async function pick(i){let d=v.res[i];$('#f-t').value=d.title;$('#f-a').value=(d.author_name||[''])[0];$('#f-p').value=d.number_of_pages_median||'';$('#res').innerHTML='<p class="g">Fetching cover…</p>';v.cv=d.cover_i?await c2d('https://covers.openlibrary.org/b/id/'+d.cover_i+'-M.jpg'):'';$('#res').innerHTML='<p class="g">Filled in'+(v.cv?' with cover':'')+'. Check the details, then tap Save.</p>'}
+async function allcov(){let l=S.b.filter(b=>!b.cover),ok=0,st=()=>$('#cvst');if(!l.length){st().textContent='Every book already has a cover.';return}
+const q=async u=>{let j=await (await fetch(u)).json();let d=(j.docs||[]).find(x=>x.cover_i);return d?d.cover_i:0};
+for(let i=0;i<l.length;i++){let b=l[i];if(st())st().textContent='Searching '+(i+1)+' of '+l.length+': '+b.t;
+ try{let base='https://openlibrary.org/search.json?limit=5&fields=cover_i&',id=await q(base+'title='+encodeURIComponent(b.t)+'&author='+encodeURIComponent(b.a));if(!id)id=await q(base+'title='+encodeURIComponent(b.t));
+ if(id){b.cover=await c2d('https://covers.openlibrary.org/b/id/'+id+'-M.jpg');ok++;save()}}catch(e){}
+ await new Promise(r=>setTimeout(r,250))}
+v.msg=ok+' covers added. '+(l.length-ok)+' not found.';R();scrollTo(0,0)}
+const rate=(id,n)=>ch(id,b=>b.r=b.r===n?0:n);
+const note=(id,x)=>{bk(id).nt=x;save()};
+function sv(){let t=$('#f-t').value.trim();if(!t)return;let d={t,a:$('#f-a').value.trim(),pages:+$('#f-p').value||0,st:$('#f-s').value,m:$('#f-m').value};
+ if(v.sh==='add'){S.b.unshift({id:uid(),...d,cur:d.st==='done'?d.pages:0,cover:v.cv,ch:[],r:0,fd:d.st==='done'?Date.now():0})}else{let b=bk(v.id);Object.assign(b,d);if(d.st==='done'&&!b.fd)b.fd=Date.now();if(v.cv)b.cover=v.cv}
+ v.sh=null;save();R()}
+function del(){if(confirm('Delete this book?')){S.b=S.b.filter(b=>b.id!=v.id);v.sh=null;v.p='home';save();R()}}
+const ch=(id,f)=>{f(bk(id));save();R()};
+const bump=(id,n)=>ch(id,b=>{b.cur=Math.max(0,(+b.cur||0)+n);if(b.pages&&b.cur>b.pages)b.cur=b.pages;if(b.st==='toread')b.st='reading'});
+const setCur=(id,x)=>ch(id,b=>{b.cur=Math.max(0,+x||0);if(b.st==='toread')b.st='reading'});
+const setTot=(id,x)=>ch(id,b=>b.pages=+x||0);
+const setM=(id,m)=>ch(id,b=>b.m=m);
+const setSt=(id,s)=>ch(id,b=>{b.st=s;if(s==='done'){if(b.pages)b.cur=b.pages;if(!b.fd)b.fd=Date.now()}});
+const chT=(id,i)=>ch(id,b=>{b.ch[i].d=!b.ch[i].d;if(b.st==='toread')b.st='reading'});
+const chN=(id,i,x)=>ch(id,b=>b.ch[i].n=x);const chP=(id,i,x)=>ch(id,b=>b.ch[i].p=+x||0);const chX=(id,i)=>ch(id,b=>b.ch.splice(i,1));
+const chA=id=>ch(id,b=>{let n=+$('#f-cn').value||1,p=+$('#f-cp').value||0;for(let i=0;i<n;i++)b.ch.push({n:'Chapter '+(b.ch.length+1),p,d:false})});
+function tstart(id){let b=bk(id);if(b.st==='toread')b.st='reading';S.t={id,s:Date.now()};save();R()}
+function tstop(){let b=bk(S.t.id),n=$('#f-n').value,k=el(),d=0,u=b.m==='pct'?'%':'p';
+ if(b.m==='ch'){d=+n||0}else if(n!==''){d=+n-(+b.cur||0);b.cur=+n;if(b.m==='pages'&&b.pages&&b.cur>=b.pages){b.st='done';b.fd=Date.now()}}
+ S.s.push({b:b.id,s:S.t.s,k,d:d>0?d:0,u});S.t=null;v.sh=null;save();R()}
+function csv(t){let r=[],w=[],c='',q=0;for(let i=0;i<t.length;i++){let h=t[i];if(q){if(h=='"'){if(t[i+1]=='"'){c+='"';i++}else q=0}else c+=h}else if(h=='"')q=1;else if(h==','){w.push(c);c=''}else if(h=='\n'||h=='\r'){if(h=='\r'&&t[i+1]=='\n')i++;w.push(c);c='';r.push(w);w=[]}else c+=h}if(c||w.length){w.push(c);r.push(w)}return r}
+function imp(e,txt){let f=txt==null?e.target.files[0]:1;if(!f)return;let rd=txt==null?new FileReader():{readAsText(){this.result=txt;this.onload()}};rd.onload=()=>{let r=csv(rd.result.replace(/^\uFEFF/,'')),h=r.shift()||[],ix=n=>h.indexOf(n),n=0;if(ix('Title')<0){v.msg='No Title column found. Is this the Goodreads export file?';R();scrollTo(0,0);return}
+ for(let w of r){let t=(w[ix('Title')]||'').trim();if(!t)continue;let a=(w[ix('Author')]||'').trim();if(S.b.some(b=>b.t===t&&b.a===a))continue;let sh=w[ix('Exclusive Shelf')],st=sh==='read'?'done':sh==='currently-reading'?'reading':sh==='did-not-finish'?'dnf':'toread',p=+w[ix('Number of Pages')]||0;S.b.push({id:uid(),t,a,pages:p,st,m:'pages',cur:st==='done'?p:0,cover:'',ch:[],fd:st==='done'?(Date.parse((w[ix('Date Read')]||'').replace(/\//g,'-'))||0):0,r:+w[ix('My Rating')]||0});n++}
+ v.msg=n+' new books imported ('+S.b.length+' total)';v.tab='all';save();R();scrollTo(0,0)};rd.readAsText(f);if(txt==null)e.target.value=''}
+R();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+</script></body></html>
