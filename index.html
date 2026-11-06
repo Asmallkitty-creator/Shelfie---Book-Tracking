@@ -31,14 +31,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 .av,.sb{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;cursor:pointer;flex:none}.av{background:var(--cd);box-shadow:0 2px 10px #0002}.sb{background:var(--ac)}
 .hero{display:block;padding:0;overflow:hidden;border-radius:16px 16px 72px 16px;cursor:pointer}.hero>.row{padding:18px;margin:0}
 .hb{height:10px;background:var(--ac2)}.hb i{display:block;height:100%;background:var(--ac)}
-.tl{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 12px}
+.tl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:18px 0 12px}
 .tile{display:flex;justify-content:space-between;align-items:center;background:var(--cd);border:1px solid var(--bd);border-radius:20px 20px 20px 54px;padding:18px;cursor:pointer;box-shadow:0 3px 14px #0000000d}.tile b{display:block;font:700 28px Georgia,serif}.ic{font-size:36px}
 .rail{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}.rl{flex:none;width:122px;cursor:pointer}
 .rb{position:absolute;right:12px;bottom:-5px;width:18px;height:26px;background:var(--ac);clip-path:polygon(0 0,100% 0,100% 100%,50% 76%,0 100%)}
 .coll{flex:none;width:172px;cursor:pointer}.fan{position:relative;height:124px;border-radius:24px;overflow:hidden}.fb{position:absolute;bottom:-12px}
-.rw{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-items:end;padding:16px 10px 0;min-height:124px}.dc{font-size:44px;text-align:center;padding-bottom:2px}
+.rw{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end;padding:16px 10px 0;min-height:124px}.dc{font-size:44px;text-align:center;padding-bottom:2px}
 .pl{height:14px;background:linear-gradient(var(--wd),var(--wd2));border-radius:3px;box-shadow:0 8px 10px #0003;margin:0 -4px 10px}
-.gd{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.gd{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.gd>*{min-width:0}.gd .t{overflow:hidden;text-overflow:ellipsis}
 .nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));max-width:536px;margin:0 auto;display:flex;padding:7px;border-radius:32px;background:color-mix(in srgb,var(--cd) 80%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--bd);box-shadow:0 10px 28px #0003;z-index:4}
 .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:11px;padding:7px 0;border-radius:24px;cursor:pointer}.ni.on{background:var(--ac2);color:var(--ac);font-weight:700}
 .pill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));background:var(--ac);color:#fff;padding:9px 18px;border-radius:99px;cursor:pointer;box-shadow:0 4px 14px #0004;z-index:3}
@@ -46,9 +46,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 .ch{display:flex;gap:6px;align-items:center;margin:6px 0}.ch .in{margin:0}.ch .cp{width:70px;flex:none}
 .ses{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--bd);font-size:14px}
 .wk{display:flex;gap:6px;align-items:flex-end;height:110px;margin:8px 0}.wk div{flex:1;text-align:center;font-size:11px;color:var(--mu);display:flex;flex-direction:column;justify-content:flex-end;height:100%}.wk i{display:block;background:var(--ac);border-radius:5px 5px 0 0;min-height:2px}
-.st{display:grid;grid-template-columns:1fr 1fr;gap:10px}.st>div{background:var(--cd);border:1px solid var(--bd);border-radius:18px;padding:12px}.st b{font:700 22px Georgia,serif;display:block;color:var(--ac)}
+.st{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}.st>div{background:var(--cd);border:1px solid var(--bd);border-radius:18px;padding:12px}.st b{font:700 22px Georgia,serif;display:block;color:var(--ac)}
 input[type=range]{width:100%;accent-color:var(--ac)}
 
+/* never scroll sideways */
+html,body{max-width:100%;overflow-x:hidden}img{max-width:100%}input[type=file]{max-width:100%;font-size:14px}
 /* smooth motion */
 .bt,.in,.card,.tile,.tab{transition:transform .18s cubic-bezier(.2,.8,.2,1),background-color .25s ease,border-color .25s ease,box-shadow .25s ease,opacity .2s ease}
 .bt:active,.tile:active{transform:scale(.95)}.card:active{transform:scale(.985)}
@@ -61,6 +63,19 @@ input[type=range]{width:100%;accent-color:var(--ac)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body><div id="app"></div>
 <script>
+var NT=null;
+function ntInit(){
+ if(NT)return NT;
+ try{
+  var C=window.Capacitor;
+  if(C){
+   var nat=(C.isNativePlatform&&C.isNativePlatform())||(C.getPlatform&&C.getPlatform()!=='web');
+   if(nat)NT=(C.Plugins&&C.Plugins.ShelfieTimer)||C.registerPlugin('ShelfieTimer');
+  }
+ }catch(e){}
+ return NT;
+}
+ntInit();
 const $=s=>document.querySelector(s);
 let S={b:[],s:[],t:null},v={p:'home',tab:'all',id:null,q:'',sh:null,cv:''};
 try{S=JSON.parse(localStorage.getItem('shf'))||S}catch(e){}
@@ -249,7 +264,7 @@ function advStopSh(b){
 }
 
 /* ---- Timer in the notification panel ---- */
-var NT=null;try{if(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())NT=Capacitor.registerPlugin('ShelfieTimer')}catch(e){}
+ntInit();
 var NF={sw:null,err:''};
 async function nfInit(){
  try{
@@ -277,12 +292,14 @@ async function nf(){
 }
 async function nfClose(){if(NT){try{await NT.stop()}catch(e){}return}try{if(!NF.sw)return;(await NF.sw.getNotifications({tag:'shelfie-timer'})).forEach(n=>n.close())}catch(e){}}
 async function nfAsk(){
+ ntInit();
  if(NT){try{await NT.requestPerm()}catch(e){}return nf()}
  try{if('Notification' in window&&Notification.permission==='default')await Notification.requestPermission()}catch(e){}
  nf();
 }
 function nfLine(){
- if(NT)return '';
+ if(NT)return `<p class="mu" style="font-size:13px;margin:4px 0 8px"><a href="#" onclick="nfTest();return false" style="color:var(--ac)">Test notification</a></p>`;
+ if(window.Capacitor)return `<p class="mu" style="font-size:13px;margin:4px 0 8px">The app’s timer notification isn’t available in this build.</p>`;
  try{
   let m;
   if(!('Notification' in window))m='This browser can’t show notifications. On iPhone: Share → Add to Home Screen, then open Shelfie from the home screen.';
@@ -294,6 +311,18 @@ function nfLine(){
  }catch(e){return ''}
 }
 async function nfTest(){
+ ntInit();
+ if(NT){
+  try{
+   let r=await NT.requestPerm();
+   if(!r.granted){alert('Notifications are blocked for Shelfie. Turn them on in Settings → Apps → Shelfie → Notifications.');return}
+   if(S.t){await nf();alert('Sent. Swipe down to see it.');return}
+   await NT.start({id:'test',title:'Shelfie test',mode:'pages',cur:'',s:Date.now(),p:0,g:0});
+   setTimeout(()=>{if(!S.t)NT.stop()},8000);
+   alert('A test timer is showing for 8 seconds. Swipe down to see it.');
+  }catch(e){alert('Error: '+(e.message||e))}
+  return;
+ }
  try{
   if(!('Notification' in window)){alert('This browser can’t show notifications. On iPhone: Share → Add to Home Screen, then open Shelfie from the home screen.');return}
   if(Notification.permission!=='granted'){let p=await Notification.requestPermission();if(p!=='granted'){alert('Notifications are '+p+'. Enable them in your phone settings for this app/site.');R();return}}
@@ -332,6 +361,18 @@ async function nfSync(){
   }else await nfN();
  }catch(e){}
 }
+var _bc='';
+function barSync(){
+ if(!NT||!NT.setBars)return;
+ try{
+  let cs=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||getComputedStyle(document.body).backgroundColor;
+  let x=document.createElement('canvas').getContext('2d');x.fillStyle='#000000';x.fillStyle=cs;let h=x.fillStyle;
+  if(h===_bc||h[0]!=='#')return;_bc=h;
+  let r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);
+  NT.setBars({r:r,g:g,b:b,dark:(0.299*r+0.587*g+0.114*b)<140});
+ }catch(e){}
+}
+if(NT){const _R=R;R=function(){_R.apply(this,arguments);barSync()};barSync()}
 function tdisc(){S.t=null;save();R();nfClose()}
 function nfAct(a){
  if(!S.t)return nfClose();
