@@ -207,7 +207,6 @@ public final class TimerCore {
                     .setColorized(true)
                     .setContentTitle(title)
                     .setContentText(paused ? "Paused at " + fmt(elapsed) : "Reading session")
-                    .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                     .setCustomContentView(small)
                     .setCustomBigContentView(big)
                     .setShowWhen(false)
