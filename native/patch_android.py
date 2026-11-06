@@ -42,4 +42,7 @@ android {
 }
 '''
     open(gradle, 'w', encoding='utf-8').write(g)
+# App icon: copy our own launcher icons over the defaults.
+import shutil
+shutil.copytree('native/res', 'android/app/src/main/res', dirs_exist_ok=True)
 print('patched')

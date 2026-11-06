@@ -2,7 +2,11 @@ package com.shelfie.app;
 
 import android.Manifest;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
+import android.view.View;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PermissionState;
 import com.getcapacitor.Plugin;
@@ -44,6 +48,29 @@ public class ShelfieTimerPlugin extends Plugin {
                 .putLong("g", d.optLong("g", 0))
                 .apply();
         TimerCore.show(getContext(), true);
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void setBars(PluginCall call) {
+        JSObject d = call.getData();
+        final int col = Color.rgb(d.optInt("r", 0), d.optInt("g", 0), d.optInt("b", 0));
+        final boolean dark = d.optBoolean("dark", true);
+        if (getActivity() == null) {
+            call.resolve();
+            return;
+        }
+        getActivity().runOnUiThread(() -> {
+            try {
+                View content = getActivity().findViewById(android.R.id.content);
+                content.setBackgroundColor(col);
+                getActivity().getWindow().getDecorView().setBackgroundColor(col);
+                WindowInsetsControllerCompat c = WindowCompat.getInsetsController(getActivity().getWindow(), content);
+                c.setAppearanceLightStatusBars(!dark);
+                c.setAppearanceLightNavigationBars(!dark);
+            } catch (Exception ignored) {
+            }
+        });
         call.resolve();
     }
 
