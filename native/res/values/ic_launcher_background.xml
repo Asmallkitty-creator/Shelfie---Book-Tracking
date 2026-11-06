@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="ic_bg_terracotta">#C2553A</color>
+    <color name="ic_bg_forest">#3F7A4B</color>
+    <color name="ic_bg_midnight">#2A1A47</color>
+    <color name="ic_bg_rose">#D1566B</color>
+    <color name="ic_bg_ocean">#2B7FB8</color>
+    <color name="ic_bg_lavender">#7A5BD0</color>
+    <color name="ic_bg_mocha">#3A2A21</color>
+    <color name="ic_bg_cream">#F7EFE2</color>
     <color name="ic_launcher_background">#C2553A</color>
 </resources>

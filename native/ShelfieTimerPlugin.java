@@ -1,7 +1,9 @@
 package com.shelfie.app;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.View;
@@ -47,6 +49,7 @@ public class ShelfieTimerPlugin extends Plugin {
                 .putLong("s", d.optLong("s", System.currentTimeMillis()))
                 .putLong("p", d.optLong("p", 0))
                 .putLong("g", d.optLong("g", 0))
+                .putInt("prog", d.optInt("prog", -1))
                 .apply();
         TimerCore.show(getContext(), true);
         call.resolve();
@@ -117,6 +120,54 @@ public class ShelfieTimerPlugin extends Plugin {
     private void permDone(PluginCall call) {
         JSObject r = new JSObject();
         r.put("granted", getPermissionState("notifications") == PermissionState.GRANTED);
+        call.resolve(r);
+    }
+
+    static final String[] ICONS = {"terracotta", "forest", "midnight", "rose", "ocean", "lavender", "mocha", "cream"};
+
+    private ComponentName alias(String k) {
+        return new ComponentName(getContext().getPackageName(),
+                "com.shelfie.app.Icon" + Character.toUpperCase(k.charAt(0)) + k.substring(1));
+    }
+
+    /** Pick the notification look: classic, forest, amber or twilight. */
+    @PluginMethod
+    public void setNotifTheme(PluginCall call) {
+        String name = call.getString("name", "forest");
+        TimerCore.sp(getContext()).edit().putString("ntheme", name).apply();
+        if (TimerCore.sp(getContext()).getBoolean("active", false)) TimerCore.show(getContext(), false);
+        call.resolve();
+    }
+
+    /** Switch the launcher icon by enabling one activity-alias and disabling the rest. */
+    @PluginMethod
+    public void setIcon(PluginCall call) {
+        String name = call.getString("name", "terracotta");
+        boolean known = false;
+        for (String k : ICONS) if (k.equals(name)) known = true;
+        if (!known) {
+            call.reject("Unknown icon");
+            return;
+        }
+        try {
+            PackageManager pm = getContext().getPackageManager();
+            pm.setComponentEnabledSetting(alias(name), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+            for (String k : ICONS) {
+                if (!k.equals(name)) {
+                    pm.setComponentEnabledSetting(alias(k), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+                }
+            }
+            TimerCore.sp(getContext()).edit().putString("icon", name).apply();
+            call.resolve();
+        } catch (Exception e) {
+            call.reject("Could not change the icon");
+        }
+    }
+
+    @PluginMethod
+    public void getIcon(PluginCall call) {
+        JSObject r = new JSObject();
+        r.put("name", TimerCore.sp(getContext()).getString("icon", "terracotta"));
         call.resolve(r);
     }
 }
