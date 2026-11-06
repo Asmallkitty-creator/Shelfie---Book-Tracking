@@ -1,14 +1,20 @@
 package com.shelfie.app;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.SystemClock;
+import android.view.View;
+import android.widget.RemoteViews;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import java.util.Locale;
 
 /** Keeps the reading-timer state and draws the live notification. */
@@ -30,6 +36,15 @@ public final class TimerCore {
         return h > 0
                 ? String.format(Locale.US, "%d:%02d:%02d", h, m, s)
                 : String.format(Locale.US, "%d:%02d", m, s);
+    }
+
+    /** Colour the dialog buttons to match the app. */
+    public static void tint(AlertDialog d, int positiveColor) {
+        try {
+            d.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(positiveColor);
+            d.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(0xFF6B6B6B);
+        } catch (Exception ignored) {
+        }
     }
 
     public static void cancel(Context c) {
@@ -64,7 +79,7 @@ public final class TimerCore {
         if (n == null) return;
         if (startService) {
             try {
-                androidx.core.content.ContextCompat.startForegroundService(c, new Intent(c, TimerService.class));
+                ContextCompat.startForegroundService(c, new Intent(c, TimerService.class));
                 return;
             } catch (Exception ignored) {
                 // fall back to a normal notification below
@@ -92,6 +107,8 @@ public final class TimerCore {
         long s = p.getLong("s", 0), pausedAt = p.getLong("p", 0), g = p.getLong("g", 0);
         boolean paused = pausedAt > 0;
         String title = p.getString("title", "Reading");
+        String sub = p.getString("sub", "");
+        long elapsed = (paused ? pausedAt : System.currentTimeMillis()) - s - g;
         int flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
 
         Intent openIntent = c.getPackageManager().getLaunchIntentForPackage(c.getPackageName());
@@ -103,27 +120,44 @@ public final class TimerCore {
         Intent stopIntent = new Intent(c, StopDialogActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent stopPi = PendingIntent.getActivity(c, 2, stopIntent, flags);
 
+        Intent discardIntent = new Intent(c, DiscardDialogActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent discardPi = PendingIntent.getActivity(c, 3, discardIntent, flags);
+
+        RemoteViews rv = new RemoteViews(c.getPackageName(), R.layout.notif_timer);
+        rv.setTextViewText(R.id.nt_title, title);
+        rv.setTextViewText(R.id.nt_sub, sub);
+        rv.setViewVisibility(R.id.nt_sub, sub.isEmpty() ? View.GONE : View.VISIBLE);
+        if (paused) {
+            rv.setTextViewText(R.id.nt_label, "PAUSED");
+            rv.setViewVisibility(R.id.nt_chrono, View.GONE);
+            rv.setViewVisibility(R.id.nt_paused, View.VISIBLE);
+            rv.setTextViewText(R.id.nt_paused, fmt(elapsed));
+        } else {
+            rv.setTextViewText(R.id.nt_label, "READING");
+            rv.setViewVisibility(R.id.nt_paused, View.GONE);
+            rv.setViewVisibility(R.id.nt_chrono, View.VISIBLE);
+            // The system ticks this chronometer itself, even if the app is closed.
+            rv.setChronometer(R.id.nt_chrono, SystemClock.elapsedRealtime() - elapsed, null, true);
+        }
+
         NotificationCompat.Builder b = new NotificationCompat.Builder(c, CHANNEL)
                 .setSmallIcon(R.drawable.ic_stat_book)
                 .setColor(ACCENT)
                 .setColorized(true)
                 .setContentTitle(title)
+                .setContentText(paused ? "Paused at " + fmt(elapsed) : "Reading session")
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .setCustomContentView(rv)
+                .setCustomBigContentView(rv)
+                .setShowWhen(false)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setCategory(NotificationCompat.CATEGORY_STOPWATCH)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentIntent(openPi)
                 .addAction(paused ? R.drawable.ic_play : R.drawable.ic_pause, paused ? "Resume" : "Pause", pausePi)
-                .addAction(R.drawable.ic_stop, "Stop", stopPi);
-
-        if (paused) {
-            b.setUsesChronometer(false).setShowWhen(false)
-                    .setContentText("Paused at " + fmt(pausedAt - s - g));
-        } else {
-            // The system ticks this chronometer itself, even if the app is closed.
-            b.setUsesChronometer(true).setShowWhen(true).setWhen(s + g)
-                    .setContentText("Reading session");
-        }
+                .addAction(R.drawable.ic_stop, "Stop", stopPi)
+                .addAction(R.drawable.ic_discard, "Discard", discardPi);
         return b.build();
     }
 }

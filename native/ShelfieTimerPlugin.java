@@ -43,6 +43,7 @@ public class ShelfieTimerPlugin extends Plugin {
                 .putString("title", d.optString("title", "Reading"))
                 .putString("mode", d.optString("mode", "pages"))
                 .putString("cur", d.optString("cur", ""))
+                .putString("sub", d.optString("sub", ""))
                 .putLong("s", d.optLong("s", System.currentTimeMillis()))
                 .putLong("p", d.optLong("p", 0))
                 .putLong("g", d.optLong("g", 0))
@@ -90,6 +91,7 @@ public class ShelfieTimerPlugin extends Plugin {
         r.put("g", p.getLong("g", 0));
         r.put("pending", p.getBoolean("pending", false));
         r.put("pendingN", p.getString("pendingN", ""));
+        r.put("pendingKind", p.getString("pendingKind", "stop"));
         r.put("pendingAt", p.getLong("pendingAt", 0));
         call.resolve(r);
     }

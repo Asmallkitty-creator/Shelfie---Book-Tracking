@@ -337,7 +337,14 @@ async function nfN(){
  try{
   if(!S.t){await NT.stop();return}
   let b=bk(S.t.id);
-  await NT.start({id:S.t.id,title:b?b.t:'Shelfie',mode:b?(b.adv&&b.ch.length?'adv':b.m):'pages',cur:String(b&&b.cur||''),s:S.t.s,p:S.t.p||0,g:S.t.g||0});
+  let sub='';
+  if(b){
+   if(b.adv&&b.ch&&b.ch.length){let c=b.ch[b.cc||0];sub=(c?c.n:'')+' · page '+(b.cpg||0)+(c&&+c.p?' of '+c.p:'')}
+   else if(b.m==='pages')sub='Page '+(b.cur||0)+(b.pages?' of '+b.pages:'');
+   else if(b.m==='pct')sub=(b.cur||0)+'% read';
+   else if(b.m==='ch'){let dn=(b.ch||[]).filter(c=>c.d).length;sub=dn+' of '+(b.ch||[]).length+' chapters'}
+  }
+  await NT.start({sub:sub,id:S.t.id,title:b?b.t:'Shelfie',mode:b?(b.adv&&b.ch.length?'adv':b.m):'pages',cur:String(b&&b.cur||''),s:S.t.s,p:S.t.p||0,g:S.t.g||0});
  }catch(e){NF.err=e.message||String(e)}
 }
 async function nfSync(){
@@ -346,6 +353,7 @@ async function nfSync(){
   let st=await NT.getState();
   if(st.pending){
    await NT.clearPending();
+   if(st.pendingKind==='discard'){if(S.t){S.t=null;v.sh=null;save();R()}return}
    if(S.t){
     S.t.g=st.g||0;S.t.p=st.pendingAt||Date.now();
     let b=bk(S.t.id),n=st.pendingN||'';

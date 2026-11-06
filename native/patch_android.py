@@ -21,6 +21,13 @@ if 'TimerReceiver' not in s:
             android:taskAffinity=""
             android:excludeFromRecents="true"
             android:launchMode="singleInstance" />
+        <activity
+            android:name=".DiscardDialogActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance" />
     </application>''', 1)
     open(manifest, 'w', encoding='utf-8').write(s)
 

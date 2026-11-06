@@ -45,6 +45,7 @@ public class StopDialogActivity extends Activity {
                 .setPositiveButton("Save session", (dlg, w) -> {
                     p.edit().putBoolean("active", false)
                             .putBoolean("pending", true)
+                            .putString("pendingKind", "stop")
                             .putString("pendingN", input.getText().toString().trim())
                             .putLong("pendingAt", at)
                             .apply();
@@ -56,6 +57,7 @@ public class StopDialogActivity extends Activity {
         d.setCanceledOnTouchOutside(false);
         d.setOnDismissListener(x -> finish());
         d.show();
+        TimerCore.tint(d, 0xFFE8702A);
         if (d.getWindow() != null) {
             d.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
