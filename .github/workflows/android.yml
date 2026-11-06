@@ -1,0 +1,85 @@
+name: Build Android app
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unpack the zip (only if you uploaded it)
+        run: |
+          if [ -f shelfie-github-files.zip ]; then
+            unzip -o shelfie-github-files.zip -x ".github/*"
+            rm shelfie-github-files.zip
+            git config user.name "github-actions"
+            git config user.email "actions@github.com"
+            git add -A
+            git commit -m "Unpack Shelfie files" || true
+            git push || true
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install Capacitor
+        run: npm install
+
+      - name: Copy the website into the app
+        run: |
+          mkdir -p www
+          cp index.html manifest.webmanifest www/
+          cp icon-*.png www/ 2>/dev/null || true
+
+      - name: Create Android project
+        run: npx cap add android
+
+      - name: App icon (optional)
+        continue-on-error: true
+        run: |
+          if [ -f icon-512.png ]; then
+            mkdir -p assets
+            cp icon-512.png assets/icon-only.png
+            npx -y @capacitor/assets generate --android --iconBackgroundColor '#faf6f0' --iconBackgroundColorDark '#faf6f0'
+          fi
+
+      - name: Add the native reading timer
+        run: |
+          PKG=android/app/src/main/java/com/shelfie/app
+          mkdir -p "$PKG" android/app/src/main/res/drawable
+          cp native/*.java "$PKG"/
+          cp native/ic_*.xml android/app/src/main/res/drawable/
+          python3 native/patch_android.py
+          npx cap sync android
+
+      - name: Build APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Name the APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk Shelfie.apk
+
+      - name: Publish APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest-apk
+          name: Shelfie app (latest build)
+          body: Download Shelfie.apk below and install it on your phone.
+          files: Shelfie.apk
+          make_latest: true
+          
