@@ -337,6 +337,24 @@ html body #app.pg-in>.card:not(.nav):not(.pill):not(.sh):nth-of-type(n+5){animat
 #app.pg-in .tab.on,#app[data-pg=home].pg-in .tab.on{animation:mTab .38s cubic-bezier(.22,.8,.25,1)}
 .cisp{height:112px;border-radius:26px;padding:0 20px;display:flex;align-items:center;overflow:hidden;margin:8px 0 6px;border:1px solid rgba(255,255,255,.4)}
 #app.nonavfx .ni.on,#app.nonavfx .ni.on svg{animation:none!important}
+
+/* ---- Home: appear almost instantly (no blank wait) ---- */
+@keyframes mHome{from{opacity:.3;transform:translate3d(0,7px,0)}to{opacity:1;transform:none}}
+#app[data-pg=home].pg-in>*:not(.nav):not(.pill):not(.sh){animation-name:mHome;animation-duration:.24s;animation-delay:0s}
+#app[data-pg=home].pg-in>*:not(.nav):not(.pill):not(.sh):nth-child(1){animation-delay:0s}
+#app[data-pg=home].pg-in>*:not(.nav):not(.pill):not(.sh):nth-child(2){animation-delay:0.02s}
+#app[data-pg=home].pg-in>*:not(.nav):not(.pill):not(.sh):nth-child(3){animation-delay:0.04s}
+#app[data-pg=home].pg-in>*:not(.nav):not(.pill):not(.sh):nth-child(4){animation-delay:0.06s}
+#app[data-pg=home].pg-in>*:not(.nav):not(.pill):not(.sh):nth-child(5){animation-delay:0.08s}
+#app[data-pg=home].pg-in>*:not(.nav):not(.pill):not(.sh):nth-child(6){animation-delay:0.1s}
+#app[data-pg=home].pg-in>*:not(.nav):not(.pill):not(.sh):nth-child(n+7){animation-delay:.12s}
+#app[data-pg=home].pg-in .av,#app[data-pg=home].pg-in .sb,#app[data-pg=home].pg-in .tab{animation-name:mHome;animation-duration:.24s;animation-delay:0s}
+#app[data-pg=home].pg-in .tile{animation-name:mHome;animation-duration:.24s;animation-delay:.03s}
+#app[data-pg=home].pg-in .tile:nth-child(2){animation-delay:0.06s}
+#app[data-pg=home].pg-in .tile:nth-child(3){animation-delay:0.09s}
+#app[data-pg=home].pg-in .tile:nth-child(4){animation-delay:0.12s}
+#app[data-pg=home].pg-in .rw>div,#app[data-pg=home].pg-in .card,#app[data-pg=home].pg-in .rl,#app[data-pg=home].pg-in .gd>*,#app[data-pg=home].pg-in .rai>div{animation-name:mHome;animation-duration:.24s;animation-delay:0s}
+#app[data-pg=home].pg-in .hb i{animation-duration:.5s;animation-delay:.05s}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
@@ -368,7 +386,9 @@ function pc(b){if(b.st==='done')return 100;if(b.m==='pct')return Math.min(100,+b
  if(b.adv&&b.pages)return Math.min(100,(+b.cur||0)/b.pages*100);
  if(b.m==='ch'&&b.ch.length){let w=b.ch.every(c=>+c.p>0),t=w?b.ch.reduce((a,c)=>a+ +c.p,0):b.ch.length,d=b.ch.filter(c=>c.d).reduce((a,c)=>a+(w?+c.p:1),0);return d/t*100}
  return b.pages?Math.min(100,b.cur/b.pages*100):0}
-const cv=(b,c)=>b.cover?`<img class="${c}" src="${b.cover}" loading="lazy" decoding="async">`:`<div class="${c}" style="background:hsl(${[...b.t].reduce((a,x)=>a+x.charCodeAt(0),0)%360} 40% 42%)">${esc(b.t.slice(0,1))}</div>`;
+const _bu=new Map();
+function bu(d){if(typeof d!=='string'||d.slice(0,5)!=='data:')return d;let u=_bu.get(d);if(u)return u;try{const i=d.indexOf(','),h=d.slice(5,i);if(h.indexOf('base64')<0)return d;const bin=atob(d.slice(i+1)),n=bin.length,a=new Uint8Array(n);for(let k=0;k<n;k++)a[k]=bin.charCodeAt(k);u=URL.createObjectURL(new Blob([a],{type:h.split(';')[0]}));_bu.set(d,u);return u}catch(e){return d}}
+const cv=(b,c)=>b.cover?`<img class="${c}" src="${bu(b.cover)}" alt="">`:`<div class="${c}" style="background:hsl(${[...b.t].reduce((a,x)=>a+x.charCodeAt(0),0)%360} 40% 42%)">${esc(b.t.slice(0,1))}</div>`;
 function avg(u,id){let x=S.s.filter(s=>s.u===u&&s.d>0&&s.k>30&&(!id||s.b===id)),d=x.reduce((a,s)=>a+s.d,0),k=x.reduce((a,s)=>a+s.k,0);return k?d/k*3600:null}
 const U=u=>u==='p'?'pages/hr':'%/hr';
 function ap(){const r=document.documentElement,st=r.style;['--bg','--cd','--tx','--mu','--ac','--ac2','--bd'].forEach(p=>st.removeProperty(p));st.removeProperty('color-scheme');
@@ -1062,4 +1082,4 @@ addEventListener('popstate',()=>{
  if(window._bx&&Date.now()-window._bx<2200){const A=window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.App;if(A&&A.exitApp)A.exitApp();else history.back();return}
  window._bx=Date.now();history.pushState({g:1},'');toast('Press back again to exit')});
 </script>
-<script>(function(){var t,h=document.documentElement;addEventListener('scroll',function(){h.classList.add('scr');clearTimeout(t);t=setTimeout(function(){h.classList.remove('scr')},180)},{passive:true,capture:true})})();</script><script>(function(){var o=R,sel=['.ltabs','.tabs','.crail','.rail','.rai','.crl','.vsw','.cbl'];R=function(){var nav=!!(window.v&&v.an),a=sel.map(function(q){return Array.prototype.map.call(document.querySelectorAll(q),function(e){return e.scrollLeft})}),r=o.apply(this,arguments),app=document.getElementById('app');if(app&&window.v)app.dataset.pg=v.p;if(!nav)sel.forEach(function(q,i){var l=document.querySelectorAll(q);if(l.length!==a[i].length)return;Array.prototype.forEach.call(l,function(e,j){if(a[i][j])e.scrollLeft=a[i][j]})});return r};})();</script><script>(function(){var o=R;R=function(){var r=o.apply(this,arguments);try{if(window.cisUp)cisUp()}catch(e){}return r}})();</script><script>(function(){var o=R,last=null;R=function(){var r=o.apply(this,arguments);try{var k=v.p==='book'?(v.pp||'home'):v.p,a=document.getElementById('app');if(a)a.classList.toggle('nonavfx',last===k);last=k}catch(e){}return r}})();</script></body></html>
+<script>(function(){var t,h=document.documentElement;addEventListener('scroll',function(){h.classList.add('scr');clearTimeout(t);t=setTimeout(function(){h.classList.remove('scr')},180)},{passive:true,capture:true})})();</script><script>(function(){var o=R,sel=['.ltabs','.tabs','.crail','.rail','.rai','.crl','.vsw','.cbl'];R=function(){var nav=!!(typeof v!=='undefined'&&v.an),a=sel.map(function(q){return Array.prototype.map.call(document.querySelectorAll(q),function(e){return e.scrollLeft})}),r=o.apply(this,arguments),app=document.getElementById('app');if(app&&typeof v!=='undefined')app.dataset.pg=v.p;if(!nav)sel.forEach(function(q,i){var l=document.querySelectorAll(q);if(l.length!==a[i].length)return;Array.prototype.forEach.call(l,function(e,j){if(a[i][j])e.scrollLeft=a[i][j]})});return r};})();</script><script>(function(){var o=R;R=function(){var r=o.apply(this,arguments);try{if(window.cisUp)cisUp()}catch(e){}return r}})();</script><script>(function(){var o=R,last=null;R=function(){var r=o.apply(this,arguments);try{var k=v.p==='book'?(v.pp||'home'):v.p,a=document.getElementById('app');if(a)a.classList.toggle('nonavfx',last===k);last=k}catch(e){}return r}})();</script><script>(function(){function warm(){try{var l=(typeof S!=='undefined'&&S.b||[]).filter(function(b){return b.cover}),i=0;(function step(){var e=i+6;for(;i<e&&i<l.length;i++){var m=new Image();m.src=bu(l[i].cover);if(m.decode)m.decode().catch(function(){})}if(i<l.length)setTimeout(step,40)})()}catch(e){}}setTimeout(warm,300)})();</script></body></html>
