@@ -95,14 +95,19 @@ public final class TimerCore {
     /** Notification style chosen in the app: "classic" or one of the artwork themes. */
     static final String[][] THEMES = {
         {"dreamy", "#4B4B8A"},
-        {"galaxy", "#1A0D38"},
         {"sakura", "#7E4260"},
         {"ocean", "#0E4A58"},
         {"library", "#4E2B12"},
         {"sunset", "#80434F"},
         {"aurora", "#173050"},
-        {"swan", "#5A57C8"},
-        {"park", "#5B54C8"},
+        {"garden", "#5A4AA8"},
+        {"zen", "#4A3FA6"},
+        {"rain", "#4A3FB8"},
+        {"wreath", "#5F4CC0"},
+        {"galaxy", "#1D1050"},
+        {"moonsea", "#24428E"},
+        {"sword", "#1F6FC0"},
+        {"sky", "#2F86DC"},
         {"candy", "#9B5AA6"},
         {"pixel", "#7A3E4A"},
         {"fireflies", "#171B4A"},
@@ -152,15 +157,12 @@ public final class TimerCore {
             rv.setViewVisibility(R.id.nt_chrono, View.VISIBLE);
             rv.setChronometer(R.id.nt_chrono, SystemClock.elapsedRealtime() - elapsed, null, true);
         }
-        if (big) {
+        {
             rv.setImageViewResource(R.id.nt_ico_pause, paused ? R.drawable.ic_play : R.drawable.ic_pause);
             rv.setTextViewText(R.id.nt_txt_pause, paused ? "Resume" : "Pause");
             rv.setOnClickPendingIntent(R.id.nt_btn_pause, pausePi);
             rv.setOnClickPendingIntent(R.id.nt_btn_stop, stopPi);
             rv.setOnClickPendingIntent(R.id.nt_btn_discard, discardPi);
-        } else {
-            rv.setImageViewResource(R.id.nt_c_pause, paused ? R.drawable.ic_play : R.drawable.ic_pause);
-            rv.setOnClickPendingIntent(R.id.nt_c_pause, pausePi);
         }
         return rv;
     }

@@ -3,26 +3,31 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/nt_bg_sunset"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:paddingLeft="8dp"
-    android:paddingTop="8dp"
-    android:paddingRight="10dp"
-    android:paddingBottom="8dp">
-
-    <ImageView
-        android:id="@+id/nt_art"
-        android:layout_width="52dp"
-        android:layout_height="48dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/nt_art_sunset" />
+    android:paddingTop="6dp"
+    android:paddingRight="8dp"
+    android:paddingBottom="6dp">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:paddingLeft="8dp">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/nt_art"
+            android:layout_width="50dp"
+            android:layout_height="46dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/nt_art_sunset" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingLeft="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -56,40 +61,121 @@
                     android:textSize="12sp"
                     android:visibility="gone" />
             </LinearLayout>
-        <TextView
-            android:id="@+id/nt_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="serif"
-            android:maxLines="1"
-            android:textColor="#FFEFE8"
-            android:textSize="15sp" />
-        <TextView
-            android:id="@+id/nt_chip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:alpha="0.85"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="#FFEFE8"
-            android:textSize="12sp" />
-        <ProgressBar
-            android:id="@+id/nt_bar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:layout_marginTop="4dp"
-            android:max="100"
-            android:progressDrawable="@drawable/nt_bar_sunset" />
+            <TextView
+                android:id="@+id/nt_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="serif"
+                android:maxLines="1"
+                android:textColor="#FFEFE8"
+                android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/nt_chip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.9"
+                    android:maxLines="1"
+                    android:textColor="#FFEFE8"
+                    android:textSize="11sp" />
+                <ProgressBar
+                    android:id="@+id/nt_bar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="4dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_weight="1"
+                    android:max="100"
+                    android:progressDrawable="@drawable/nt_bar_sunset" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/nt_c_pause"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="8dp"
-        android:background="@drawable/nt_pill_sunset"
-        android:padding="10dp"
-        android:src="@drawable/ic_pause" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/nt_btn_pause"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/nt_pill_sunset"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/nt_ico_pause"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_pause" />
+            <TextView
+                android:id="@+id/nt_txt_pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:maxLines="1"
+                android:text="Pause"
+                android:textColor="#FFEFE8"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/nt_btn_stop"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/nt_pill_sunset"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/nt_ico_stop"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_stop" />
+            <TextView
+                android:id="@+id/nt_txt_stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:maxLines="1"
+                android:text="Stop"
+                android:textColor="#FFEFE8"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/nt_btn_discard"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/nt_pill_sunset"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/nt_ico_discard"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_discard" />
+            <TextView
+                android:id="@+id/nt_txt_discard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:maxLines="1"
+                android:text="Discard"
+                android:textColor="#FFEFE8"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

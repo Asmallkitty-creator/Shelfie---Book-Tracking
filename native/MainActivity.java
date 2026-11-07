@@ -14,6 +14,9 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(ShelfieTimerPlugin.class);
         super.onCreate(savedInstanceState);
 
+        // Ignore the phone's font-size setting so the app looks the same as the website.
+        getBridge().getWebView().getSettings().setTextZoom(100);
+
         // Draw edge to edge, then pad the page so it never sits under the
         // status bar, the navigation bar or the keyboard.
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
