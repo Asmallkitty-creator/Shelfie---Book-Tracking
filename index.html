@@ -239,6 +239,29 @@ html,body{max-width:100%;overflow-x:hidden}img{max-width:100%}input[type=file]{m
 .cdot{flex:none;cursor:pointer;border:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),0 0 0 1px rgba(128,128,128,.25);transition:box-shadow .15s,transform .15s}.cdot.sel{box-shadow:0 0 0 3px var(--cd),0 0 0 5px var(--ac)}
 .cb,.cc,.chd,.fan,.cpsw,.cdot,.bnpv{background-origin:border-box!important;background-clip:border-box!important}
 .bnpv{height:72px;border-radius:16px;border:1px dashed var(--mu);display:flex;align-items:center;justify-content:center;color:var(--mu);font-size:13px;overflow:hidden}
+
+/* ---- PERF: smoother animations (GPU-friendly, no blur-in-keyframes, fewer backdrop blurs) ---- */
+:root{--tsd:0 1px 2px rgba(0,0,0,.55);--tsl:0 0 3px rgba(255,255,255,.9)}
+@keyframes mUp{from{opacity:0;transform:translate3d(0,12px,0)}to{opacity:1;transform:none}}
+@keyframes mPop{0%{opacity:0;transform:translate3d(0,12px,0) scale(.98)}100%{opacity:1;transform:none}}
+@keyframes mPulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.045)}}
+.pill{animation:mPulse 2.6s ease-in-out infinite;will-change:transform}
+@keyframes mSheenT{from{transform:translateX(-110%)}to{transform:translateX(110%)}}
+.bar i,.hb i{position:relative;overflow:hidden;background-image:none!important;animation:none}
+.hb i::after,.big+.bar i::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.38) 50%,transparent 70%);animation:mSheenT 3.8s ease-in-out infinite;will-change:transform}
+.hb i,.big+.bar i{animation:none}
+#app.pg-in .bar i,#app.pg-in .hb i{animation:mGrow 1s cubic-bezier(.2,.8,.2,1) .3s both}
+.cb::after{will-change:transform}.cvl{will-change:transform}.rw>div:not([onclick]) svg{will-change:transform}.lh::after{will-change:transform,opacity}
+.nav .lens{left:7px;translate:calc(var(--i,0) * 100%) 0;transition:translate .55s cubic-bezier(.3,.75,.2,1);will-change:translate}
+.nav{will-change:transform;transform:translateZ(0)}
+/* drop expensive backdrop blurs on small/repeated elements; keep glass on nav + big panels, but cheaper */
+[data-aes] .card,[data-aes] .card:not(.hero),[data-aes] .in,.ib,.ib2,.lt,.vsw,.ra,.cb.new,.pb,.sh{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+[data-aes] .blr,[data-aes] .blr2{-webkit-backdrop-filter:blur(10px)!important;backdrop-filter:blur(10px)!important}
+.nav{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.sh>.acs{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:color-mix(in srgb,var(--endc,var(--bg)) 90%,var(--cd))}
+.sh>div{will-change:transform,opacity}
+/* pause endless decorative loops while scrolling */
+html.scr .cb::after,html.scr .cvl,html.scr .rw>div svg,html.scr .lh::after,html.scr .pill,html.scr .hb i::after,html.scr .big+.bar i::after{animation-play-state:paused!important}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
@@ -961,4 +984,4 @@ addEventListener('popstate',()=>{
  if(window._bx&&Date.now()-window._bx<2200){const A=window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.App;if(A&&A.exitApp)A.exitApp();else history.back();return}
  window._bx=Date.now();history.pushState({g:1},'');toast('Press back again to exit')});
 </script>
-</body></html>
+<script>(function(){var t,h=document.documentElement;addEventListener('scroll',function(){h.classList.add('scr');clearTimeout(t);t=setTimeout(function(){h.classList.remove('scr')},180)},{passive:true,capture:true})})();</script></body></html>
