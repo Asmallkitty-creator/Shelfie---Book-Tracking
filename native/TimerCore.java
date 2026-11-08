@@ -170,7 +170,22 @@ public final class TimerCore {
         try {
             File f = new File(c.getFilesDir(), CUSTOM_ART_FILE);
             if (!f.exists() || f.length() == 0) return null;
-            return BitmapFactory.decodeFile(f.getAbsolutePath());
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(f.getAbsolutePath(), o);
+            int max = Math.max(o.outWidth, o.outHeight), ss = 1;
+            while (max / ss > 512) ss *= 2;          // keep it small: notifications reject huge bitmaps
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = ss;
+            Bitmap bm = BitmapFactory.decodeFile(f.getAbsolutePath(), o2);
+            if (bm == null) return null;
+            int m = Math.max(bm.getWidth(), bm.getHeight());
+            if (m > 320) {
+                float k = 320f / m;
+                bm = Bitmap.createScaledBitmap(bm, Math.max(1, Math.round(bm.getWidth() * k)),
+                        Math.max(1, Math.round(bm.getHeight() * k)), true);
+            }
+            return bm;
         } catch (Throwable e) {
             return null;
         }
@@ -231,16 +246,16 @@ public final class TimerCore {
             rv.setChronometer(R.id.nt_chrono, SystemClock.elapsedRealtime() - elapsed, null, true);
         }
 
+        rv.setImageViewResource(R.id.nt_ico_pause, paused ? R.drawable.ic_play : R.drawable.ic_pause);
+        rv.setOnClickPendingIntent(R.id.nt_btn_pause, pausePi);
+        rv.setOnClickPendingIntent(R.id.nt_btn_stop, stopPi);
+        rv.setOnClickPendingIntent(R.id.nt_btn_discard, discardPi);
+        int[] ico = {R.id.nt_ico_pause, R.id.nt_ico_stop, R.id.nt_ico_discard};
+        for (int id : ico) rv.setInt(id, "setColorFilter", tx);
         if (big) {
-            rv.setImageViewResource(R.id.nt_ico_pause, paused ? R.drawable.ic_play : R.drawable.ic_pause);
             rv.setTextViewText(R.id.nt_txt_pause, paused ? "Resume" : "Pause");
-            rv.setOnClickPendingIntent(R.id.nt_btn_pause, pausePi);
-            rv.setOnClickPendingIntent(R.id.nt_btn_stop, stopPi);
-            rv.setOnClickPendingIntent(R.id.nt_btn_discard, discardPi);
             int[] txt = {R.id.nt_txt_pause, R.id.nt_txt_stop, R.id.nt_txt_discard};
             for (int id : txt) rv.setTextColor(id, tx);
-            int[] ico = {R.id.nt_ico_pause, R.id.nt_ico_stop, R.id.nt_ico_discard};
-            for (int id : ico) rv.setInt(id, "setColorFilter", tx);
         }
         return rv;
     }

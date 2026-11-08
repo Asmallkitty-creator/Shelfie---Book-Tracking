@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Base64;
 import android.view.View;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -17,6 +18,8 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 import com.getcapacitor.annotation.PermissionCallback;
+import java.io.File;
+import java.io.FileOutputStream;
 
 @CapacitorPlugin(
         name = "ShelfieTimer",
@@ -130,11 +133,36 @@ public class ShelfieTimerPlugin extends Plugin {
                 "com.shelfie.app.Icon" + Character.toUpperCase(k.charAt(0)) + k.substring(1));
     }
 
-    /** Pick the notification look: classic, forest, amber or twilight. */
+    /** Pick the notification look: a built-in theme, classic, or custom (colours + picture). */
     @PluginMethod
     public void setNotifTheme(PluginCall call) {
-        String name = call.getString("name", "forest");
-        TimerCore.sp(getContext()).edit().putString("ntheme", name).apply();
+        JSObject d = call.getData();
+        String name = d.optString("name", "forest");
+        SharedPreferences.Editor e = TimerCore.sp(getContext()).edit();
+        e.putString("ntheme", name);
+        if ("custom".equals(name)) {
+            e.putString("cg1", d.optString("g1", "#2B2150"));
+            e.putString("cg2", d.optString("g2", "#14102E"));
+            e.putString("cac", d.optString("ac", "#B9A6FF"));
+            e.putString("ctx", d.optString("tx", "#F4F0FF"));
+            e.putBoolean("cwide", d.optBoolean("wide", false));
+            File f = new File(getContext().getFilesDir(), TimerCore.CUSTOM_ART_FILE);
+            String art = d.optString("art", "");
+            int comma = art.indexOf(',');
+            if (comma > 0 && art.startsWith("data:")) {
+                try {
+                    byte[] bytes = Base64.decode(art.substring(comma + 1), Base64.DEFAULT);
+                    FileOutputStream o = new FileOutputStream(f);
+                    o.write(bytes);
+                    o.close();
+                } catch (Exception ex) {
+                    f.delete();
+                }
+            } else {
+                f.delete();
+            }
+        }
+        e.apply();
         if (TimerCore.sp(getContext()).getBoolean("active", false)) TimerCore.show(getContext(), false);
         call.resolve();
     }
