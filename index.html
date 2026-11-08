@@ -614,7 +614,7 @@ function cnPut(k,val){v.cnd=Object.assign({},cnDr(),{[k]:val})}
 function cnDirty(){if(!v.cnd)return false;const a=cnGet(),b=v.cnd;return ['g1','g2','ac','tx','art','fmt'].some(k=>(a[k]||'')!==(b[k]||''))}
 function cnSync(real){const c=real?cnGet():cnDr();NTH.custom={n:'Custom',g1:c.g1,g2:c.g2,ac:c.ac,bar:c.ac,tx:c.tx,art:c.art||'',fmt:c.fmt||'sq'}}
 function cnRef(){const e=$('#cnpv');if(e){cnSync();e.innerHTML=ntPrev('custom')}const b=$('#cnsv'),x=$('#cnds');if(b){const d=cnDirty();b.disabled=!d;b.textContent=d?'Save notification style':'Saved ✓'}if(x)x.disabled=!cnDirty()}
-function applyNth(){try{localStorage.setItem('shf_nc',JSON.stringify({nth:S.nth||null,cn:S.cn||null}))}catch(e){}if(NT&&NT.setNotifTheme){try{cnSync(1);const k=S.nth||'forest',o={name:k};if(k==='custom'){const t=NTH.custom;o.g1=t.g1;o.g2=t.g2;o.ac=t.ac;o.bar=t.bar;o.tx=t.tx;o.art=t.art;o.fmt=t.fmt||'sq';o.wide=t.fmt==='wide'}NT.setNotifTheme(o)}catch(e){}}}
+function applyNth(){try{localStorage.setItem('shf_nc',JSON.stringify({nth:S.nth||null,cn:S.cn||null}))}catch(e){}if(NT&&NT.setNotifTheme){try{cnSync(1);const k=S.nth||'forest',o={name:k};if(k==='custom'){const t=NTH.custom;o.g1=t.g1;o.g2=t.g2;o.ac=t.ac;o.bar=t.bar;o.tx=t.tx;o.art=t.art;o.fmt=t.fmt||'sq';o.wide=t.fmt==='wide'}const pr=NT.setNotifTheme(o);if(pr&&pr.catch)pr.catch(er=>{try{toast('Notification style not applied: '+((er&&er.message)||er))}catch(_){}})}catch(e){}}}
 function cnSet(k,val,live){cnPut(k,val);if(live){cnRef();return}R()}
 function cnPre(i){const p=CNP[i];v.cnd=Object.assign({},cnDr(),{g1:p[0],g2:p[1],ac:p[2],tx:p[3]});R()}
 function cnRm(){v.cnd=Object.assign({},cnDr(),{art:'',src:''});R()}
