@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><script>try{var _b=localStorage.getItem("shf_bg");if(_b)document.documentElement.style.background=_b}catch(e){}</script><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Shelfie</title><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2553a"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><script>try{var _b=localStorage.getItem("shfx_bg");if(_b)document.documentElement.style.background=_b}catch(e){}</script><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Shelfie</title><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2553a"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{--bg:#f7efe2;--cd:#fffaf2;--tx:#3b2a20;--mu:#8f7f70;--ac:#b8651f;--ac2:#f0dcc4;--bd:#eadbc6;--wd:#c0925a;--wd2:#8a5f32;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 [data-th=forest]{--bg:#f2f5ec;--cd:#fff;--tx:#25332a;--mu:#76867a;--ac:#3f7a4b;--ac2:#dcebd9;--bd:#dfe8da;--wd:#b99461;--wd2:#7f5d35}
@@ -1279,7 +1279,7 @@ function asec(){var nb=S.na!=='classic',ao=S.ao!=='off';return '<div class="card
   }catch(e){}
   return r};
 })();
-</script><script>(function(){var o=R;R=function(){var r=o.apply(this,arguments);try{var b=getComputedStyle(document.body).backgroundColor;if(b&&b!=="rgba(0, 0, 0, 0)")localStorage.setItem("shf_bg",b)}catch(e){}return r}})();</script><script>(function(){
+</script><script>(function(){var o=R,first=1;R=function(){var r=o.apply(this,arguments);try{var h=document.documentElement;if(first){first=0;h.style.removeProperty("background")}var b=getComputedStyle(h).backgroundColor;if(b&&b!=="rgba(0, 0, 0, 0)")localStorage.setItem("shfx_bg",b)}catch(e){}return r}})();</script><script>(function(){
 var app=document.getElementById('app');if(!app)return;
 var d=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML'),last=null;
 /* a re-render that produces identical markup must not rebuild the page (that replays every fade = flicker) */
