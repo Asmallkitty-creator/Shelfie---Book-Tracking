@@ -1,0 +1,44 @@
+// ===== In ShelfieTimerPlugin.java =====
+// 1) Add these imports at the top:
+//      import android.util.Base64;
+//      import java.io.File;
+//      import java.io.FileOutputStream;
+//
+// 2) REPLACE your existing setNotifTheme method with this one
+//    (it now saves the custom colours and the picture, not just the name):
+
+    @PluginMethod
+    public void setNotifTheme(PluginCall call) {
+        JSObject d = call.getData();
+        String name = d.optString("name", "forest");
+        SharedPreferences.Editor e = TimerCore.sp(getContext()).edit();
+        e.putString("ntheme", name);
+        if ("custom".equals(name)) {
+            e.putString("cg1", d.optString("g1", "#2B2150"));
+            e.putString("cg2", d.optString("g2", "#14102E"));
+            e.putString("cac", d.optString("ac", "#B9A6FF"));
+            e.putString("ctx", d.optString("tx", "#F4F0FF"));
+            e.putBoolean("cwide", d.optBoolean("wide", false));
+            File f = new File(getContext().getFilesDir(), TimerCore.CUSTOM_ART_FILE);
+            String art = d.optString("art", "");
+            int comma = art.indexOf(',');
+            if (comma > 0 && art.startsWith("data:")) {
+                try {
+                    byte[] bytes = Base64.decode(art.substring(comma + 1), Base64.DEFAULT);
+                    FileOutputStream o = new FileOutputStream(f);
+                    o.write(bytes);
+                    o.close();
+                } catch (Exception ex) {
+                    f.delete();
+                }
+            } else {
+                f.delete();   // no picture chosen
+            }
+        }
+        e.apply();
+        // Redraw right away if a timer is running
+        if (TimerCore.sp(getContext()).getBoolean("active", false)) {
+            TimerCore.show(getContext(), false);
+        }
+        call.resolve();
+    }

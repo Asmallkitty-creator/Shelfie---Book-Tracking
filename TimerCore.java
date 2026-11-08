@@ -9,12 +9,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.os.Build;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.RemoteViews;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import java.io.File;
 import java.util.Locale;
 
 /** Keeps the reading-timer state and draws the live notification. */
@@ -23,6 +33,8 @@ public final class TimerCore {
     static final int NOTIF_ID = 4242;
     /** Notification colour (orange). Change this hex to try another colour. */
     static final int ACCENT = 0xFFE8702A;
+    /** File (inside the app's private folder) that holds the custom notification picture. */
+    public static final String CUSTOM_ART_FILE = "nt_custom_art.bin";
 
     private TimerCore() {}
 
@@ -92,34 +104,34 @@ public final class TimerCore {
         }
     }
 
-    /** Notification style chosen in the app: "classic" or one of the artwork themes. */
+    /** Notification style chosen in the app: "classic", "custom" or one of the artwork themes. */
     static final String[][] THEMES = {
-        {"dreamy", "#4B4B8A"},
-        {"sakura", "#7E4260"},
-        {"ocean", "#0E4A58"},
-        {"library", "#4E2B12"},
-        {"sunset", "#80434F"},
-        {"aurora", "#173050"},
-        {"garden", "#5A4AA8"},
-        {"zen", "#4A3FA6"},
-        {"rain", "#4A3FB8"},
-        {"wreath", "#5F4CC0"},
-        {"galaxy", "#1D1050"},
-        {"moonsea", "#24428E"},
-        {"sword", "#1F6FC0"},
-        {"sky", "#2F86DC"},
-        {"candy", "#9B5AA6"},
-        {"pixel", "#7A3E4A"},
-        {"fireflies", "#171B4A"},
-        {"dunes", "#5B4A78"},
-        {"forest", "#26311F"},
-        {"amber", "#7A3D1E"},
-        {"twilight", "#2B2238"}
+            {"dreamy", "#4B4B8A"},
+            {"sakura", "#7E4260"},
+            {"ocean", "#0E4A58"},
+            {"library", "#4E2B12"},
+            {"sunset", "#80434F"},
+            {"aurora", "#173050"},
+            {"garden", "#5A4AA8"},
+            {"zen", "#4A3FA6"},
+            {"rain", "#4A3FB8"},
+            {"wreath", "#5F4CC0"},
+            {"galaxy", "#1D1050"},
+            {"moonsea", "#24428E"},
+            {"sword", "#1F6FC0"},
+            {"sky", "#2F86DC"},
+            {"candy", "#9B5AA6"},
+            {"pixel", "#7A3E4A"},
+            {"fireflies", "#171B4A"},
+            {"dunes", "#5B4A78"},
+            {"forest", "#26311F"},
+            {"amber", "#7A3D1E"},
+            {"twilight", "#2B2238"}
     };
 
     public static String theme(Context c) {
         String t = sp(c).getString("ntheme", "forest");
-        if ("classic".equals(t)) return t;
+        if ("classic".equals(t) || "custom".equals(t)) return t;   // <- "custom" used to fall through to forest
         for (String[] r : THEMES) if (r[0].equals(t)) return t;
         return "forest";
     }
@@ -132,6 +144,108 @@ public final class TimerCore {
     static int layoutOf(Context c, String t, boolean big) {
         return c.getResources().getIdentifier("nt_" + t + (big ? "_big" : "_small"), "layout", c.getPackageName());
     }
+
+    // ---------------------------------------------------------------- custom style
+
+    static int col(String hex, int def) {
+        try {
+            return Color.parseColor(hex);
+        } catch (Exception e) {
+            return def;
+        }
+    }
+
+    /** Draws the custom gradient card as a bitmap (RemoteViews can't set a gradient directly). */
+    static Bitmap gradientCard(int g1, int g2) {
+        int w = 720, h = 260;
+        Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas cv = new Canvas(bm);
+        Paint pt = new Paint(Paint.ANTI_ALIAS_FLAG);
+        pt.setShader(new LinearGradient(0, 0, w, h, g1, g2, Shader.TileMode.CLAMP));
+        cv.drawRoundRect(new RectF(0, 0, w, h), 40, 40, pt);
+        return bm;
+    }
+
+    static Bitmap customArt(Context c) {
+        try {
+            File f = new File(c.getFilesDir(), CUSTOM_ART_FILE);
+            if (!f.exists() || f.length() == 0) return null;
+            return BitmapFactory.decodeFile(f.getAbsolutePath());
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    static RemoteViews customView(Context c, boolean big, String title, String sub, int prog,
+                                  boolean paused, long elapsed, PendingIntent pausePi,
+                                  PendingIntent stopPi, PendingIntent discardPi) {
+        SharedPreferences p = sp(c);
+        int g1 = col(p.getString("cg1", "#2B2150"), 0xFF2B2150);
+        int g2 = col(p.getString("cg2", "#14102E"), 0xFF14102E);
+        int ac = col(p.getString("cac", "#B9A6FF"), 0xFFB9A6FF);
+        int tx = col(p.getString("ctx", "#F4F0FF"), 0xFFF4F0FF);
+
+        RemoteViews rv = new RemoteViews(c.getPackageName(),
+                big ? R.layout.nt_custom_big : R.layout.nt_custom_small);
+        rv.setImageViewBitmap(R.id.nt_bg, gradientCard(g1, g2));
+
+        Bitmap art = customArt(c);
+        if (art != null) {
+            rv.setImageViewBitmap(R.id.nt_art, art);
+            rv.setViewVisibility(R.id.nt_art, View.VISIBLE);
+        } else {
+            rv.setViewVisibility(R.id.nt_art, View.GONE);
+        }
+
+        rv.setTextViewText(R.id.nt_title, title);
+        rv.setTextColor(R.id.nt_title, tx);
+        rv.setTextViewText(R.id.nt_chip, sub);
+        rv.setTextColor(R.id.nt_chip, tx);
+        rv.setViewVisibility(R.id.nt_chip, sub.isEmpty() ? View.GONE : View.VISIBLE);
+        rv.setTextColor(R.id.nt_label, ac);
+        rv.setTextColor(R.id.nt_chrono, tx);
+        rv.setTextColor(R.id.nt_paused, tx);
+
+        if (prog >= 0) {
+            rv.setViewVisibility(R.id.nt_bar, View.VISIBLE);
+            rv.setProgressBar(R.id.nt_bar, 100, Math.min(100, prog), false);
+            if (Build.VERSION.SDK_INT >= 31) {
+                try {
+                    rv.setColorStateList(R.id.nt_bar, "setProgressTintList", ColorStateList.valueOf(ac));
+                } catch (Throwable ignored) {
+                }
+            }
+        } else {
+            rv.setViewVisibility(R.id.nt_bar, View.GONE);
+        }
+
+        if (paused) {
+            rv.setTextViewText(R.id.nt_label, "PAUSED");
+            rv.setViewVisibility(R.id.nt_chrono, View.GONE);
+            rv.setViewVisibility(R.id.nt_paused, View.VISIBLE);
+            rv.setTextViewText(R.id.nt_paused, fmt(elapsed));
+        } else {
+            rv.setTextViewText(R.id.nt_label, "READING");
+            rv.setViewVisibility(R.id.nt_paused, View.GONE);
+            rv.setViewVisibility(R.id.nt_chrono, View.VISIBLE);
+            rv.setChronometer(R.id.nt_chrono, SystemClock.elapsedRealtime() - elapsed, null, true);
+        }
+
+        if (big) {
+            rv.setImageViewResource(R.id.nt_ico_pause, paused ? R.drawable.ic_play : R.drawable.ic_pause);
+            rv.setTextViewText(R.id.nt_txt_pause, paused ? "Resume" : "Pause");
+            rv.setOnClickPendingIntent(R.id.nt_btn_pause, pausePi);
+            rv.setOnClickPendingIntent(R.id.nt_btn_stop, stopPi);
+            rv.setOnClickPendingIntent(R.id.nt_btn_discard, discardPi);
+            int[] txt = {R.id.nt_txt_pause, R.id.nt_txt_stop, R.id.nt_txt_discard};
+            for (int id : txt) rv.setTextColor(id, tx);
+            int[] ico = {R.id.nt_ico_pause, R.id.nt_ico_stop, R.id.nt_ico_discard};
+            for (int id : ico) rv.setInt(id, "setColorFilter", tx);
+        }
+        return rv;
+    }
+
+    // ---------------------------------------------------------------- built-in themes
 
     static RemoteViews themedView(Context c, String t, boolean big, String title, String sub, int prog,
                                   boolean paused, long elapsed, PendingIntent pausePi, PendingIntent stopPi,
@@ -201,11 +315,17 @@ public final class TimerCore {
         String th = theme(c);
         if (!"classic".equals(th)) {
             int prog = p.getInt("prog", -1);
-            RemoteViews small = themedView(c, th, false, title, sub, prog, paused, elapsed, pausePi, stopPi, discardPi);
-            RemoteViews big = themedView(c, th, true, title, sub, prog, paused, elapsed, pausePi, stopPi, discardPi);
+            boolean custom = "custom".equals(th);
+            RemoteViews small = custom
+                    ? customView(c, false, title, sub, prog, paused, elapsed, pausePi, stopPi, discardPi)
+                    : themedView(c, th, false, title, sub, prog, paused, elapsed, pausePi, stopPi, discardPi);
+            RemoteViews big = custom
+                    ? customView(c, true, title, sub, prog, paused, elapsed, pausePi, stopPi, discardPi)
+                    : themedView(c, th, true, title, sub, prog, paused, elapsed, pausePi, stopPi, discardPi);
+            int card = custom ? col(p.getString("cg2", "#14102E"), 0xFF14102E) : cardOf(th);
             return new NotificationCompat.Builder(c, CHANNEL)
                     .setSmallIcon(R.drawable.ic_stat_book)
-                    .setColor(cardOf(th))
+                    .setColor(card)
                     .setColorized(true)
                     .setContentTitle(title)
                     .setContentText(paused ? "Paused at " + fmt(elapsed) : "Reading session")
@@ -249,7 +369,7 @@ public final class TimerCore {
                 .setCustomBigContentView(rv)
                 .setShowWhen(false)
                 .setOngoing(true)
-                    .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
                 .setOnlyAlertOnce(true)
                 .setCategory(NotificationCompat.CATEGORY_STOPWATCH)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
