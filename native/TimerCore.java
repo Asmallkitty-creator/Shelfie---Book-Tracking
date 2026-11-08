@@ -208,9 +208,20 @@ public final class TimerCore {
         if (art != null) {
             rv.setImageViewBitmap(R.id.nt_art, art);
             rv.setViewVisibility(R.id.nt_art, View.VISIBLE);
+            rv.setViewVisibility(R.id.nt_div, View.VISIBLE);
         } else {
             rv.setViewVisibility(R.id.nt_art, View.GONE);
+            rv.setViewVisibility(R.id.nt_div, View.GONE);
         }
+        // light text -> light translucent pills; dark text -> dark translucent pills
+        boolean lightText = (Color.red(tx) * 299 + Color.green(tx) * 587 + Color.blue(tx) * 114) / 1000 > 140;
+        int pillRes = lightText ? R.drawable.nt_pill_w : R.drawable.nt_pill_d;
+        int chipRes = lightText ? R.drawable.nt_chip_w : R.drawable.nt_chip_d;
+        rv.setInt(R.id.nt_chip, "setBackgroundResource", chipRes);
+        rv.setInt(R.id.nt_btn_pause, "setBackgroundResource", pillRes);
+        rv.setInt(R.id.nt_btn_stop, "setBackgroundResource", pillRes);
+        rv.setInt(R.id.nt_btn_discard, "setBackgroundResource", pillRes);
+        rv.setInt(R.id.nt_div, "setBackgroundColor", (tx & 0x00FFFFFF) | 0x44000000);
 
         rv.setTextViewText(R.id.nt_title, title);
         rv.setTextColor(R.id.nt_title, tx);
@@ -252,11 +263,9 @@ public final class TimerCore {
         rv.setOnClickPendingIntent(R.id.nt_btn_discard, discardPi);
         int[] ico = {R.id.nt_ico_pause, R.id.nt_ico_stop, R.id.nt_ico_discard};
         for (int id : ico) rv.setInt(id, "setColorFilter", tx);
-        if (big) {
-            rv.setTextViewText(R.id.nt_txt_pause, paused ? "Resume" : "Pause");
-            int[] txt = {R.id.nt_txt_pause, R.id.nt_txt_stop, R.id.nt_txt_discard};
-            for (int id : txt) rv.setTextColor(id, tx);
-        }
+        rv.setTextViewText(R.id.nt_txt_pause, paused ? "Resume" : "Pause");
+        int[] txt = {R.id.nt_txt_pause, R.id.nt_txt_stop, R.id.nt_txt_discard};
+        for (int id : txt) rv.setTextColor(id, tx);
         return rv;
     }
 
