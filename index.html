@@ -485,6 +485,7 @@ html body #app.col-close .chd{animation:colHeadOut .17s ease-in both!important}
 html body #app.bk-open.bk-open>*:not(.nav):not(.pill):not(.sh){will-change:auto!important;backface-visibility:visible!important}
 html body #app.bk-open.bk-open .cvl{will-change:auto!important}
 .cb::after,.cvl,.rw>div:not([onclick]) svg,.lh::after,.pill,.hb i::after,.big+.bar i::after,.sh>div{will-change:auto!important}
+#app.col-back #ls{animation:none!important}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
@@ -1278,4 +1279,14 @@ function asec(){var nb=S.na!=='classic',ao=S.ao!=='off';return '<div class="card
   }catch(e){}
   return r};
 })();
-</script><script>(function(){var o=R;R=function(){var r=o.apply(this,arguments);try{var b=getComputedStyle(document.body).backgroundColor;if(b&&b!=="rgba(0, 0, 0, 0)")localStorage.setItem("shf_bg",b)}catch(e){}return r}})();</script></body></html>
+</script><script>(function(){var o=R;R=function(){var r=o.apply(this,arguments);try{var b=getComputedStyle(document.body).backgroundColor;if(b&&b!=="rgba(0, 0, 0, 0)")localStorage.setItem("shf_bg",b)}catch(e){}return r}})();</script><script>(function(){
+var app=document.getElementById('app');if(!app)return;
+var d=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML'),last=null;
+/* a re-render that produces identical markup must not rebuild the page (that replays every fade = flicker) */
+Object.defineProperty(app,'innerHTML',{configurable:true,get:function(){return d.get.call(this)},set:function(h){
+ if(last!==null&&h===last&&typeof v!=='undefined'&&!v.an&&app.firstChild)return;
+ last=h;d.set.call(this,h)}});
+/* list fade only when the list really changed */
+var o=R;R=function(){var p=document.getElementById('ls'),before=p?p.innerHTML:null,r=o.apply(this,arguments),n=document.getElementById('ls');
+ try{if(n&&before!==null&&n.innerHTML===before)n.classList.remove('ls-in')}catch(e){}return r};
+})();</script></body></html>
