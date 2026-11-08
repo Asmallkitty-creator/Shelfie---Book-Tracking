@@ -390,28 +390,50 @@ img{-webkit-touch-callout:default}
 @keyframes mLbl2{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 html body #app.pg-in .wk div:nth-child(n) i{transform-origin:50% 100%;animation:mRise2 1.15s cubic-bezier(.3,.7,.25,1) calc(.3s + var(--n,0) * .1s) backwards!important}
 html body #app.pg-in .wk div:nth-child(n) span{animation:mLbl2 .5s ease-out calc(1s + var(--n,0) * .1s) backwards!important}
-@keyframes mNavPop{0%{transform:scale(1) rotate(0)}22%{transform:scale(.6) rotate(-10deg)}55%{transform:scale(1.22) rotate(6deg)}78%{transform:scale(.94) rotate(-2deg)}100%{transform:scale(1) rotate(0)}}
-.nav .ni svg.nbp{transform-origin:50% 50%;animation:mNavPop .65s cubic-bezier(.3,.8,.4,1)}
+@keyframes mStarPulse{0.00%{transform:scale(0.9549)}3.33%{transform:scale(1.0046)}6.67%{transform:scale(1.0299)}10.00%{transform:scale(1.0429)}13.33%{transform:scale(1.0452)}16.67%{transform:scale(1.0337)}20.00%{transform:scale(1.0146)}23.33%{transform:scale(0.9893)}26.67%{transform:scale(0.9579)}30.00%{transform:scale(0.9272)}33.33%{transform:scale(0.8967)}36.67%{transform:scale(0.8745)}40.00%{transform:scale(0.8614)}43.33%{transform:scale(0.8538)}46.67%{transform:scale(0.8569)}50.00%{transform:scale(0.8683)}53.33%{transform:scale(0.8821)}56.67%{transform:scale(0.9005)}60.00%{transform:scale(0.9189)}63.33%{transform:scale(0.9365)}66.67%{transform:scale(0.9503)}70.00%{transform:scale(0.9648)}73.33%{transform:scale(0.9747)}76.67%{transform:scale(0.9839)}80.00%{transform:scale(0.9908)}83.33%{transform:scale(0.9939)}86.67%{transform:scale(0.9992)}90.00%{transform:scale(1.0000)}93.33%{transform:scale(1.0000)}96.67%{transform:scale(1.0000)}100.00%{transform:scale(0.9985)}}
+.nav .ni svg.nbp{transform-origin:50% 50%;animation:mStarPulse var(--nbd,.75s) linear both}
 @keyframes bkFlip{0%{opacity:0;transform:perspective(1400px) rotateY(-78deg) translateX(-6%)}30%{opacity:1}100%{opacity:1;transform:perspective(1400px) rotateY(0) translateX(0)}}
-@keyframes bkRise{from{opacity:0;transform:translate3d(0,16px,0)}to{opacity:1;transform:none}}
-@keyframes bkCover{0%{opacity:0;transform:perspective(600px) rotateY(55deg) scale(.7)}60%{opacity:1;transform:perspective(600px) rotateY(-8deg) scale(1.06)}100%{opacity:1;transform:none}}
+@keyframes bkFlipOut{0%{opacity:1;transform:perspective(1400px) rotateY(0) translateX(0)}100%{opacity:0;transform:perspective(1400px) rotateY(-78deg) translateX(-6%)}}
+@keyframes bkRise{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:none}}
+@keyframes bkSink{to{opacity:0;transform:translate3d(0,14px,0)}}
+@keyframes bkCover{0.00%{opacity:0.00;transform:translate3d(0,118.80%,0);filter:blur(7.0px)}3.44%{opacity:0.09;transform:translate3d(0,103.76%,0);filter:blur(7.0px)}6.87%{opacity:0.13;transform:translate3d(0,90.04%,0);filter:blur(6.9px)}10.31%{opacity:0.17;transform:translate3d(0,79.32%,0);filter:blur(6.9px)}13.75%{opacity:0.20;transform:translate3d(0,70.68%,0);filter:blur(6.8px)}17.18%{opacity:0.24;transform:translate3d(0,62.97%,0);filter:blur(6.8px)}20.62%{opacity:0.27;transform:translate3d(0,56.20%,0);filter:blur(6.6px)}24.05%{opacity:0.31;transform:translate3d(0,50.38%,0);filter:blur(6.4px)}27.49%{opacity:0.35;transform:translate3d(0,44.92%,0);filter:blur(6.3px)}30.93%{opacity:0.39;transform:translate3d(0,39.85%,0);filter:blur(6.2px)}34.36%{opacity:0.43;transform:translate3d(0,35.53%,0);filter:blur(6.0px)}37.80%{opacity:0.46;transform:translate3d(0,31.20%,0);filter:blur(5.7px)}41.24%{opacity:0.50;transform:translate3d(0,27.26%,0);filter:blur(5.6px)}44.67%{opacity:0.53;transform:translate3d(0,23.87%,0);filter:blur(5.6px)}48.11%{opacity:0.57;transform:translate3d(0,20.86%,0);filter:blur(5.3px)}51.55%{opacity:0.61;transform:translate3d(0,17.86%,0);filter:blur(5.0px)}54.98%{opacity:0.65;transform:translate3d(0,15.23%,0);filter:blur(4.2px)}58.42%{opacity:0.69;transform:translate3d(0,12.78%,0);filter:blur(3.8px)}61.86%{opacity:0.73;transform:translate3d(0,10.53%,0);filter:blur(3.6px)}65.29%{opacity:0.77;transform:translate3d(0,8.65%,0);filter:blur(3.3px)}68.73%{opacity:0.82;transform:translate3d(0,6.95%,0);filter:blur(2.8px)}72.16%{opacity:0.86;transform:translate3d(0,5.45%,0);filter:blur(2.6px)}75.60%{opacity:0.90;transform:translate3d(0,4.14%,0);filter:blur(2.1px)}79.04%{opacity:0.93;transform:translate3d(0,2.82%,0);filter:blur(1.6px)}82.47%{opacity:0.97;transform:translate3d(0,2.07%,0);filter:blur(1.2px)}85.91%{opacity:0.98;transform:translate3d(0,1.32%,0);filter:blur(1.0px)}89.35%{opacity:0.98;transform:translate3d(0,0.75%,0);filter:blur(0.7px)}92.78%{opacity:0.99;transform:translate3d(0,0.19%,0);filter:blur(0.3px)}96.22%{opacity:0.99;transform:translate3d(0,0.00%,0);filter:blur(0.0px)}99.66%{opacity:1.00;transform:translate3d(0,0.00%,0);filter:blur(0.0px)}100.00%{opacity:1.00;transform:translate3d(0,0.00%,0);filter:blur(0.0px)}}
+.cvw{flex:none;clip-path:inset(-40px -40px -18.8% -40px)}
 html body #app.bk-open{overflow-x:clip}
-html body #app.bk-open>*:not(.nav):not(.pill):not(.sh){transform-origin:0% 50%;animation:bkFlip .85s cubic-bezier(.2,.8,.2,1) both!important}
-html body #app.bk-open>:is(.blr,.blr2)>*:nth-child(n){animation:bkRise .55s cubic-bezier(.2,.8,.25,1) .4s backwards!important}
-html body #app.bk-open>:is(.blr,.blr2)>*:nth-child(3){animation-delay:.47s!important}
-html body #app.bk-open>:is(.blr,.blr2)>*:nth-child(4){animation-delay:.54s!important}
-html body #app.bk-open>:is(.blr,.blr2)>*:nth-child(n+5){animation-delay:.61s!important}
-html body #app.bk-open .cvl{animation:bkCover .9s cubic-bezier(.2,.9,.25,1) .3s backwards!important}
-@keyframes colHead{0%{clip-path:inset(0 0 100% 0 round 26px);opacity:.4;transform:translateY(-14px) scale(.97)}100%{clip-path:inset(0 0 0 0 round 26px);opacity:1;transform:none}}
-@keyframes colFan{0%{opacity:0;rotate:-40deg;translate:-14px 22px;scale:.4}100%{opacity:1;rotate:0deg;translate:0 0;scale:1}}
-html body #app.col-open .chd{animation:colHead .7s cubic-bezier(.2,.8,.2,1) backwards!important}
-html body #app.col-open .cf>div{animation:colFan .6s cubic-bezier(.3,1.35,.5,1) .3s backwards!important}
-html body #app.col-open .cf>div:nth-child(2){animation-delay:.38s!important}
-html body #app.col-open .cf>div:nth-child(3){animation-delay:.46s!important}
-html body #app.col-open>*:not(.nav):not(.pill):not(.sh):not(.chd){animation:bkRise .5s cubic-bezier(.2,.8,.25,1) .3s backwards!important}
-html body #app.col-open>*:not(.nav):not(.pill):not(.sh):not(.chd):nth-child(3){animation-delay:.36s!important}
-html body #app.col-open>*:not(.nav):not(.pill):not(.sh):not(.chd):nth-child(4){animation-delay:.42s!important}
-html body #app.col-open>*:not(.nav):not(.pill):not(.sh):not(.chd):nth-child(n+5){animation-delay:.48s!important}
+html body #app.bk-open>*:not(.nav):not(.pill):not(.sh){transform-origin:0% 50%;animation:bkFlip .7s cubic-bezier(.2,.8,.2,1) both!important}
+html body #app.bk-open>:is(.blr,.blr2)>*:nth-child(n){animation:bkRise .45s cubic-bezier(.2,.8,.25,1) .12s backwards!important}
+html body #app.bk-open>:is(.blr,.blr2)>*:nth-child(3){animation-delay:.17s!important}
+html body #app.bk-open>:is(.blr,.blr2)>*:nth-child(4){animation-delay:.22s!important}
+html body #app.bk-open>:is(.blr,.blr2)>*:nth-child(n+5){animation-delay:.27s!important}
+html body #app.bk-open .cvl{animation:bkCover 0.97s linear .1s backwards!important}
+html body #app.bk-close>*:not(.nav):not(.pill):not(.sh){transform-origin:0% 50%;animation:bkFlipOut .28s cubic-bezier(.4,0,.7,.6) both!important}
+@keyframes colHead{0%{clip-path:inset(0 0 100% 0 round 26px);opacity:.5;transform:translateY(-10px)}100%{clip-path:inset(0 0 0 0 round 26px);opacity:1;transform:none}}
+@keyframes colFan{0%{opacity:0;rotate:-24deg;translate:-8px 14px;scale:.6}100%{opacity:1;rotate:0deg;translate:0 0;scale:1}}
+html body #app.col-open .chd{animation:colHead .42s cubic-bezier(.2,.8,.2,1) backwards!important}
+html body #app.col-open .cf>div{animation:colFan .4s cubic-bezier(.2,.8,.25,1) .08s backwards!important}
+html body #app.col-open .cf>div:nth-child(2){animation-delay:.13s!important}
+html body #app.col-open .cf>div:nth-child(3){animation-delay:.18s!important}
+html body #app.col-open>*:not(.nav):not(.pill):not(.sh):not(.chd){animation:bkRise .38s cubic-bezier(.2,.8,.25,1) .04s backwards!important}
+html body #app.col-open>*:not(.nav):not(.pill):not(.sh):not(.chd):nth-child(3){animation-delay:.08s!important}
+html body #app.col-open>*:not(.nav):not(.pill):not(.sh):not(.chd):nth-child(4){animation-delay:.12s!important}
+html body #app.col-open>*:not(.nav):not(.pill):not(.sh):not(.chd):nth-child(n+5){animation-delay:.16s!important}
+html body #app.col-close>*:not(.nav):not(.pill):not(.sh):not(.chd){animation:colOut .2s cubic-bezier(.4,0,.9,.6) both!important}
+html body #app.col-close .chd{animation:colHeadOut .26s cubic-bezier(.4,0,.7,.6) both!important}
+@keyframes colOut{to{opacity:0;transform:translate3d(0,10px,0)}}
+@keyframes colHeadOut{to{opacity:0;transform:translate3d(0,-8px,0) scale(.96);clip-path:inset(0 0 40% 0 round 26px)}}
+@keyframes libIn{from{opacity:0;transform:translate3d(0,-8px,0)}to{opacity:1;transform:none}}
+html body #app.col-back>*:not(.nav):not(.pill):not(.sh){animation:libIn .3s cubic-bezier(.2,.8,.25,1) backwards!important}
+html body #app.col-back>:is(.blr,.blr2)>*{animation:libIn .32s cubic-bezier(.2,.8,.25,1) backwards!important}
+html body #app.col-back>:is(.blr,.blr2)>*:nth-child(n+3){animation-delay:.04s!important}
+html body #app.col-back>:is(.blr,.blr2)>*:nth-child(n+5){animation-delay:.08s!important}
+/* book page: collections */
+.bcol{margin:12px 0 0}.bch{display:flex;align-items:center;justify-content:space-between;margin:0 2px 6px}.bch b{font:700 16px Georgia,serif}
+.bca{font-size:13px;padding:5px 12px;border-radius:99px;background:var(--cd);border:1px solid var(--bd);cursor:pointer}
+.bcr{display:flex;flex-wrap:wrap;gap:8px}
+.bcc{display:inline-flex;align-items:center;border-radius:99px;overflow:hidden;color:#fff;font-size:14px;box-shadow:0 2px 8px #0003;text-shadow:0 1px 2px #0006!important}
+.bcc>span{padding:7px 8px 7px 14px;cursor:pointer;max-width:46vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bcc>i{font-style:normal;padding:7px 12px 7px 8px;cursor:pointer;opacity:.85;border-left:1px solid #fff4}
+.bcc>i:active,.bca:active{transform:scale(.92)}
+.bce{font-size:13px;margin:0 2px}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
@@ -472,7 +494,12 @@ const ctc=c=>c.bn?'#fff':ctx(cgrad(c));
 const ST={reading:['Reading','📖'],toread:['To read','🤍'],done:['Finished','✅'],dnf:['Gave up','✖️']};
 const dt=t=>new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric'});
 const tgc=(id,c)=>ch(id,b=>{b.cl=b.cl||[];let i=b.cl.indexOf(c);i<0?b.cl.push(c):b.cl.splice(i,1)});
-const meta=b=>`${b.sd?`<p class="mu" style="text-align:center;margin:10px 0 0">Started ${dt(b.sd)}${b.fd&&b.st==='done'?' · Finished '+dt(b.fd):''}</p>`:''}<div style="display:flex;justify-content:center;margin:12px 0 0"><button class="bt addc" onclick="v.pc=(b.cl||[]).slice();v.sh='addcol';R()">${(b.cl||[]).length?'📚 In '+(b.cl||[]).length+' collection'+((b.cl||[]).length>1?'s':'')+' · Edit':'＋ Add to collection'}</button></div>`;
+const meta=b=>`${b.sd?`<p class="mu" style="text-align:center;margin:10px 0 0">Started ${dt(b.sd)}${b.fd&&b.st==='done'?' · Finished '+dt(b.fd):''}</p>`:''}${bcol(b)}`;
+function bcol(b){const cols=(S.col||[]),mine=(b.cl||[]).map(id=>cols.find(c=>c.id===id)).filter(Boolean);
+ return `<div class="bcol"><div class="bch"><b>Collections</b><span class="bca" onclick="bcAdd('${b.id}')">${mine.length?'Edit':'＋ Add'}</span></div>${mine.length?`<div class="bcr">${mine.map(c=>`<span class="bcc" style="background:${cbk(c)}"><span onclick="bcOpen('${c.id}')">${cic(c)} ${esc(c.n)}</span><i onclick="bcRm('${b.id}','${c.id}')" role="button" aria-label="Remove from ${esc(c.n)}">✕</i></span>`).join('')}</div>`:`<div class="mu bce">Not in any collection yet.</div>`}</div>`}
+function bcAdd(id){const b=bk(id);v.pc=(b&&b.cl||[]).slice();v.sh='addcol';R()}
+function bcRm(id,c){const col=(S.col||[]).find(x=>x.id===c);tgc(id,c);if(typeof toast==='function')toast('Removed from '+(col?col.n:'collection'))}
+function bcOpen(c){v.col=c;v.tab='all';v.q='';go('lib')}
 function fan(c){const bs=S.b.filter(b=>(b.cl||[]).includes(c.id)).slice(0,4),g=cgrad(c);
  return `<div class="fan" style="background:${cbk(c)}">${bs.map((b,i)=>{const o=i-(bs.length-1)/2;return `<div class="fb" style="left:calc(50% - 25px + ${o*27}px);transform:rotate(${o*9}deg);z-index:${Math.round(10-Math.abs(o)*2)}">${cv(b,'cvf')}</div>`}).join('')}</div>`}
 const colcard=c=>`<div class="coll" onclick="v.col='${c.id}';v.tab='all';R()">${fan(c)}<div class="t" style="text-align:center;margin-top:8px">${esc(c.n)} ${cic(c)}</div><div class="mu" style="text-align:center">${S.b.filter(b=>(b.cl||[]).includes(c.id)).length} books</div></div>`;
@@ -500,7 +527,7 @@ function COLSH(){return `<div class="sh"><div><h2 style="margin-top:0">New colle
 
 /* ---- Collections: header, options, add-books sheet ---- */
 function chead(c){const bs=S.b.filter(b=>(b.cl||[]).includes(c.id)),g=cgrad(c);
- return `<div class="chd" style="background:${cbk(c)};color:${ctc(c)}"><div class="chb"><span class="ib2" onclick="v.col=null;R()" role="button" aria-label="Back to all collections">‹</span><span class="fl"></span><span class="ib2" onclick="v.sh='colmenu';R()" role="button" aria-label="Collection options">⋯</span></div><div class="chm"><div class="fl"><div class="cht">${cic(c,'chd')} ${esc(c.n)}</div><div class="chn">${bs.length} book${bs.length===1?'':'s'}</div></div><div class="cf">${bs.slice(0,3).map((b,i)=>`<div style="transform:rotate(${(i-1)*8}deg);z-index:${i===1?3:1};margin-left:${i?-18:0}px">${cv(b,'cvf')}</div>`).join('')}</div></div></div><button class="bt pr chadd" onclick="cbOpen('${c.id}')">＋ Add books</button>`}
+ return `<div class="chd" style="background:${cbk(c)};color:${ctc(c)}"><div class="chb"><span class="ib2" onclick="bye(()=>{v.col=null;R()})" role="button" aria-label="Back to all collections">‹</span><span class="fl"></span><span class="ib2" onclick="v.sh='colmenu';R()" role="button" aria-label="Collection options">⋯</span></div><div class="chm"><div class="fl"><div class="cht">${cic(c,'chd')} ${esc(c.n)}</div><div class="chn">${bs.length} book${bs.length===1?'':'s'}</div></div><div class="cf">${bs.slice(0,3).map((b,i)=>`<div style="transform:rotate(${(i-1)*8}deg);z-index:${i===1?3:1};margin-left:${i?-18:0}px">${cv(b,'cvf')}</div>`).join('')}</div></div></div><button class="bt pr chadd" onclick="cbOpen('${c.id}')">＋ Add books</button>`}
 function COLMENU(){const c=(S.col||[]).find(x=>x.id===v.col);if(!c)return '';
  return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs"><div class="grab"></div><div class="row" style="flex-wrap:nowrap;margin:0 0 6px"><div class="fl"><h2 style="margin:0">${cic(c)} ${esc(c.n)}</h2><div class="mu">Collection options</div></div><span class="xb" onclick="v.sh=null;R()">✕</span></div>
  <div class="mrow" onclick="cbOpen('${c.id}')"><span>＋</span><div class="fl">Add or remove books</div></div>
@@ -829,8 +856,8 @@ function D(){let b=bk(v.id);if(!b){v.p='home';return H()}
  if(b.m==='pages')ctl=`<div class="row pgr"><button class="bt" onclick="bump('${id}',-10)">−10</button><button class="bt" onclick="bump('${id}',-1)">−1</button><input class="in" type="number" value="${b.cur||0}" onchange="setCur('${id}',this.value)"><button class="bt" onclick="bump('${id}',1)">+1</button><button class="bt" onclick="bump('${id}',10)">+10</button></div><div class="row"><span class="mu">Total pages in your edition</span><input class="in" type="number" value="${b.pages||''}" placeholder="?" onchange="setTot('${id}',this.value)"></div>`;
  else if(b.m==='pct')ctl=`<div class="big" id="pv">${b.cur||0}%</div><input type="range" min="0" max="100" value="${b.cur||0}" oninput="$('#pv').textContent=this.value+'%'" onchange="setCur('${id}',this.value)">`;
  else ctl=b.adv?advUI(b):b.ch.map((c,i)=>`<div class="ch"><input type="checkbox" ${c.d?'checked':''} onchange="chT('${id}',${i})"><input class="in" value="${esc(c.n)}" onchange="chN('${id}',${i},this.value)"><input class="in cp" type="number" placeholder="pages" value="${c.p||''}" onchange="chP('${id}',${i},this.value)"><button class="bt" onclick="chX('${id}',${i})">✕</button></div>`).join('')+`<div class="row"><input class="in" id="f-cn" type="number" placeholder="How many chapters?"><input class="in" id="f-cp" type="number" placeholder="Pages each (optional)"><button class="bt pr" onclick="chA('${id}')">Add</button></div><p class="mu">Add page counts to chapters for more accurate progress. Leave blank to count chapters equally.</p>`+advTog(b);
- return `<div class="${S.bl===0?'':'blr'}"><div class="row"><button class="bt" onclick="go(v.pp||'home')">← Back</button><span style="flex:1"></span><button class="bt" onclick="v.sh='edit';v.cv='';R()">Edit</button></div>
- <div class="row" style="align-items:flex-start;gap:14px">${cv(b,'cvl')}<div class="fl"><h1 class="dsx" style="font-size:24px;margin:0">${esc(b.t)}</h1><div class="mu">${esc(b.a)}${b.sr?' · '+esc(b.sr):''}</div><select class="in" onchange="setSt('${id}',this.value)">${[['toread','To read'],['reading','Reading'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b.st===k?'selected':''}>${l}</option>`).join('')}</select></div></div>
+ return `<div class="${S.bl===0?'':'blr'}"><div class="row"><button class="bt" onclick="bye(()=>go(v.pp||'home',1))">← Back</button><span style="flex:1"></span><button class="bt" onclick="v.sh='edit';v.cv='';R()">Edit</button></div>
+ <div class="row" style="align-items:flex-start;gap:14px"><div class="cvw">${cv(b,'cvl')}</div><div class="fl"><h1 class="dsx" style="font-size:24px;margin:0">${esc(b.t)}</h1><div class="mu">${esc(b.a)}${b.sr?' · '+esc(b.sr):''}</div><select class="in" onchange="setSt('${id}',this.value)">${[['toread','To read'],['reading','Reading'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b.st===k?'selected':''}>${l}</option>`).join('')}</select></div></div>
  ${meta(b)}${descSec(b)}<div style="text-align:center;margin-top:10px">${[1,2,3,4,5].map(n=>`<span onclick="rate('${id}',${n})" style="font-size:28px;cursor:pointer;color:${n<=(b.r||0)?'#e0a030':'var(--bd)'}">★</span>`).join('')}</div><div class="big">${p.toFixed(0)}%</div><div class="bar"><i style="width:${p}%"></i></div>${eta}
  <div class="seg">${[['pages','Pages'],['pct','Percent'],['ch','Chapters']].map(([k,l])=>`<b class="${b.m===k?'on':''}" onclick="setM('${id}','${k}')">${l}</b>`).join('')}</div>${ctl}
  <h2>Reading timer</h2>${nfLine()}${run?`<div class="big"><span class="tm"></span></div><button class="bt" style="width:100%;margin-bottom:8px" onclick="tpause()">${S.t.p?'Resume':'Pause'}</button><button class="bt pr" style="width:100%" onclick="v.sh='stop';R()">Stop and log session</button><button class="bt" style="width:100%;margin-top:8px" onclick="if(confirm('Discard this reading session? The time will not be saved.'))tdisc()">Discard</button>`:`<button class="bt pr" style="width:100%" onclick="tstart('${id}')" ${S.t?'disabled':''}>Start reading session</button>`}
@@ -1153,12 +1180,17 @@ window.addEventListener('online',()=>{if(U)sync()});
 </script>
 <script>
 function toast(m){let e=document.getElementById('tst');if(!e){e=document.createElement('div');e.id='tst';document.body.appendChild(e)}e.textContent=m;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1900)}
+function bye(fn){var a=document.getElementById('app'),c=v.p==='book'?'bk-close':(v.p==='lib'&&v.col)?'col-close':null;
+ if(!a||!c||S.ao==='off'||v.bye){fn();return}
+ v.bye=1;a.classList.add(c);setTimeout(function(){v.bye=0;a.classList.remove(c);scrollTo(0,0);fn();
+  if(c==='col-close'){a.classList.remove('col-back');void a.offsetWidth;a.classList.add('col-back');setTimeout(function(){a.classList.remove('col-back')},450)}},c==='bk-close'?280:210)}
 function goBack(){
  if(v.sh){v.sh=null;v.pc=null;R();return 1}
  if(v.cid){v.cid=null;R();return 1}
  if(v.p==='more'){if(v.adv){v.adv=0;R();return 1}if(v.mp){v.an=1;v.mp=null;R();return 1}}
- if(v.p==='book'){go(v.pp&&v.pp!=='book'?v.pp:'home',1);return 1}
- if(v.p==='lib'&&(v.col||v.q)){v.col=null;v.q='';R();return 1}
+ if(v.p==='book'){bye(()=>go(v.pp&&v.pp!=='book'?v.pp:'home',1));return 1}
+ if(v.p==='lib'&&v.col){bye(()=>{v.col=null;v.q='';R()});return 1}
+ if(v.p==='lib'&&v.q){v.q='';R();return 1}
  if(v.p!=='home'){go('home',1);return 1}
  return 0}
 try{history.replaceState({g:0},'');history.pushState({g:1},'')}catch(e){}
@@ -1168,7 +1200,7 @@ addEventListener('popstate',()=>{
  window._bx=Date.now();history.pushState({g:1},'');toast('Press back again to exit')});
 </script>
 <script>(function(){var t,h=document.documentElement;addEventListener('scroll',function(){h.classList.add('scr');clearTimeout(t);t=setTimeout(function(){h.classList.remove('scr')},180)},{passive:true,capture:true})})();</script><script>(function(){var o=R,sel=['.ltabs','.tabs','.crail','.rail','.rai','.crl','.vsw','.cbl'];R=function(){var nav=!!(typeof v!=='undefined'&&v.an),a=sel.map(function(q){return Array.prototype.map.call(document.querySelectorAll(q),function(e){return e.scrollLeft})}),r=o.apply(this,arguments),app=document.getElementById('app');if(app&&typeof v!=='undefined')app.dataset.pg=v.p;if(!nav)sel.forEach(function(q,i){var l=document.querySelectorAll(q);if(l.length!==a[i].length)return;Array.prototype.forEach.call(l,function(e,j){if(a[i][j])e.scrollLeft=a[i][j]})});return r};})();</script><script>(function(){var o=R;R=function(){var r=o.apply(this,arguments);try{if(window.cisUp)cisUp()}catch(e){}return r}})();</script><script>(function(){var o=R,last=null;R=function(){var r=o.apply(this,arguments);try{var k=v.p==='book'?(v.pp||'home'):v.p,a=document.getElementById('app');if(a)a.classList.toggle('nonavfx',last===k);last=k}catch(e){}return r}})();</script><script>(function(){function warm(){try{var l=(typeof S!=='undefined'&&S.b||[]).filter(function(b){return b.cover}),i=0;(function step(){var e=i+6;for(;i<e&&i<l.length;i++){var m=new Image();m.src=bu(l[i].cover);if(m.decode)m.decode().catch(function(){})}if(i<l.length)setTimeout(step,40)})()}catch(e){}}setTimeout(warm,300)})();</script><script>(function(){var o=R;R=function(){var p=window._pi,r=o.apply(this,arguments),c=window._pi;try{if(p!=null&&c!=null&&p!==c){var L=document.querySelector(".lens");if(L)L.style.setProperty("--d",(0.55+0.14*(Math.abs(c-p)-1)).toFixed(2)+"s")}}catch(e){}return r}})();</script><script>
-function asec(){var nb=S.na!=='classic',ao=S.ao!=='off';return '<div class="card" style="display:block;cursor:default"><b>Animations</b><div class="mu" style="margin:2px 0 6px">When you tap the menu icons</div><div class="row"><span class="tab '+(nb?'on':'')+'" onclick="S.na=\'bounce\';save();R()">⭐ Bounce</span><span class="tab '+(nb?'':'on')+'" onclick="S.na=\'classic\';save();R()">Classic</span></div><div class="mu" style="margin:10px 0 6px">When you open a book or a collection</div><div class="row"><span class="tab '+(ao?'on':'')+'" onclick="S.ao=\'on\';save();R()">✨ Animated</span><span class="tab '+(ao?'':'on')+'" onclick="S.ao=\'off\';save();R()">Simple</span></div></div>'}
+function asec(){var nb=S.na!=='classic',ao=S.ao!=='off';return '<div class="card" style="display:block;cursor:default"><b>Animations</b><div class="mu" style="margin:2px 0 6px">When you tap the menu icons</div><div class="row"><span class="tab '+(nb?'on':'')+'" onclick="S.na=\'bounce\';save();R()">⭐ Bounce</span><span class="tab '+(nb?'':'on')+'" onclick="S.na=\'classic\';save();R()">Classic</span></div><div class="mu" style="margin:10px 0 6px">When you open or leave a book or a collection</div><div class="row"><span class="tab '+(ao?'on':'')+'" onclick="S.ao=\'on\';save();R()">✨ Animated</span><span class="tab '+(ao?'':'on')+'" onclick="S.ao=\'off\';save();R()">Simple</span></div></div>'}
 (function(){
  document.addEventListener('click',function(e){var n=e.target&&e.target.closest&&e.target.closest('.nav .ni');if(n){window._tapI=Array.prototype.indexOf.call(n.parentNode.querySelectorAll('.ni'),n)}},true);
  var o=R,lastCol=null,tm={};
@@ -1177,7 +1209,7 @@ function asec(){var nb=S.na!=='classic',ao=S.ao!=='off';return '<div class="card
   var an=!!v.an,r=o.apply(this,arguments);
   try{
    var a=document.getElementById('app'),i=window._tapI;window._tapI=null;
-   if(a&&i!=null&&S.na!=='classic'){var s=a.querySelectorAll('.nav .ni svg')[i];if(s){s.classList.add('nbp');setTimeout(function(){s.classList.remove('nbp')},800)}}
+   if(a&&i!=null&&S.na!=='classic'){var s=a.querySelectorAll('.nav .ni svg')[i];if(s){s.classList.add('nbp');setTimeout(function(){s.classList.remove('nbp')},900)}}
    if(a&&S.ao!=='off'){
     if(an&&v.p==='book')fx(a,'bk-open',1300);
     else if(v.p==='lib'&&v.col&&v.col!==lastCol)fx(a,'col-open',1100);
