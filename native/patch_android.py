@@ -31,30 +31,6 @@ if 'TimerReceiver' not in s:
     </application>''', 1)
     open(manifest, 'w', encoding='utf-8').write(s)
 
-# Launcher icon choices: MainActivity stops being the launcher; one alias per colour scheme is.
-s = open(manifest, encoding='utf-8').read()
-if 'IconTerracotta' not in s:
-    s = s.replace('<category android:name="android.intent.category.LAUNCHER" />', '', 1)
-    names = ['terracotta', 'forest', 'midnight', 'rose', 'ocean', 'lavender', 'mocha', 'cream']
-    al = ''
-    for n in names:
-        al += f'''
-        <activity-alias
-            android:name=".Icon{n.capitalize()}"
-            android:targetActivity=".MainActivity"
-            android:enabled="{'true' if n == 'terracotta' else 'false'}"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher_{n}"
-            android:roundIcon="@mipmap/ic_launcher_{n}"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>'''
-    s = s.replace('</application>', al + '\n    </application>', 1)
-    open(manifest, 'w', encoding='utf-8').write(s)
-
 # Keep the same signing key on every build so new APKs install over old ones.
 gradle = 'android/app/build.gradle'
 g = open(gradle, encoding='utf-8').read()
@@ -76,4 +52,9 @@ android {
 # App icon: copy our own launcher icons over the defaults.
 import shutil
 shutil.copytree('native/res', 'android/app/src/main/res', dirs_exist_ok=True)
+# Storage permission (only used on Android 9 and older)
+s = open(manifest, encoding='utf-8').read()
+if 'WRITE_EXTERNAL_STORAGE' not in s:
+    s = s.replace('<application', '<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />\n    <application', 1)
+    open(manifest, 'w', encoding='utf-8').write(s)
 print('patched')
