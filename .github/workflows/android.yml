@@ -41,7 +41,7 @@ jobs:
 
       - name: Check the backup code is in the files
         run: |
-          grep -q "backup-folder-1109c" index.html || { echo "::error::index.html is not the newest version (no backup-folder-1109c)"; exit 1; }
+          grep -q "backup-folder-1109d" index.html || { echo "::error::index.html is not the newest version (no backup-folder-1109c)"; exit 1; }
           grep -q "pickFolder" native/ShelfieFilesPlugin.java || { echo "::error::native/ShelfieFilesPlugin.java is the OLD plugin (no pickFolder)"; exit 1; }
           grep -q "ShelfieFilesPlugin" native/MainActivity.java || { echo "::error::MainActivity.java does not register ShelfieFilesPlugin"; exit 1; }
           grep -q "native/\*.java" native/patch_android.py || { echo "::error::native/patch_android.py is the OLD one"; exit 1; }
@@ -68,7 +68,7 @@ jobs:
           python3 native/patch_android.py
           npx cap sync android
           grep -q pickFolder "$PKG/ShelfieFilesPlugin.java" && echo "Plugin copied into the app"
-          grep -rq backup-folder-1109c android/app/src/main/assets/public/index.html && echo "New page copied into the app"
+          grep -rq backup-folder-1109d android/app/src/main/assets/public/index.html && echo "New page copied into the app"
           grep -o '"@capacitor/core": *"[^"]*"' package.json || true
 
       - name: Build APK
