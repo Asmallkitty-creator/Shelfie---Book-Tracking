@@ -14,16 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Unpack the zip (only if you uploaded it)
+      - name: Stop if the old zip is still in the repo
         run: |
           if [ -f shelfie-github-files.zip ]; then
-            unzip -o shelfie-github-files.zip -x ".github/*"
-            rm shelfie-github-files.zip
-            git config user.name "github-actions"
-            git config user.email "actions@github.com"
-            git add -A
-            git commit -m "Unpack Shelfie files" || true
-            git push || true
+            echo "::error::shelfie-github-files.zip is in the repo. It holds OLD copies of the files. Delete it and upload the files one by one."
+            exit 1
           fi
 
       - uses: actions/setup-node@v4
@@ -43,6 +38,14 @@ jobs:
           mkdir -p www
           cp index.html manifest.webmanifest www/
           cp icon-*.png www/ 2>/dev/null || true
+
+      - name: Check the backup code is in the files
+        run: |
+          grep -q "backup-folder-1109c" index.html || { echo "::error::index.html is not the newest version (no backup-folder-1109c)"; exit 1; }
+          grep -q "pickFolder" native/ShelfieFilesPlugin.java || { echo "::error::native/ShelfieFilesPlugin.java is the OLD plugin (no pickFolder)"; exit 1; }
+          grep -q "ShelfieFilesPlugin" native/MainActivity.java || { echo "::error::MainActivity.java does not register ShelfieFilesPlugin"; exit 1; }
+          grep -q "native/\*.java" native/patch_android.py || { echo "::error::native/patch_android.py is the OLD one"; exit 1; }
+          echo "Backup files OK"
 
       - name: Create Android project
         run: npx cap add android
@@ -64,6 +67,9 @@ jobs:
           cp native/ic_*.xml android/app/src/main/res/drawable/
           python3 native/patch_android.py
           npx cap sync android
+          grep -q pickFolder "$PKG/ShelfieFilesPlugin.java" && echo "Plugin copied into the app"
+          grep -rq backup-folder-1109c android/app/src/main/assets/public/index.html && echo "New page copied into the app"
+          grep -o '"@capacitor/core": *"[^"]*"' package.json || true
 
       - name: Build APK
         working-directory: android
