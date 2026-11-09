@@ -57,4 +57,17 @@ s = open(manifest, encoding='utf-8').read()
 if 'WRITE_EXTERNAL_STORAGE' not in s:
     s = s.replace('<application', '<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />\n    <application', 1)
     open(manifest, 'w', encoding='utf-8').write(s)
+# Put every Java file from native/ into the app, so the file-saving plugin can never be left out of the APK.
+import glob, os
+pkg = 'android/app/src/main/java/com/shelfie/app'
+os.makedirs(pkg, exist_ok=True)
+for f in sorted(glob.glob('native/*.java')):
+    shutil.copy(f, os.path.join(pkg, os.path.basename(f)))
+    print('copied', f)
+for need in ('MainActivity.java', 'ShelfieFilesPlugin.java'):
+    if not os.path.exists(os.path.join(pkg, need)):
+        raise SystemExit('BUILD STOPPED: native/' + need + ' is missing from the repo, so backups could not work.')
+if 'ShelfieFilesPlugin' not in open(os.path.join(pkg, 'MainActivity.java'), encoding='utf-8').read():
+    raise SystemExit('BUILD STOPPED: MainActivity.java does not register ShelfieFilesPlugin.')
+print('file-saving plugin is included')
 print('patched')
