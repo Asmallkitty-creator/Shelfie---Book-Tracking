@@ -949,7 +949,7 @@ function cov(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.on
 var _FL=null;
 function flGet(){
  if(_FL)return _FL;
- try{var C=window.Capacitor;if(C&&C.isNativePlatform&&C.isNativePlatform())_FL=C.registerPlugin('ShelfieFiles')}catch(e){}
+ try{var C=window.Capacitor;if(C&&((C.isNativePlatform&&C.isNativePlatform())||(C.getPlatform&&C.getPlatform()!=='web')))_FL=C.registerPlugin('ShelfieFiles')}catch(e){}
  return _FL;
 }
 const XB_=/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g;
@@ -1038,7 +1038,9 @@ async function bkBuild(tag){
  let same=false;try{same=JSON.stringify(fromXml(xml))===JSON.stringify(snap)}catch(e){}
  return {name:'shelfie-'+(tag||'backup')+'-'+stamp+(same?'.xml':'.json'),data:same?xml:JSON.stringify(snap),mime:same?'text/xml':'application/json',sum:(snap.b||[]).length+' books, '+(snap.s||[]).length+' sessions'};
 }
-async function abLoad(){const FL=flGet();if(!FL||!FL.getFolder){_abf=null;return null}try{const r=await FL.getFolder();_abf=r&&r.has?r:(r&&r.lost?{lost:1}:null)}catch(e){_abf=null}try{if(FL.checkAccess)_abp=await FL.checkAccess()}catch(e){}return _abf}
+var _abm='';
+function appMode(){try{var C=window.Capacitor;if(C&&((C.isNativePlatform&&C.isNativePlatform())||(C.getPlatform&&C.getPlatform()!=='web')))return _abm==='missing'?'missing':'app'}catch(e){}return 'web'}
+async function abLoad(){const FL=flGet();if(!FL||!FL.getFolder){_abf=null;return null}try{const r=await FL.getFolder();_abm='';_abf=r&&r.has?r:(r&&r.lost?{lost:1}:null)}catch(e){_abf=null;if(/not implemented|not available|unimplemented/i.test(String(e&&e.message||e)))_abm='missing'}try{if(FL.checkAccess)_abp=await FL.checkAccess()}catch(e){}return _abf}
 var _abp=null;
 // Asks Android for storage permission where it is needed (Android 9 and older). Newer Android needs none: Downloads just works, and a chosen folder is its own grant.
 async function abAccess(){const FL=flGet();if(!FL||!FL.checkAccess)return true;try{let r=await FL.checkAccess();if(r.granted||!r.runtime){_abp=r;return true}r=await FL.requestAccess();_abp=r;if(!r.granted)v.msg='Shelfie needs permission to save files. Tap Allow access when Android asks, or choose a folder instead.';return !!r.granted}catch(e){return true}}
@@ -1073,12 +1075,19 @@ async function bkup(){
   }else{
    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([b.data],{type:b.mime}));a.download=b.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
    S.lb=Date.now();save();
-   v.msg='Backup downloaded as '+b.name+' ('+b.sum+'). Look in your browser’s Downloads.';
+   v.msg='Download started: '+b.name+' ('+b.sum+'). Look in your Downloads folder or notification bar. If nothing shows up, use “Share / save…” instead.';
   }
  }catch(err){v.msg='Backup failed: '+(err&&err.message||err)}
  scrollTo(0,0);R();
 }
 // safety copy taken right before a restore replaces the library
+async function bkShare(){
+ try{const b=await bkBuild('backup'),f=new File([b.data],b.name,{type:b.mime});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Shelfie backup'});S.lb=Date.now();save();v.msg='Backup shared ✓ Pick Files, Drive or another app to keep it ('+b.sum+').'}
+  else v.msg='This browser can’t share files. Use “Download backup file” instead.'
+ }catch(e){if(e&&e.name==='AbortError')return;v.msg='Could not share the file: '+(e&&e.message||e)}
+ scrollTo(0,0);R();
+}
 async function bkSafety(){const FL=flGet();if(!FL)return;const b=await bkBuild('before-restore');await bkWrite(b)}
 async function abRun(){
  if(_abBusy)return;const FL=flGet();if(!FL||!S.b||!S.b.length)return;_abBusy=1;
@@ -1136,14 +1145,18 @@ async function abRestoreFrom(i){
 }
 const abFmt=t=>t?new Date(t).toLocaleString(undefined,{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}):'';
 function MSYNC(){
- const FL=flGet(),a=abGet(),f=_abf,nat=!!(FL&&FL.pickFolder);
- if(nat&&_abf===undefined&&!window._abLoadingF){window._abLoadingF=1;abLoad().then(()=>{window._abLoadingF=0;_abl=undefined;if(v.p==='more'&&v.mp==='sync')R()})}
+ const FL=flGet(),a=abGet(),f=_abf,mode=appMode(),nat=mode==='app'&&!!(FL&&FL.pickFolder);
+ if(mode!=='web'&&FL&&_abf===undefined&&!window._abLoadingF){window._abLoadingF=1;abLoad().then(()=>{window._abLoadingF=0;_abl=undefined;if(v.p==='more'&&v.mp==='sync')R()})}
  if(nat&&_abl===undefined&&_abf!==undefined&&!window._abLoading){window._abLoading=1;setTimeout(abList,30)}
  const loc=f&&f.has?esc(f.name):'Downloads',fl=(_abl||[]);
+ const modeCard=mode==='app'?`<p class="g" style="font-size:13px;margin:8px 0">✓ Running as the Android app — files can be saved to your phone or tablet.</p>`
+  :mode==='missing'?`<div class="card" style="display:block;cursor:default;border-color:#d9534f"><b>⚠ This installed app can’t save files yet</b><div class="mu" style="font-size:13px;margin-top:4px">The Shelfie app on this device was built without the file-saving part, so backups can’t be written, a folder can’t be chosen and automatic backups can’t run. Rebuild the app with the new files, then install the newest <b>Shelfie.apk</b> from your repo’s Releases page.</div></div>`
+  :`<div class="card" style="display:block;cursor:default;border-color:#d9534f"><b>⚠ You’re using the web version</b><div class="mu" style="font-size:13px;margin-top:4px">This copy of Shelfie is running in a browser or as a home-screen web app, not as the installed Android app. Android doesn’t let web pages choose a folder or save files in the background, so automatic backups and folder choice are only in the <b>Shelfie.apk</b> app. You can still save a file with the buttons below.</div></div>`;
+ 
  const pill=(on,cb,t)=>`<span class="tab ${on?'on':''}" onclick="${cb}">${t}</span>`;
- return `${acct()}<h2>Backup</h2><p class="mu">Saves your whole library (books, covers, progress, sessions, notes, goals) as an XML file, then reads the file back to check it is complete. ${S.lb?'Last backup: '+esc(new Date(S.lb).toLocaleString())+'.':'No backup yet.'}</p>
+ return `${acct()}<h2>Backup</h2>${modeCard}<p class="mu">Saves your whole library (books, covers, progress, sessions, notes, goals) as an XML file, then reads the file back to check it is complete. ${S.lb?'Last backup: '+esc(new Date(S.lb).toLocaleString())+'.':'No backup yet.'}</p>
  ${nat?`<div class="card" style="display:block;cursor:default"><div class="mu" style="font-size:13px">Save location</div><div style="font-weight:700;margin:2px 0 8px">${f&&f.has?'📁 '+loc:'Downloads (default)'}</div>${f&&f.lost?'<p class="mu" style="margin:0 0 8px">Your folder isn’t available any more — choose it again.</p>':''}<div class="row" style="margin:0"><button class="bt" onclick="abPickFolder()">${f&&f.has?'Change folder':'Choose a folder'}</button>${f&&f.has?'<button class="bt" onclick="abUseDownloads()">Use Downloads</button>':''}</div>${f&&f.has?'<p class="g" style="font-size:13px;margin:10px 0 0">✓ Shelfie has permission to save in this folder.</p>':(_abp&&_abp.runtime&&!_abp.granted?'<p class="r" style="font-size:13px;margin:10px 0 4px">Shelfie needs permission to save files to Downloads.</p><button class="bt pr" onclick="abAllowBtn()">Allow access</button>':'<p class="mu" style="font-size:12px;margin:10px 0 0">Downloads needs no extra permission. To use your own folder, tap “Choose a folder” and allow it when Android asks (create a folder like “Shelfie backups”, then “Use this folder”).</p>')}</div>`:''}
- <button class="bt pr" style="margin-top:10px" onclick="bkup()">Back up now</button>
+ ${mode==='web'?'<div class="row" style="margin-top:10px"><button class="bt pr" onclick="bkup()">Download backup file</button><button class="bt" onclick="bkShare()">Share / save…</button></div>':`<button class="bt pr" style="margin-top:10px" onclick="bkup()">Back up now</button>`}
  ${nat?`<h2 style="margin-top:22px">Automatic backups</h2><div class="card" style="display:block;cursor:default"><div class="row" style="flex-wrap:nowrap;margin:0;align-items:center"><div class="fl"><b>${a.on?'On':'Off'}</b><div class="mu" style="font-size:13px">One backup each ${abFreqName[a.f]} into ${loc}.</div></div><span class="tab ${a.on?'on':''}" onclick="abToggle()">${a.on?'Turn off':'Turn on'}</span></div>
   ${a.on?`<div class="tabs" style="margin:12px 0 4px">${pill(a.f==='day','abFreq(\'day\')','Daily')}${pill(a.f==='week','abFreq(\'week\')','Weekly')}${pill(a.f==='month','abFreq(\'month\')','Monthly')}</div>
   <div class="mu" style="font-size:13px;margin:6px 0 2px">Keep the latest</div><div class="tabs" style="margin:4px 0">${[5,10,20,0].map(n=>pill(a.keep===n,'abKeep('+n+')',n?n:'All')).join('')}</div>
