@@ -486,6 +486,13 @@ html body #app.bk-open.bk-open>*:not(.nav):not(.pill):not(.sh){will-change:auto!
 html body #app.bk-open.bk-open .cvl{will-change:auto!important}
 .cb::after,.cvl,.rw>div:not([onclick]) svg,.lh::after,.pill,.hb i::after,.big+.bar i::after,.sh>div{will-change:auto!important}
 #app.col-back #ls{animation:none!important}
+
+/* goals & backups */
+.gpl{max-height:340px;overflow:auto;margin:8px 0}
+.gpb{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--bd);border-radius:16px;margin:6px 0;cursor:pointer;background:var(--cd);transition:background-color .2s,border-color .2s}
+.gpb.on{border-color:var(--ac);background:var(--ac2)}
+.gpk{width:22px;height:22px;border-radius:7px;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:14px;flex:none;color:var(--ac)}
+.gpb.on .gpk{border-color:var(--ac)}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
@@ -658,7 +665,7 @@ function H(){const n=s=>S.b.filter(b=>b.st===s).length,y=new Date().getFullYear(
  ${rd.length?`<h2 style="text-align:center">You’re currently reading ${rd.length} book${rd.length>1?'s':''}!</h2>${rd.slice(0,2).map(hero).join('')}`:'<p class="mu" style="text-align:center">Nothing in progress. Pick something from your up next list!</p>'}
  <div class="tl">${[['toread','To Read'],['done','Finished'],['reading','Reading'],['dnf','Gave Up']].map(([s,l])=>`<div class="tile" onclick="v.tab='${s}';go('lib')"><div><b>${n(s)}</b>${l}</div><span class="ic">${tico(s)}</span></div>`).join('')}</div>
  <div class="tile" style="margin-bottom:12px" onclick="v.tab='all';go('lib')"><div style="flex:1;text-align:center"><b>${S.b.length}</b>My Bookshelf</div><span class="ic">${tico('shelf')}</span></div>
- <div class="card" style="display:block;cursor:default"><div class="row" style="margin:0"><b>🎯 ${y} reading goal</b><span style="flex:1"></span><input class="in" style="width:90px;flex:none;margin:0" type="number" value="${S.gl||''}" placeholder="books" onchange="S.gl=+this.value||0;S.mm=Date.now();MD=1;save();R()"></div>${S.gl?`<div class="bar"><i style="width:${Math.min(100,dn/S.gl*100)}%"></i></div><div class="mu">${dn} of ${S.gl} books · ${gt}</div>`:''}<div class="mu" style="margin-top:6px">${k?'🔥 '+k+' day reading streak':'Log a session today to start a streak'}</div></div>
+ ${goalsHome(k)}
  ${rail(nx,'Up next','toread')}${rail(fin,'Recently finished','done')}`}
 const lbsv=(d,s)=>`<svg viewBox="0 0 24 24" width="${s||18}" height="${s||18}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 const LBIC={all:'<path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/>',reading:'<path d="M3 5.5C5.5 4.3 8.5 4.5 12 6.5c3.5-2 6.5-2.2 9-1v13c-2.5-1.2-5.5-1-9 1-3.5-2-6.5-2.2-9-1z"/><path d="M12 6.5v13"/>',toread:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',done:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',dnf:'<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',shelf:'<rect x="4" y="4" width="4" height="13" rx="1"/><rect x="10" y="7" width="4" height="10" rx="1"/><path d="M16 5.5l3.4-.7 2 11.8-3.4.7z"/><path d="M3 20h18"/>',grid:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',list:'<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',coll:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',cal:'<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>'};
@@ -877,7 +884,6 @@ function shelfSec(){const cur=SHP[S.ss]?S.ss:'auto',st=SHP[cur],wk=S.wd||'style'
  <h3 style="margin:16px 0 6px">Shelf wood</h3><div class="row" style="gap:12px">${Object.keys(WN).map(k=>`<div onclick="S.wd='${k}';save();R()" style="text-align:center;font-size:12px;cursor:pointer"><div style="width:62px;border-radius:8px;padding:7px 0 0;background:rgba(128,128,128,.12);outline:3px solid ${wk===k?'var(--ac)':'transparent'};outline-offset:2px;margin-bottom:4px"><div style="${plankCSS(st,k,tx)}"></div><div style="height:7px"></div></div>${WN[k]}</div>`).join('')}</div>
  <h3 style="margin:16px 0 6px">Wood texture</h3><div class="seg">${[['grain','Grain'],['smooth','Smooth'],['rustic','Rustic'],['planks','Planks']].map(([k,n])=>`<b class="${tx===k?'on':''}" onclick="S.wt='${k}';save();R()">${n}</b>`).join('')}</div>`}
 function MCUST(){const cur=document.documentElement.dataset.th,cu=S.cu||{ac:'#c2553a',bg:'#f7efe2'},TH=[['cream','Cream','#f7efe2','#b8651f'],['forest','Forest','#f2f5ec','#3f7a4b'],['midnight','Midnight','#180d2b','#a86bf0'],['rose','Rose','#fbeff0','#d1566b'],['ocean','Ocean','#eef5f9','#2b7fb8'],['lavender','Lavender','#f3effa','#7a5bd0'],['mocha','Mocha','#231a15','#d58b4c'],['custom','Custom',cu.bg,cu.ac]];return `<div class="card" style="display:block;cursor:default"><b>Your name</b><input class="in" value="${esc(S.nm||'')}" placeholder="Reader" onchange="S.nm=this.value.trim();save();R()"><b style="display:block;margin-top:12px">Color theme</b><div class="row" style="gap:14px">${TH.map(([k,l,bg,ac])=>`<div onclick="S.th='${k}';pairTh('${k}');save();R()" style="text-align:center;font-size:12px;cursor:pointer"><div style="width:56px;height:56px;border-radius:17px;margin:0 auto 4px;background:linear-gradient(135deg,${ac} 4%,${bg} 88%);box-shadow:inset 0 0 0 1px rgba(128,128,128,.25),0 3px 8px rgba(0,0,0,.12);outline:3px solid ${cur===k?'var(--tx)':'transparent'};outline-offset:2px"></div>${l}</div>`).join('')}</div>${cur==='custom'?`<div class="row" style="gap:18px"><div class="cnl" onclick="cpOpen('cu','ac')"><span class="cpsw" style="background:${cu.ac}"></span>Accent</div><div class="cnl" onclick="cpOpen('cu','bg')"><span class="cpsw" style="background:${cu.bg}"></span>Background</div></div><p class="mu">Pick any accent and background. Text colors adjust automatically.</p>`:''}<button class="bt" style="width:100%;margin-top:14px" onclick="v.adv=1;scrollTo(0,0);R()">Advanced themes${ADVN[cur]?' · '+ADVN[cur]:''} ›</button></div></div>${nsec()}${asec()}`}
-function MSYNC(){return `${acct()}<h2>Backup</h2><p class="mu">Save your whole library (books, covers, progress, sessions, notes) as a file, or restore from one. Restoring replaces what is on this device. ${S.lb?'Last backup: '+esc(new Date(S.lb).toLocaleString()):'No backup yet.'}</p><button class="bt pr" onclick="bkup()">⬇ Download backup</button><p class="mu" style="margin-bottom:2px">Restore from a backup file:</p><input type="file" onchange="rest(event)"><h2>Import from Goodreads</h2><p class="mu">On a computer: Goodreads → My Books → Import and export → Export Library. Then pick that CSV file here.</p><input type="file" onchange="imp(event)"><p class="mu">Can’t pick the file? Open the CSV in any text or notes app, copy everything, and paste it here:</p><textarea class="in" id="pt" rows="3"></textarea><button class="bt pr" onclick="imp(null,$('#pt').value)">Import pasted text</button>`}
 /* ---- advanced search (More > Covers & descriptions) ---- */
 const SRCS=['Google Books','Open Library','Apple Books','Wikipedia','Internet Archive'];
 function asOpen(id){const b=bk(id);v.as={id,t:b?b.t:'',a:b?b.a:'',on:SRCS.slice(),res:null,msg:''};v.cid=null;go('more');v.an=1;v.mp='tools';scrollTo(0,0);R()}
@@ -905,17 +911,17 @@ function ASUI(){const A=v.as||{id:'',t:'',a:'',on:SRCS,res:null},b=bk(A.id);
  return h}
 function MTOOLS(){return `<h2>Covers</h2><p class="mu">Finds covers online for every book that doesn’t have one. Keep this page open while it works.</p><button class="bt pr" onclick="allcov()">Find all covers</button><p class="mu" id="cvst"></p><h2>Descriptions</h2><p class="mu" id="dsst">Find missing book descriptions online.</p><button class="bt pr" onclick="allDesc()">Find descriptions for all books</button><p class="mu">Searches Google Books, Open Library, Apple Books, Internet Archive and Wikipedia.</p>${ASUI()}`}
 function MHUB(){const it=(k,t,s)=>`<div class="card" onclick="v.an=1;v.mp='${k}';scrollTo(0,0);R()" style="align-items:center;gap:14px"><span style="color:var(--ac)">${IC_[k]}</span><div class="fl"><div class="t">${t}</div><div class="mu">${s}</div></div><span class="mu" style="font-size:22px">›</span></div>`;
- return `${it('cust','Customisation','Themes, shelf style, wood, icon, notifications')}${it('sync','Sync &amp; backup','Account, backup, restore, Goodreads import')}${it('tools','Covers &amp; descriptions','Find missing covers and descriptions, or pick them by hand with Advanced search')}`}
+ return `${it('goals','Reading goals','Yearly and monthly goals, optionally with the books you want to read')}${it('cust','Customisation','Themes, shelf style, wood, icon, notifications')}${it('sync','Sync &amp; backup','Account, backup, restore, Goodreads import')}${it('tools','Covers &amp; descriptions','Find missing covers and descriptions, or pick them by hand with Advanced search')}`}
 const IC_={cust:`<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1.1"/><circle cx="12" cy="7.5" r="1.1"/><circle cx="16" cy="10" r="1.1"/><path d="M12 21c2 0 2-2 .5-3-1-.7-.5-2 1-2h3.5a3 3 0 0 0 3-3"/></svg>`,sync:`<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/></svg>`,tools:`<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>`};
 function MR(){if(v.adv)return ADV();
- const ttl={cust:'Customisation',sync:'Sync &amp; backup',tools:'Covers &amp; descriptions'},msg=v.msg?`<p class="g">${esc(v.msg)}</p>`:'';
+ const ttl={goals:'Reading goals',cust:'Customisation',sync:'Sync &amp; backup',tools:'Covers &amp; descriptions'},msg=v.msg?`<p class="g">${esc(v.msg)}</p>`:'';
  if(!v.mp)return `<h1>More</h1>${msg}${MHUB()}`;
- return `<div class="${S.bl===0?'':'blr2'}"><div class="row"><button class="bt" onclick="v.an=1;v.mp=null;v.cnd=null;scrollTo(0,0);R()">← Back</button></div><h1>${ttl[v.mp]}</h1>${msg}${v.mp==='cust'?MCUST():v.mp==='sync'?MSYNC():MTOOLS()}</div>`}
+ return `<div class="${S.bl===0?'':'blr2'}"><div class="row"><button class="bt" onclick="v.an=1;v.mp=null;v.cnd=null;v.gf=null;v.cf=null;scrollTo(0,0);R()">← Back</button></div><h1>${ttl[v.mp]}</h1>${msg}${v.mp==='cust'?MCUST():v.mp==='sync'?MSYNC():v.mp==='goals'?MGOALS():MTOOLS()}</div>`}
 function D(){let b=bk(v.id);if(!b){v.p='home';return H()}
  let p=pc(b),run=S.t&&S.t.id===b.id,ss=S.s.filter(s=>s.b===b.id).reverse(),u=b.m==='pct'?'%':'p',ba=avg(u,b.id),oa=avg(u),id=b.id,ctl='',spd=ba||oa,rem=b.m==='pct'?100-(+b.cur||0):(b.m==='pages'||b.adv)&&b.pages?b.pages-(+b.cur||0):0,eta=spd&&rem>0&&b.st!=='done'?'<p class="mu" style="text-align:center">⏳ About '+fm(Math.round(rem/spd*3600))+' left at your pace</p>':'';
  if(b.m==='pages')ctl=`<div class="row pgr"><button class="bt" onclick="bump('${id}',-10)">−10</button><button class="bt" onclick="bump('${id}',-1)">−1</button><input class="in" type="number" value="${b.cur||0}" onchange="setCur('${id}',this.value)"><button class="bt" onclick="bump('${id}',1)">+1</button><button class="bt" onclick="bump('${id}',10)">+10</button></div><div class="row"><span class="mu">Total pages in your edition</span><input class="in" type="number" value="${b.pages||''}" placeholder="?" onchange="setTot('${id}',this.value)"></div>`;
  else if(b.m==='pct')ctl=`<div class="big" id="pv">${b.cur||0}%</div><input type="range" min="0" max="100" value="${b.cur||0}" oninput="$('#pv').textContent=this.value+'%'" onchange="setCur('${id}',this.value)">`;
- else ctl=b.adv?advUI(b):b.ch.map((c,i)=>`<div class="ch"><input type="checkbox" ${c.d?'checked':''} onchange="chT('${id}',${i})"><input class="in" value="${esc(c.n)}" onchange="chN('${id}',${i},this.value)"><input class="in cp" type="number" placeholder="pages" value="${c.p||''}" onchange="chP('${id}',${i},this.value)"><button class="bt" onclick="chX('${id}',${i})">✕</button></div>`).join('')+`<div class="row"><input class="in" id="f-cn" type="number" placeholder="How many chapters?"><input class="in" id="f-cp" type="number" placeholder="Pages each (optional)"><button class="bt pr" onclick="chA('${id}')">Add</button></div><p class="mu">Add page counts to chapters for more accurate progress. Leave blank to count chapters equally.</p>`+advTog(b);
+ else ctl=b.adv?advUI(b):b.ch.map((c,i)=>`<div class="ch"><input type="checkbox" ${c.d?'checked':''} onchange="chT('${id}',${i})"><input class="in" value="${esc(c.n)}" onchange="chN('${id}',${i},this.value)"><input class="in cp" type="number" placeholder="pages" value="${c.p||''}" onchange="chP('${id}',${i},this.value)"><button class="bt" onclick="chX('${id}',${i})">✕</button></div>`).join('')+cfBar(b)+`<div class="row"><input class="in" id="f-cn" type="number" placeholder="How many chapters?"><input class="in" id="f-cp" type="number" placeholder="Pages each (optional)"><button class="bt pr" onclick="chA('${id}')">Add</button></div><p class="mu">Add page counts to chapters for more accurate progress. Leave blank to count chapters equally.</p>`+advTog(b);
  return `<div class="${S.bl===0?'':'blr'}"><div class="row"><button class="bt" onclick="bye(()=>go(v.pp||'home',1))">← Back</button><span style="flex:1"></span><button class="bt" onclick="v.sh='edit';v.cv='';R()">Edit</button></div>
  <div class="row" style="align-items:flex-start;gap:14px"><div class="cvw">${cv(b,'cvl')}</div><div class="fl"><h1 class="dsx" style="font-size:24px;margin:0">${esc(b.t)}</h1><div class="mu">${esc(b.a)}${b.sr?' · '+esc(b.sr):''}</div><select class="in" onchange="setSt('${id}',this.value)">${[['toread','To read'],['reading','Reading'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b.st===k?'selected':''}>${l}</option>`).join('')}</select></div></div>
  ${meta(b)}${descSec(b)}<div style="text-align:center;margin-top:10px">${[1,2,3,4,5].map(n=>`<span onclick="rate('${id}',${n})" style="font-size:28px;cursor:pointer;color:${n<=(b.r||0)?'#e0a030':'var(--bd)'}">★</span>`).join('')}</div><div class="big">${p.toFixed(0)}%</div><div class="bar"><i style="width:${p}%"></i></div>${eta}
@@ -930,7 +936,7 @@ function T(){let ss=S.s,tot=ss.reduce((a,s)=>a+s.k,0),pa=avg('p'),qa=avg('%'),da
  <h2>Speed by book</h2>${per.length?per.map(x=>{let o=avg(x.u);return `<div class="ses"><span>${esc(x.b.t)}</span><span>${x.a.toFixed(1)} ${U(x.u)} ${o?(x.a>=o?'<span class="g">▲':'<span class="r">▼')+Math.abs((x.a/o-1)*100).toFixed(0)+'%</span>':''}</span></div>`}).join(''):'<p class="mu">Log a few timed sessions to see how fast you read.</p>'}`}
 function SH(){let b=v.sh==='edit'?bk(v.id):null;
  if(v.sh==='cpick')return CPSH();if(v.sh==='coledit')return COLEDIT();if(v.sh==='colmenu')return COLMENU();if(v.sh==='colbooks')return CBSH();
- if(v.sh==='col')return COLSH();if(v.sh==='addcol')return ADDCOL();if(v.sh==='stop'){let bb=bk(S.t.id);if(bb.adv&&bb.ch.length)return advStopSh(bb);let q=bb.m==='pct'?'What percent are you at now?':bb.m==='pages'?'What page are you on now?':'Pages read this session (optional)';
+ if(v.sh==='col')return COLSH();if(v.sh==='addcol')return ADDCOL();if(v.sh==='abperm')return ABPERM();if(v.sh==='stop'){let bb=bk(S.t.id);if(bb.adv&&bb.ch.length)return advStopSh(bb);let q=bb.m==='pct'?'What percent are you at now?':bb.m==='pages'?'What page are you on now?':'Pages read this session (optional)';
   return `<div class="sh"><div><h2 style="margin-top:0">Nice session! ${fm(el())}</h2><p class="mu">${q}</p><input class="in" id="f-n" type="number" value="${bb.m==='ch'?'':bb.cur||0}"><div class="row"><button class="bt" onclick="v.sh=null;R();nf()">Cancel</button><button class="bt pr" style="flex:1" onclick="tstop()">Save session</button></div></div></div>`}
  return `<div class="sh"><div><h2 style="margin-top:0">${b?'Edit book':'Add a book'}</h2><div class="row"><input class="in" id="q" placeholder="Search title or author" value="${b?esc(b.t+' '+b.a):''}" onkeydown="if(event.key==='Enter')srch()"><button class="bt pr" onclick="srch()">Search</button></div><div id="res"></div><input class="in" id="f-t" placeholder="Title" value="${b?esc(b.t):''}"><input class="in" id="f-a" placeholder="Author" value="${b?esc(b.a):''}"><input class="in" id="f-p" type="number" placeholder="Total pages (optional)" value="${b&&b.pages?b.pages:''}">
 <textarea class="in" id="f-d" rows="4" placeholder="Description (filled in automatically, you can edit it)">${b?esc(b.ds||''):''}</textarea><p class="mu" style="margin:0 0 8px;text-decoration:underline;cursor:pointer" onclick="fillDesc()">Find description online</p>
@@ -939,10 +945,376 @@ function SH(){let b=v.sh==='edit'?bk(v.id):null;
  <p class="mu" style="margin-bottom:2px">Cover (photo or image from your device)</p><input type="file" accept="image/*" onchange="cov(event)">
  <div class="row"><button class="bt" onclick="v.sh=null;R()">Cancel</button>${b?`<button class="bt" onclick="del()">Delete</button>`:''}<button class="bt pr" style="flex:1" onclick="sv()">Save</button></div></div></div>`}
 function cov(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas'),k=Math.min(1,240/i.width);c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);v.cv=c.toDataURL('image/jpeg',.7)};i.src=r.result};r.readAsDataURL(f)}
-function bkup(){let d=new Date(),p=n=>String(n).padStart(2,'0'),nm='shelfie-backup-'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'_'+p(d.getHours())+'-'+p(d.getMinutes())+'.json',a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download=nm;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
- S.lb=Date.now();save();v.msg='Backup saved as '+nm;scrollTo(0,0);R()}
-function rest(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.b)throw 0;if(!confirm('Replace everything on this device with this backup ('+x.b.length+' books)?'))return;let od=S.dl||{},op=S.dp||[],old=S.b.map(b=>b.id);S=x;S.sd=1;S.dl=Object.assign({},od,S.dl||{});S.dp=[...op];old.forEach(i=>{if(!S.b.some(b=>b.id===i)){S.dl[i]=Date.now();S.dp.push(i)}});S.uid=(window.fbUser&&window.fbUser.uid)||undefined;MD=1;for(let k in BL)delete BL[k];save();v.msg='Backup restored ('+S.b.length+' books)';v.tab='all';scrollTo(0,0);R()}catch(err){v.msg='That file is not a valid Shelfie backup.';scrollTo(0,0);R()}};r.readAsText(f);e.target.value=''}
+/* ======== XML backup (saved to the Downloads folder) ======== */
+var _FL=null;
+function flGet(){
+ if(_FL)return _FL;
+ try{var C=window.Capacitor;if(C&&C.isNativePlatform&&C.isNativePlatform())_FL=C.registerPlugin('ShelfieFiles')}catch(e){}
+ return _FL;
+}
+const XB_=/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g;
+const xT_=s=>String(s).replace(XB_,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\r/g,'&#13;');
+const xA_=s=>xT_(s).replace(/"/g,'&quot;').replace(/\t/g,'&#9;').replace(/\n/g,'&#10;');
+function x2_(v,k,o){
+ const ka=k==null?'':' k="'+xA_(k)+'"';
+ if(v===null||v===undefined){o.push('<i'+ka+' t="z"/>');return}
+ if(typeof v==='string'){o.push('<i'+ka+' t="s">'+xT_(v)+'</i>');return}
+ if(typeof v==='number'){o.push('<i'+ka+' t="n">'+(isFinite(v)?String(v):'0')+'</i>');return}
+ if(typeof v==='boolean'){o.push('<i'+ka+' t="b">'+(v?'1':'0')+'</i>');return}
+ if(Array.isArray(v)){o.push('<i'+ka+' t="a">');for(const e of v){o.push('\n');x2_(e,null,o)}o.push('</i>');return}
+ if(typeof v==='object'){o.push('<i'+ka+' t="o">');for(const kk of Object.keys(v)){const e=v[kk];if(e===undefined||typeof e==='function')continue;o.push('\n');x2_(e,kk,o)}o.push('</i>');return}
+ o.push('<i'+ka+' t="z"/>');
+}
+function toXml(state){
+ const s=JSON.parse(JSON.stringify(state)),o=[];
+ o.push('<?xml version="1.0" encoding="UTF-8"?>\n<shelfie-backup format="2" app="Shelfie" exported="'+new Date().toISOString()+'" books="'+((s.b||[]).length)+'" sessions="'+((s.s||[]).length)+'">\n');
+ x2_(s,null,o);
+ o.push('\n</shelfie-backup>\n');
+ return o.join('');
+}
+function xD_(s){return s.indexOf('&')<0?s:s.replace(/&(#x[0-9a-fA-F]+|#\d+|amp|lt|gt|quot|apos);/g,(m,e)=>e==='amp'?'&':e==='lt'?'<':e==='gt'?'>':e==='quot'?'"':e==='apos'?"'":String.fromCodePoint(e[1]==='x'?parseInt(e.slice(2),16):parseInt(e.slice(1),10)))}
+function fromXml(x){
+ const re=/<!--[\s\S]*?-->|<\?[\s\S]*?\?>|<(\/?)([A-Za-z_][\w.-]*)((?:\s+[\w.:-]+\s*=\s*"[^"]*")*)\s*(\/?)>|([^<]+)/g;
+ const root={tag:'#',attrs:{},kids:[],text:''},st=[root];let m;
+ while((m=re.exec(x))){
+  if(m[2]!==undefined){
+   if(m[1]){if(st.length<2||st[st.length-1].tag!==m[2])throw new Error('Malformed file');st.pop();continue}
+   const at={};m[3].replace(/([\w.:-]+)\s*=\s*"([^"]*)"/g,(a,k,val)=>{at[k]=xD_(val);return a});
+   const n={tag:m[2],attrs:at,kids:[],text:''};st[st.length-1].kids.push(n);
+   if(!m[4])st.push(n);
+  }else if(m[5]!==undefined){st[st.length-1].text+=m[5]}
+ }
+ if(st.length!==1)throw new Error('File ends too early (it may be cut off)');
+ const top=root.kids.find(n=>n.tag==='shelfie-backup');
+ if(!top)throw new Error('Not a Shelfie backup');
+ fromXml.meta=top.attrs;
+ const first=top.kids.find(n=>n.tag==='i');
+ if(!first)throw new Error('Backup is empty');
+ const cv=n=>{
+  const t=n.attrs.t;
+  if(t==='s')return xD_(n.text);
+  if(t==='n')return Number(n.text);
+  if(t==='b')return n.text.trim()==='1';
+  if(t==='z')return null;
+  if(t==='a')return n.kids.filter(k=>k.tag==='i').map(cv);
+  if(t==='o'){const o={};for(const k of n.kids){if(k.tag!=='i')continue;const key=k.attrs.k;if(key==='__proto__')continue;o[key]=cv(k)}return o}
+  throw new Error('Unknown item type');
+ };
+ return cv(first);
+}
+function bkParse(text){
+ const t=String(text).replace(/^\uFEFF/,'').trim();
+ return t[0]==='<'?fromXml(t):JSON.parse(t);
+}
+async function sha256hex(str){
+ const b=new TextEncoder().encode(str),h=await crypto.subtle.digest('SHA-256',b);
+ return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+/* ======== Backups: folder, schedule, restore ======== */
+var _abf,_abl,_abBusy=0;
+const abDefault=()=>({on:false,f:'day',keep:10,last:0,err:''});
+function abGet(){try{return Object.assign(abDefault(),JSON.parse(localStorage.getItem('shf_ab')||'{}'))}catch(e){return abDefault()}}
+function abSet(o){const a=Object.assign(abGet(),o);try{localStorage.setItem('shf_ab',JSON.stringify(a))}catch(e){}return a}
+const abFreqName={day:'day',week:'week',month:'month'};
+function abWeek(t){const x=new Date(t);x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x.getTime()}
+function abDue(a,now){
+ if(!a.on)return false;if(!a.last)return true;
+ const L=new Date(a.last),N=new Date(now);
+ if(a.f==='week')return abWeek(a.last)!==abWeek(now);
+ if(a.f==='month')return L.getMonth()!==N.getMonth()||L.getFullYear()!==N.getFullYear();
+ return L.toDateString()!==N.toDateString();
+}
+function abNext(a){
+ if(!a.on)return '';if(!a.last||abDue(a,Date.now()))return 'next time you open Shelfie';
+ const L=new Date(a.last);let d;
+ if(a.f==='week'){d=new Date(abWeek(a.last));d.setDate(d.getDate()+7)}
+ else if(a.f==='month')d=new Date(L.getFullYear(),L.getMonth()+1,1);
+ else{d=new Date(L);d.setHours(0,0,0,0);d.setDate(d.getDate()+1)}
+ return 'on or after '+d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+}
+async function bkBuild(tag){
+ const d=new Date(),p=n=>String(n).padStart(2,'0'),stamp=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'_'+p(d.getHours())+'-'+p(d.getMinutes());
+ const snap=JSON.parse(JSON.stringify(S)),xml=toXml(snap);
+ let same=false;try{same=JSON.stringify(fromXml(xml))===JSON.stringify(snap)}catch(e){}
+ return {name:'shelfie-'+(tag||'backup')+'-'+stamp+(same?'.xml':'.json'),data:same?xml:JSON.stringify(snap),mime:same?'text/xml':'application/json',sum:(snap.b||[]).length+' books, '+(snap.s||[]).length+' sessions'};
+}
+async function abLoad(){const FL=flGet();if(!FL||!FL.getFolder){_abf=null;return null}try{const r=await FL.getFolder();_abf=r&&r.has?r:(r&&r.lost?{lost:1}:null)}catch(e){_abf=null}try{if(FL.checkAccess)_abp=await FL.checkAccess()}catch(e){}return _abf}
+var _abp=null;
+// Asks Android for storage permission where it is needed (Android 9 and older). Newer Android needs none: Downloads just works, and a chosen folder is its own grant.
+async function abAccess(){const FL=flGet();if(!FL||!FL.checkAccess)return true;try{let r=await FL.checkAccess();if(r.granted||!r.runtime){_abp=r;return true}r=await FL.requestAccess();_abp=r;if(!r.granted)v.msg='Shelfie needs permission to save files. Tap Allow access when Android asks, or choose a folder instead.';return !!r.granted}catch(e){return true}}
+function abAllowBtn(){abAccess().then(()=>{R()})}
+async function abList(){const FL=flGet();_abLoadingDone();if(!FL||!FL.listBackups){_abl=[];return}try{const r=await FL.listBackups();_abl=(r&&r.files)||[]}catch(e){_abl=[]}if(v.p==='more'&&v.mp==='sync')R()}
+function _abLoadingDone(){window._abLoading=0}
+// writes a built backup to the chosen folder (or Downloads) and proves it matches
+async function bkWrite(b){
+ const FL=flGet();if(!FL)return null;
+ const f=_abf!==undefined?_abf:await abLoad();let r,where,note='';
+ const fail=e=>{const m=String(e&&e.message||e);throw new Error(/not implemented|not available/i.test(m)?'This version of the app can’t save files yet. Install the newest Shelfie app update.':m)};
+ if(f&&f.has&&FL.saveToFolder){
+  try{r=await FL.saveToFolder({name:b.name,mime:b.mime,data:b.data});where=r.folder||f.name}
+  catch(e){
+   if(String(e&&e.message||e)==='NO_FOLDER'){_abf={lost:1};note='Your backup folder was not available, so this one went to Downloads. Choose the folder again to keep using it.';r=await FL.saveToDownloads({name:b.name,mime:b.mime,data:b.data}).catch(fail);where='Downloads'}
+   else fail(e)
+  }
+ }else{
+  if(!(await abAccess()))throw new Error('Shelfie needs permission to save files. Allow it when asked, or choose a folder instead.');
+  if(f&&f.lost)note='Your backup folder was not available, so this one went to Downloads. Choose the folder again to keep using it.';
+  r=await FL.saveToDownloads({name:b.name,mime:b.mime,data:b.data}).catch(fail);where='Downloads';
+ }
+ if(r.sha256!==await sha256hex(b.data))throw new Error('The saved file did not match what was sent, so it can’t be trusted. Please try again.');
+ r.where=where;r.note=note;return r;
+}
+async function bkup(){
+ try{
+  const b=await bkBuild('backup'),FL=flGet();
+  if(FL){
+   const r=await bkWrite(b);S.lb=Date.now();save();_abl=undefined;
+   v.msg='Backup saved and checked ✓ '+r.where+' → '+r.name+' ('+b.sum+', '+Math.max(1,Math.round(r.size/1024))+' KB).'+(r.note?' '+r.note:'');
+  }else{
+   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([b.data],{type:b.mime}));a.download=b.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+   S.lb=Date.now();save();
+   v.msg='Backup downloaded as '+b.name+' ('+b.sum+'). Look in your browser’s Downloads.';
+  }
+ }catch(err){v.msg='Backup failed: '+(err&&err.message||err)}
+ scrollTo(0,0);R();
+}
+// safety copy taken right before a restore replaces the library
+async function bkSafety(){const FL=flGet();if(!FL)return;const b=await bkBuild('before-restore');await bkWrite(b)}
+async function abRun(){
+ if(_abBusy)return;const FL=flGet();if(!FL||!S.b||!S.b.length)return;_abBusy=1;
+ try{
+  const a=abGet(),b=await bkBuild('auto-backup'),r=await bkWrite(b);
+  S.lb=Date.now();save();abSet({last:Date.now(),err:r.note||''});
+  await abPrune(a.keep);_abl=undefined;
+  if(typeof toast==='function')toast('Automatic backup saved ✓');
+ }catch(e){abSet({err:'The last automatic backup failed: '+(e&&e.message||e)})}
+ _abBusy=0;if(v.p==='more'&&v.mp==='sync')R();
+}
+async function abPrune(keep){
+ const FL=flGet();if(!FL||!FL.listBackups||!(keep>0))return;
+ try{const r=await FL.listBackups(),auto=(r.files||[]).filter(x=>/^shelfie-auto-backup-/i.test(x.name));
+  for(const x of auto.slice(keep))await FL.deleteFile({uri:x.uri}).catch(()=>{})}catch(e){}
+}
+function abCheck(){const FL=flGet();if(!FL)return;if(abDue(abGet(),Date.now()))abRun()}
+async function abPickFolder(){
+ const FL=flGet();if(!FL||!FL.pickFolder){v.msg='Choosing a folder needs the newest Shelfie app update.';R();return}
+ try{const r=await FL.pickFolder();if(r&&r.cancelled)return;_abf=r;_abl=undefined;v.msg='Backups will be saved to “'+(r.name||'your folder')+'”.'}
+ catch(e){v.msg='Could not use that folder: '+(e&&e.message||e)}
+ scrollTo(0,0);R();
+}
+async function abUseDownloads(){const FL=flGet();if(FL&&FL.clearFolder)try{await FL.clearFolder()}catch(e){}_abf=null;_abl=[];v.msg='Backups will be saved to your Downloads folder.';R()}
+function abToggle(){
+ const a=abGet();if(a.on){abSet({on:false});R();return}
+ if(flGet()&&!(_abf&&_abf.has)&&!a.asked){v.sh='abperm';R();return}
+ abSet({on:true});abCheck();R()}
+function abAllow(mode){
+ v.sh=null;
+ if(mode==='folder'){abPickFolder().then(()=>{if(_abf&&_abf.has){abSet({on:true,asked:1});abCheck()}R()});return}
+ abAccess().then(ok=>{if(ok){abSet({on:true,asked:1});abCheck()}scrollTo(0,0);R()})
+}
+function ABPERM(){return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs"><div class="grab"></div>
+ <h2 style="margin:0 0 6px">Allow Shelfie to save backups?</h2>
+ <p class="mu" style="margin:0 0 10px">Automatic backups need somewhere to be saved. Android keeps your files private, so Shelfie has to ask first. Pick one:</p>
+ <div class="card" style="display:block" onclick="abAllow('folder')"><b>📁 Choose a folder</b><div class="mu" style="font-size:13px">Recommended. Android opens its folder picker. Create a folder such as “Shelfie backups” and tap “Use this folder”, then “Allow”. Shelfie can only touch that one folder.</div></div>
+ <div class="card" style="display:block" onclick="abAllow('downloads')"><b>⬇️ Use Downloads</b><div class="mu" style="font-size:13px">Saves into your phone’s Downloads folder. On older Android versions Android will ask for storage permission.</div></div>
+ <button class="bt" style="width:100%;margin-top:6px" onclick="v.sh=null;R()">Not now</button></div></div>`}
+function abFreq(f){abSet({f:f,last:abGet().last});R()}
+function abKeep(n){abSet({keep:n});abPrune(n).then(()=>{_abl=undefined;R()});R()}
+async function abPickRestore(){
+ const FL=flGet();
+ if(FL&&FL.pickBackupFile){
+  try{const r=await FL.pickBackupFile();if(r&&r.cancelled)return;
+   if(!bkOk(r.name)){v.msg='Please choose a Shelfie backup file (.xml or .json).';scrollTo(0,0);R();return}
+   restApply(bkParse(r.data),r.name)}
+  catch(e){v.msg='That file is not a valid Shelfie backup.';scrollTo(0,0);R()}
+ }else{const i=document.getElementById('rfile');if(i)i.click()}
+}
+async function abRestoreFrom(i){
+ const FL=flGet(),f=(_abl||[])[i];if(!FL||!f)return;
+ try{const r=await FL.readFile({uri:f.uri});restApply(bkParse(r.data),f.name)}
+ catch(e){v.msg='That file is not a valid Shelfie backup.';scrollTo(0,0);R()}
+}
+const abFmt=t=>t?new Date(t).toLocaleString(undefined,{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}):'';
+function MSYNC(){
+ const FL=flGet(),a=abGet(),f=_abf,nat=!!(FL&&FL.pickFolder);
+ if(nat&&_abf===undefined&&!window._abLoadingF){window._abLoadingF=1;abLoad().then(()=>{window._abLoadingF=0;_abl=undefined;if(v.p==='more'&&v.mp==='sync')R()})}
+ if(nat&&_abl===undefined&&_abf!==undefined&&!window._abLoading){window._abLoading=1;setTimeout(abList,30)}
+ const loc=f&&f.has?esc(f.name):'Downloads',fl=(_abl||[]);
+ const pill=(on,cb,t)=>`<span class="tab ${on?'on':''}" onclick="${cb}">${t}</span>`;
+ return `${acct()}<h2>Backup</h2><p class="mu">Saves your whole library (books, covers, progress, sessions, notes, goals) as an XML file, then reads the file back to check it is complete. ${S.lb?'Last backup: '+esc(new Date(S.lb).toLocaleString())+'.':'No backup yet.'}</p>
+ ${nat?`<div class="card" style="display:block;cursor:default"><div class="mu" style="font-size:13px">Save location</div><div style="font-weight:700;margin:2px 0 8px">${f&&f.has?'📁 '+loc:'Downloads (default)'}</div>${f&&f.lost?'<p class="mu" style="margin:0 0 8px">Your folder isn’t available any more — choose it again.</p>':''}<div class="row" style="margin:0"><button class="bt" onclick="abPickFolder()">${f&&f.has?'Change folder':'Choose a folder'}</button>${f&&f.has?'<button class="bt" onclick="abUseDownloads()">Use Downloads</button>':''}</div>${f&&f.has?'<p class="g" style="font-size:13px;margin:10px 0 0">✓ Shelfie has permission to save in this folder.</p>':(_abp&&_abp.runtime&&!_abp.granted?'<p class="r" style="font-size:13px;margin:10px 0 4px">Shelfie needs permission to save files to Downloads.</p><button class="bt pr" onclick="abAllowBtn()">Allow access</button>':'<p class="mu" style="font-size:12px;margin:10px 0 0">Downloads needs no extra permission. To use your own folder, tap “Choose a folder” and allow it when Android asks (create a folder like “Shelfie backups”, then “Use this folder”).</p>')}</div>`:''}
+ <button class="bt pr" style="margin-top:10px" onclick="bkup()">Back up now</button>
+ ${nat?`<h2 style="margin-top:22px">Automatic backups</h2><div class="card" style="display:block;cursor:default"><div class="row" style="flex-wrap:nowrap;margin:0;align-items:center"><div class="fl"><b>${a.on?'On':'Off'}</b><div class="mu" style="font-size:13px">One backup each ${abFreqName[a.f]} into ${loc}.</div></div><span class="tab ${a.on?'on':''}" onclick="abToggle()">${a.on?'Turn off':'Turn on'}</span></div>
+  ${a.on?`<div class="tabs" style="margin:12px 0 4px">${pill(a.f==='day','abFreq(\'day\')','Daily')}${pill(a.f==='week','abFreq(\'week\')','Weekly')}${pill(a.f==='month','abFreq(\'month\')','Monthly')}</div>
+  <div class="mu" style="font-size:13px;margin:6px 0 2px">Keep the latest</div><div class="tabs" style="margin:4px 0">${[5,10,20,0].map(n=>pill(a.keep===n,'abKeep('+n+')',n?n:'All')).join('')}</div>
+  <p class="mu" style="font-size:12px;margin:8px 0 0">${a.last?'Last automatic backup: '+esc(abFmt(a.last))+'. ':''}Next: ${abNext(a)}. Older automatic backups beyond this number are removed; your own “Back up now” files are never deleted.</p>
+  <p class="mu" style="font-size:12px;margin:6px 0 0">Automatic backups run when you open Shelfie or come back to it, so if a backup is due it is saved right away.</p>`:''}
+  ${a.err?`<p class="r" style="font-size:13px;margin:8px 0 0">${esc(a.err)}</p>`:''}</div>`:''}
+ <h2 style="margin-top:22px">Restore</h2><p class="mu" style="margin-top:0">Restoring replaces what is on this device. Shelfie saves a safety copy first.</p>
+ <button class="bt" onclick="abPickRestore()">Choose a backup file…</button><input id="rfile" type="file" accept=".xml,.json,text/xml,application/xml,application/json" onchange="rest(event)" style="display:none">
+ <p class="mu" style="font-size:12px;margin:6px 0 0">Only .xml and .json backup files are shown.</p>
+ ${nat&&f&&f.has?`<div class="row" style="margin:14px 0 4px;flex-wrap:nowrap"><b style="flex:1">Backups in ${loc}</b><span class="mu" style="cursor:pointer;text-decoration:underline" onclick="_abl=undefined;R()">Refresh</span></div>${_abl===undefined?'<p class="mu">Looking…</p>':fl.length?fl.slice(0,12).map((x,i)=>`<div class="card" style="display:block;cursor:default;padding:10px 12px"><div style="font-size:14px;word-break:break-all">${esc(x.name)}</div><div class="mu" style="font-size:12px">${esc(abFmt(x.modified))} · ${Math.max(1,Math.round(x.size/1024))} KB</div><div class="row" style="margin:6px 0 0"><button class="bt" onclick="abRestoreFrom(${i})">Restore this</button></div></div>`).join('')+(fl.length>12?'<p class="mu" style="font-size:12px">Showing the 12 newest of '+fl.length+'.</p>':''):'<p class="mu">No Shelfie backups in this folder yet.</p>'}`:''}
+ <p class="mu" style="margin:16px 0 2px">Check a backup file without restoring it:</p><input type="file" accept=".xml,.json,text/xml,application/xml,application/json" onchange="bkCheck(event)">
+ <h2>Import from Goodreads</h2><p class="mu">On a computer: Goodreads → My Books → Import and export → Export Library. Then pick that CSV file here.</p><input type="file" onchange="imp(event)"><p class="mu">Can’t pick the file? Open the CSV in any text or notes app, copy everything, and paste it here:</p><textarea class="in" id="pt" rows="3"></textarea><button class="bt pr" onclick="imp(null,$('#pt').value)">Import pasted text</button>`}
+function bkCheck(e){
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=()=>{
+  try{
+   const x=bkParse(r.result);if(!x||!x.b)throw new Error('no library inside');
+   const mt=fromXml.meta&&fromXml.meta.exported?' Saved '+new Date(fromXml.meta.exported).toLocaleString()+'.':'';
+   v.msg='This backup file is good ✓ It holds '+x.b.length+' books, '+(x.s||[]).length+' sessions'+((x.goals||[]).length?', '+x.goals.length+' goals':'')+'.'+mt+' Nothing was changed.';
+  }catch(err){v.msg='That file can’t be read as a Shelfie backup ('+(err&&err.message||err)+').'}
+  scrollTo(0,0);R();
+ };
+ r.readAsText(f);e.target.value='';
+}
+
+/* ======== Reading goals ======== */
+const MN_=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function gMig(){
+ if(S.goals!==undefined)return;
+ S.goals=[];
+ if(S.gl>0){const y=new Date().getFullYear();S.goals.push({id:uid(),t:'year',y:y,n:S.gl,a:0,ib:0,bk:null,since:Date.now(),c:Date.now(),mig:1})}
+ try{save()}catch(e){}
+}
+function gRange(g){return g.t==='month'?[new Date(g.y,g.m-1,1).getTime(),new Date(g.y,g.m,1).getTime()]:[new Date(g.y,0,1).getTime(),new Date(g.y+1,0,1).getTime()]}
+function gTitle(g){return g.t==='month'?MN_[g.m-1]+' '+g.y:'Year '+g.y}
+function gDone(g){
+ const r=gRange(g),a=r[0],b=r[1],lo=g.ib?a:Math.max(a,g.since||0),ids=g.bk&&g.bk.length?g.bk:null;
+ return S.b.filter(x=>x.st==='done'&&x.fd&&x.fd>=lo&&x.fd<b&&(!ids||ids.some(i=>i==x.id))).length;
+}
+const gHave=g=>(g.a||0)+gDone(g);
+function gStatus(g){
+ const now=Date.now(),r=gRange(g),a=r[0],b=r[1],have=gHave(g);
+ if(g.n>0&&have>=g.n)return['Goal reached! 🎉','g'];
+ if(now<a)return['Starts '+new Date(a).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}),''];
+ if(now>=b)return['Ended · '+(g.n-have)+' short of the goal',''];
+ const ex=g.n*(now-a)/(b-a),left=Math.max(1,Math.ceil((b-now)/864e5)),ok=have>=ex;
+ return[(ok?'on track':'about '+Math.max(1,Math.ceil(ex-have))+' behind pace')+' · '+left+' day'+(left===1?'':'s')+' left',ok?'g':'r'];
+}
+function gActive(){
+ const now=Date.now();
+ return(S.goals||[]).filter(g=>{const r=gRange(g);return now>=r[0]&&now<r[1]}).sort((x,y)=>(x.t==='month'?0:1)-(y.t==='month'?0:1));
+}
+function goGoals(){go('more');v.an=1;v.mp='goals';v.gf=null;scrollTo(0,0);R()}
+function goalsHome(k){
+ gMig();
+ const act=gActive().slice(0,3);
+ const rows=act.map(g=>{const have=gHave(g),st=gStatus(g);return`<div style="margin-top:12px"><div class="row" style="margin:0"><b style="font-size:14px">${g.t==='month'?'📅':'🎯'} ${gTitle(g)}${g.bk&&g.bk.length?' · my picks':''}</b><span style="flex:1"></span><span class="mu">${have} / ${g.n}</span></div><div class="bar"><i style="width:${Math.min(100,g.n?have/g.n*100:0)}%"></i></div><div class="mu ${st[1]}">${st[0]}</div></div>`}).join('');
+ return`<div class="card" style="display:block;cursor:default"><div class="row" style="margin:0"><b>Reading goals</b><span style="flex:1"></span><button class="bt" style="padding:6px 14px" onclick="goGoals()">${(S.goals||[]).length?'Manage':'+ Add goal'}</button></div>${rows||'<div class="mu" style="margin-top:8px">Set a goal for this month or this year.</div>'}<div class="mu" style="margin-top:10px">${k?'🔥 '+k+' day reading streak':'Log a session today to start a streak'}</div></div>`;
+}
+function gCard(g){
+ const have=gHave(g),st=gStatus(g);
+ const books=g.bk&&g.bk.length?'<div class="mu" style="margin-top:6px">'+g.bk.map(i=>bk(i)).filter(Boolean).map(b=>(b.st==='done'?'✓ ':'• ')+esc(b.t)).join('<br>')+'</div>':'';
+ return`<div class="card" style="display:block;cursor:default"><div class="row" style="margin:0"><b>${g.t==='month'?'📅':'🎯'} ${gTitle(g)}</b><span style="flex:1"></span><span class="mu">${have} / ${g.n}</span></div><div class="bar"><i style="width:${Math.min(100,g.n?have/g.n*100:0)}%"></i></div><div class="mu ${st[1]}">${st[0]}</div>${g.a?`<div class="mu">Includes ${g.a} already read</div>`:''}${books}<div class="row" style="margin:12px 0 0"><button class="bt" onclick="gEdit('${g.id}')">Edit</button><button class="bt" onclick="gDel('${g.id}')">Delete</button></div></div>`;
+}
+function MGOALS(){
+ gMig();
+ if(v.gf)return gForm();
+ const gs=(S.goals||[]).slice(),now=Date.now(),R_=g=>gRange(g);
+ const cur=gActive(),up=gs.filter(g=>R_(g)[0]>now).sort((a,b)=>R_(a)[0]-R_(b)[0]),past=gs.filter(g=>R_(g)[1]<=now).sort((a,b)=>R_(b)[0]-R_(a)[0]);
+ const grp=(t,l)=>l.length?`<h2>${t}</h2>`+l.map(gCard).join(''):'';
+ return`<p class="mu">Set a target for a month or a year. Only books you finish <b>after</b> making the goal count, plus any number you say you’ve already read.</p><button class="bt pr" onclick="gNew()">+ New goal</button>${grp('Now',cur)}${grp('Upcoming',up)}${grp('Past',past)}${gs.length?'':'<p class="mu" style="margin-top:14px">No goals yet.</p>'}`;
+}
+function gNew(){const d=new Date();v.gf={id:null,t:'year',y:d.getFullYear(),m:d.getMonth()+1,n:10,a:0,ib:0,pick:false,bk:[]};R()}
+function gEdit(id){const g=(S.goals||[]).find(x=>x.id===id);if(!g)return;const d=new Date();v.gf={id:g.id,t:g.t,y:g.y,m:g.m||d.getMonth()+1,n:g.n,a:g.a||0,ib:g.ib?1:0,pick:!!(g.bk&&g.bk.length),bk:(g.bk||[]).slice(),since:g.since,c:g.c};scrollTo(0,0);R()}
+function gSet(k,val){const f=v.gf;f[k]=val;if(k==='t'){if(val==='month'&&f.n===10)f.n=3;if(val==='year'&&f.n===3)f.n=10}R()}
+function gPick(c){v.gf.pick=c;R()}
+function gFilt(q){q=String(q).toLowerCase();document.querySelectorAll('.gpb').forEach(e=>{e.style.display=e.dataset.q.indexOf(q)>=0?'':'none'})}
+function gTog(id,el){const f=v.gf,i=f.bk.findIndex(x=>x==id);if(i>=0)f.bk.splice(i,1);else f.bk.push(id);el.classList.toggle('on',i<0);el.querySelector('.gpk').textContent=i<0?'✓':'';const c=document.getElementById('gcnt');if(c)c.textContent=f.bk.length+' chosen'}
+function gForm(){
+ const f=v.gf,y0=new Date().getFullYear(),ys=[];for(let y=y0-1;y<=y0+3;y++)ys.push(y);
+ const opt=(arr,sel)=>arr.map(a=>`<option value="${a[0]}" ${a[0]==sel?'selected':''}>${a[1]}</option>`).join('');
+ const per=f.t==='month'
+  ?`<div class="row"><select class="in" onchange="v.gf.m=+this.value">${opt(MN_.map((n,i)=>[i+1,n]),f.m)}</select><select class="in" onchange="v.gf.y=+this.value">${opt(ys.map(y=>[y,y]),f.y)}</select></div>`
+  :`<select class="in" onchange="v.gf.y=+this.value">${opt(ys.map(y=>[y,y]),f.y)}</select>`;
+ const list=S.b.filter(b=>b.st!=='done'&&b.st!=='dnf'||f.bk.some(i=>i==b.id)).sort((a,b)=>(a.st==='reading'?0:1)-(b.st==='reading'?0:1)||String(a.t).localeCompare(String(b.t)));
+ const pick=f.pick?`<p class="mu" id="gcnt">${f.bk.length} chosen</p><input class="in" placeholder="Search your books" oninput="gFilt(this.value)"><div class="gpl">${list.map(b=>{const on=f.bk.some(i=>i==b.id);return`<div class="gpb ${on?'on':''}" data-q="${esc((String(b.t)+' '+(b.a||'')).toLowerCase())}" onclick="gTog('${b.id}',this)"><span class="gpk">${on?'✓':''}</span><div class="fl"><div class="t">${esc(b.t)}</div><div class="mu">${esc(b.a||'')}${b.st==='reading'?' · reading now':''}</div></div></div>`}).join('')||'<p class="mu">No unfinished books on your shelf.</p>'}</div>`:'';
+ const nums=f.pick?'<p class="mu">The target is the number of books you choose.</p>':`<div class="row" style="align-items:center"><span class="mu" style="flex:1">How many books do you want to read?</span><input class="in" style="width:90px;flex:none;margin:0" type="number" inputmode="numeric" min="1" value="${f.n||''}" onchange="v.gf.n=+this.value||0"></div><div class="row" style="align-items:center"><span class="mu" style="flex:1">How many have you already read? (0 if none)</span><input class="in" style="width:90px;flex:none;margin:0" type="number" inputmode="numeric" min="0" value="${f.a||0}" onchange="v.gf.a=+this.value||0"></div>`;
+ return`<div class="row"><button class="bt" onclick="v.gf=null;R()">← Goals</button></div><h2>${f.id?'Edit goal':'New goal'}</h2><div class="seg"><b class="${f.t==='year'?'on':''}" onclick="gSet('t','year')">Year</b><b class="${f.t==='month'?'on':''}" onclick="gSet('t','month')">Month</b></div>${per}${nums}<label class="advt"><input type="checkbox" ${f.ib?'checked':''} onchange="v.gf.ib=this.checked?1:0"><span>Also count books already marked finished in this ${f.t}</span></label><label class="advt"><input type="checkbox" ${f.pick?'checked':''} onchange="gPick(this.checked)"><span>Choose which books I want to read (optional)</span></label>${pick}<div class="row" style="margin-top:14px"><button class="bt" onclick="v.gf=null;R()">Cancel</button><button class="bt pr" style="flex:1" onclick="gSave()">Save goal</button></div>`;
+}
+function gSave(){
+ const f=v.gf,bks=f.pick?f.bk.slice():null;
+ if(f.pick&&!bks.length){toast('Pick at least one book');return}
+ const n=f.pick?bks.length:Math.max(0,Math.floor(+f.n||0));
+ if(!n){toast('Enter how many books');return}
+ const g={id:f.id||uid(),t:f.t,y:f.y,n:n,a:f.pick?0:Math.max(0,Math.floor(+f.a||0)),ib:f.ib?1:0,bk:bks,since:f.since||Date.now(),c:f.c||Date.now()};
+ if(f.t==='month')g.m=f.m;
+ if(!f.id&&!bks&&(S.goals||[]).some(x=>x.t===g.t&&x.y===g.y&&(g.t==='year'||x.m===g.m)&&!(x.bk&&x.bk.length))){toast('You already have that goal. Edit it instead.');return}
+ S.goals=S.goals||[];
+ const i=S.goals.findIndex(x=>x.id===g.id);if(i>=0)S.goals[i]=g;else S.goals.push(g);
+ S.mm=Date.now();MD=1;v.gf=null;save();toast('Goal saved ✓');R();
+}
+function gDel(id){if(!confirm('Delete this goal?'))return;S.goals=(S.goals||[]).filter(x=>x.id!==id);S.mm=Date.now();MD=1;save();R()}
+try{IC_.goals='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg>'}catch(e){}
+
+/* ======== Find chapters online (Open Library) ======== */
+function cfNorm(toc,total){
+ const skip=/^(contents|table of contents|copyright|title page|half[- ]title|dedication|acknowledg|about the author|also by|index|cover|bibliography|praise for|epigraph|maps?\b|note on|further reading|permissions|credits)/i;
+ let all=toc.map(t=>({n:String(t.title||'').replace(/\s+/g,' ').trim(),pn:parseInt(String(t.pagenum||'').replace(/[^\d]/g,''),10)||0,lv:+t.level||0,lab:String(t.label||'').replace(/\s+/g,' ').trim()})).filter(r=>r.n||r.lab);
+ if(!all.length)return{ch:[],hasP:false};
+ const lv=Math.min.apply(null,all.map(r=>r.lv));
+ all=all.filter(r=>r.lv===lv);
+ all.forEach(r=>{if(!r.n)r.n=r.lab;else if(r.lab&&r.n.toLowerCase().indexOf(r.lab.toLowerCase())!==0)r.n=r.lab+' · '+r.n;r.skip=skip.test(r.n)});
+ const rows=all.filter(r=>!r.skip);
+ const hasP=rows.length>1&&rows.every(r=>r.pn>0)&&rows.every((r,i)=>i===0||r.pn>=rows[i-1].pn);
+ const ch=rows.map(r=>{
+  let p=0;
+  if(hasP){
+   const nx=all.slice(all.indexOf(r)+1).find(x=>x.pn>r.pn);
+   p=nx?nx.pn-r.pn:(total?Math.max(0,total-r.pn+1):0);
+  }
+  return{n:r.n,p:p};
+ });
+ return{ch:ch,hasP:hasP};
+}
+function cfBar(b){
+ const f=v.cf&&v.cf.id==b.id?v.cf:null;
+ let h=`<div class="row" style="margin:8px 0"><button class="bt" onclick="cfFind('${b.id}')">${f&&f.st==='loading'?'Searching…':'Find chapters online'}</button></div>`;
+ if(!f)return h;
+ if(f.st==='loading')h+='<p class="mu">Searching Open Library…</p>';
+ else if(f.st==='none')h+=`<p class="mu">${esc(f.msg)}</p>`;
+ else if(f.st==='list')h+='<p class="mu">Found chapter lists for these editions. Pick the one closest to yours. You can edit every chapter afterwards.</p>'+f.items.map((it,i)=>`<div class="card" style="display:block;cursor:default"><div class="t">${esc(it.t)}</div><div class="mu">${esc([it.pub,it.y,it.pages?it.pages+' pages':''].filter(Boolean).join(' · '))}</div><div class="mu" style="margin-top:4px">${it.ch.length} chapters ${it.hasP?'with page counts':'(names only, add the pages yourself)'}: ${esc(it.ch.slice(0,4).map(c=>c.n).join(', '))}…</div><div class="row" style="margin:10px 0 0"><button class="bt pr" onclick="cfUse('${b.id}',${i})">Use these</button></div></div>`).join('')+'<div class="row"><button class="bt" onclick="v.cf=null;R()">Close</button></div>';
+ return h;
+}
+async function cfFind(id){
+ const b=bk(id);if(!b)return;
+ v.cf={id:id,st:'loading'};R();
+ const J=async u=>{const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);return r.json()};
+ try{
+  const au=String(b.a||'').split(/[,;&]| and /)[0].trim(),ti=String(b.t||'').replace(/\s*[\(\[:].*$/,'').trim()||String(b.t||'');
+  const sr=await J('https://openlibrary.org/search.json?limit=6&fields=key,title&title='+encodeURIComponent(ti)+(au?'&author='+encodeURIComponent(au):''));
+  const works=(sr.docs||[]).slice(0,3),items=[],seen={};
+  for(const w of works){
+   if(items.length>=6)break;
+   let ed;try{ed=await J('https://openlibrary.org'+w.key+'/editions.json?limit=60')}catch(e){continue}
+   for(const e of(ed.entries||[])){
+    if(!Array.isArray(e.table_of_contents)||e.table_of_contents.length<3)continue;
+    const nm=cfNorm(e.table_of_contents,e.number_of_pages);
+    if(nm.ch.length<3)continue;
+    const sig=nm.ch.map(c=>c.n).join('|');if(seen[sig])continue;seen[sig]=1;
+    const ym=String(e.publish_date||'').match(/\d{4}/);
+    items.push({t:e.title||w.title||b.t,pub:(e.publishers||[])[0]||'',y:ym?ym[0]:'',pages:e.number_of_pages||0,ch:nm.ch,hasP:nm.hasP});
+    if(items.length>=6)break;
+   }
+  }
+  v.cf=items.length?{id:id,st:'list',items:items}:{id:id,st:'none',msg:'No chapter list found online for this book. Open Library only has them for some editions, so add the chapters by hand below.'};
+ }catch(e){v.cf={id:id,st:'none',msg:'Couldn’t reach Open Library ('+(e&&e.message||e)+'). Check your connection and try again.'}}
+ R();
+}
+function cfUse(id,i){
+ const b=bk(id),it=v.cf&&v.cf.items&&v.cf.items[i];if(!b||!it)return;
+ if(b.ch&&b.ch.length&&!confirm('Replace your current '+b.ch.length+' chapters with these '+it.ch.length+'?'))return;
+ v.cf=null;
+ ch(id,x=>{x.ch=it.ch.map(c=>({n:c.n,p:c.p,d:false}));if(x.adv)x.cc=null;else if(!x.pages&&it.pages)x.pages=it.pages});
+ toast('Chapters added ✓');
+}
+
+
+function restApply(x,label){if(!x||!x.b)throw 0;if(!confirm('Replace everything on this device with this backup ('+x.b.length+' books)'+(label?' from '+label:'')+'?'))return;try{bkSafety()}catch(e){}let od=S.dl||{},op=S.dp||[],old=S.b.map(b=>b.id);S=x;S.sd=1;S.dl=Object.assign({},od,S.dl||{});S.dp=[...op];old.forEach(i=>{if(!S.b.some(b=>b.id===i)){S.dl[i]=Date.now();S.dp.push(i)}});S.uid=(window.fbUser&&window.fbUser.uid)||undefined;MD=1;for(let k in BL)delete BL[k];save();v.msg='Backup restored ('+S.b.length+' books)';v.tab='all';scrollTo(0,0);R();v.msg='Backup restored ('+S.b.length+' books)';v.tab='all';scrollTo(0,0);R()}
+const bkOk=n=>/\.(xml|json)$/i.test(n||'');
+function rest(e){let f=e.target.files[0];if(!f)return;e.target.value='';if(!bkOk(f.name)){v.msg='Please choose a Shelfie backup file (.xml or .json).';scrollTo(0,0);R();return}let r=new FileReader();r.onload=()=>{try{restApply(bkParse(r.result),f.name)}catch(err){v.msg='That file is not a valid Shelfie backup.';scrollTo(0,0);R()}};r.readAsText(f)}
 async function c2d(u){try{let b=await (await fetch(u)).blob();return await new Promise(ok=>{let f=new FileReader();f.onload=()=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas'),k=Math.min(1,240/i.width);c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.7))};i.onerror=()=>ok(u);i.src=f.result};f.readAsDataURL(b)})}catch(e){return u}}
 async function srch(){let q=$('#q').value.trim(),r=$('#res');if(!q)return;r.innerHTML='<p class="mu">Searching…</p>';
 try{let j=await (await fetch('https://openlibrary.org/search.json?limit=10&fields=title,author_name,number_of_pages_median,cover_i,first_publish_year&q='+encodeURIComponent(q))).json();
@@ -1028,7 +1400,7 @@ function advUI(b){
  let id=b.id,cc=b.cc||0,c=b.ch[cc];
  let top=b.ch.length?`<div class="mu" style="margin:8px 0 4px">Currently in</div><select class="in" onchange="advCc('${id}',this.value)">${b.ch.map((x,i)=>`<option value="${i}" ${i===cc?'selected':''}>${esc(x.n)}${+x.p?' · '+x.p+' pages':''}</option>`).join('')}</select><div class="row"><span class="mu">Page in chapter</span><input class="in" style="flex:1" type="number" inputmode="numeric" value="${b.cpg||0}" onchange="advPg('${id}',this.value)"><span class="mu">/ ${c&&+c.p?c.p:'?'}</span></div><div class="mu">Overall: ${b.cur||0} / ${b.pages||0} pages</div>`:'<p class="mu">Add your chapters below to get started.</p>';
  let list=b.ch.map((x,i)=>`<div class="ch"><input class="in" value="${esc(x.n)}" onchange="chN('${id}',${i},this.value)"><input class="in cp" type="number" inputmode="numeric" placeholder="pages" value="${x.p||''}" onchange="chP('${id}',${i},this.value)"><button class="bt" onclick="chX('${id}',${i})">✕</button></div>`).join('');
- return top+'<h2>Chapters</h2>'+list+`<div class="row"><input class="in" id="f-an" placeholder="Chapter name (optional)"><input class="in cp" id="f-ap" type="number" inputmode="numeric" placeholder="Pages"><button class="bt pr" onclick="advAdd('${id}')">Add</button></div><p class="mu">Type each chapter’s own page count (like Moon Reader shows). The book’s total and your overall progress are worked out for you.</p>`+advTog(b);
+ return top+'<h2>Chapters</h2>'+cfBar(b)+list+`<div class="row"><input class="in" id="f-an" placeholder="Chapter name (optional)"><input class="in cp" id="f-ap" type="number" inputmode="numeric" placeholder="Pages"><button class="bt pr" onclick="advAdd('${id}')">Add</button></div><p class="mu">Type each chapter’s own page count (like Moon Reader shows). The book’s total and your overall progress are worked out for you.</p>`+advTog(b);
 }
 function advStopSh(b){
  let cc=b.cc||0;
@@ -1195,7 +1567,7 @@ async function pushAll(delIds){const uid=U.uid,ids=[...DIRTY];
  const dp=[...new Set([...(S.dp||[]),...(delIds||[])])];
  for(const id of dp)await deleteDoc(doc(db,'users',uid,'books',id));
  S.dp=[];
- if(MD){await setDoc(doc(db,'users',uid,'meta','state'),JSON.parse(JSON.stringify({s:S.s,gl:S.gl||0,col:S.col||[],mm:S.mm||0,dl:S.dl||{}})));MD=0}
+ if(MD){await setDoc(doc(db,'users',uid,'meta','state'),JSON.parse(JSON.stringify({s:S.s,gl:S.gl||0,goals:S.goals||[],col:S.col||[],mm:S.mm||0,dl:S.dl||{}})));MD=0}
  S.ls=Date.now();persist()}
 async function push(){if(!U||busy)return;busy=true;try{await pushAll();v.am=''}catch(e){v.am='Sync problem: '+err(e)}finally{busy=false}stat()}
 async function sync(){if(!U||busy)return;busy=true;v.am='Syncing…';stat();
@@ -1218,7 +1590,7 @@ async function sync(){if(!U||busy)return;busy=true;v.am='Syncing…';stat();
    if(!l.mt)l.mt=Date.now();DIRTY.add(l.id)}
   const seen=new Set(S.s.map(x=>x.b+'_'+x.s));(cm.s||[]).forEach(x=>{if(!seen.has(x.b+'_'+x.s))S.s.push(x)});
   S.s.sort((a,b)=>a.s-b.s);if(S.s.length!==(cm.s||[]).length)MD=1;
-  if((cm.mm||0)>(S.mm||0)){S.gl=cm.gl||0;S.col=cm.col||[];S.mm=cm.mm}else if((S.mm||0)>(cm.mm||0))MD=1;
+  if((cm.mm||0)>(S.mm||0)){S.gl=cm.gl||0;if(cm.goals)S.goals=cm.goals;S.col=cm.col||[];S.mm=cm.mm}else if((S.mm||0)>(cm.mm||0))MD=1;
   await pushAll(toDel);v.am=''}
  catch(e){v.am='Sync failed: '+err(e)}
  finally{busy=false}stat();soft()}
@@ -1232,7 +1604,7 @@ window.fb={
  sync:()=>sync()};
 onAuthStateChanged(auth,async u=>{U=u;window.fbUser=u;
  if(u){if(S.uid&&S.uid!==u.uid){if(!confirm('This device holds another account’s library. Replace it with this account’s data?')){await signOut(auth);return}
-   S.b=[];S.s=[];S.dl={};S.dp=[];S.gl=0;S.mm=0;for(const k in BL)delete BL[k];DIRTY.clear()}
+   S.b=[];S.s=[];S.dl={};S.dp=[];S.gl=0;S.goals=[];S.mm=0;for(const k in BL)delete BL[k];DIRTY.clear()}
   S.uid=u.uid;persist();v.am='';R();await sync()}
  else{v.am='';R()}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&U&&Date.now()-(S.ls||0)>60000)sync()});
@@ -1289,4 +1661,9 @@ Object.defineProperty(app,'innerHTML',{configurable:true,get:function(){return d
 /* list fade only when the list really changed */
 var o=R;R=function(){var p=document.getElementById('ls'),before=p?p.innerHTML:null,r=o.apply(this,arguments),n=document.getElementById('ls');
  try{if(n&&before!==null&&n.innerHTML===before)n.classList.remove('ls-in')}catch(e){}return r};
-})();</script></body></html>
+})();</script><script>
+setTimeout(function(){try{abLoad().then(abCheck)}catch(e){}},4000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)try{abCheck()}catch(e){}});
+setInterval(function(){try{abCheck()}catch(e){}},30*60*1000);
+</script>
+</body></html>
