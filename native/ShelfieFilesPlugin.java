@@ -227,7 +227,7 @@ public class ShelfieFilesPlugin extends Plugin {
             try {
                 // start in Documents: Android 11+ will not let an app use the Downloads folder itself
                 i.putExtra(DocumentsContract.EXTRA_INITIAL_URI,
-                        DocumentsContract.buildDocumentUri("com.android.externalstorage.documents", "primary:Documents"));
+                        DocumentsContract.buildDocumentUri("com.android.externalstorage.documents", "primary:" + ("Download".equals(call.getString("start")) ? "Download" : "Documents")));
             } catch (Exception ignored) { }
         }
         startActivityForResult(call, i, "pickFolderResult");
