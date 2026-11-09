@@ -936,7 +936,7 @@ function T(){let ss=S.s,tot=ss.reduce((a,s)=>a+s.k,0),pa=avg('p'),qa=avg('%'),da
  <h2>Speed by book</h2>${per.length?per.map(x=>{let o=avg(x.u);return `<div class="ses"><span>${esc(x.b.t)}</span><span>${x.a.toFixed(1)} ${U(x.u)} ${o?(x.a>=o?'<span class="g">▲':'<span class="r">▼')+Math.abs((x.a/o-1)*100).toFixed(0)+'%</span>':''}</span></div>`}).join(''):'<p class="mu">Log a few timed sessions to see how fast you read.</p>'}`}
 function SH(){let b=v.sh==='edit'?bk(v.id):null;
  if(v.sh==='cpick')return CPSH();if(v.sh==='coledit')return COLEDIT();if(v.sh==='colmenu')return COLMENU();if(v.sh==='colbooks')return CBSH();
- if(v.sh==='col')return COLSH();if(v.sh==='addcol')return ADDCOL();if(v.sh==='abperm')return ABPERM();if(v.sh==='stop'){let bb=bk(S.t.id);if(bb.adv&&bb.ch.length)return advStopSh(bb);let q=bb.m==='pct'?'What percent are you at now?':bb.m==='pages'?'What page are you on now?':'Pages read this session (optional)';
+ if(v.sh==='col')return COLSH();if(v.sh==='addcol')return ADDCOL();if(v.sh==='abperm')return ABPERM();if(v.sh==='abfirst')return ABFIRST();if(v.sh==='stop'){let bb=bk(S.t.id);if(bb.adv&&bb.ch.length)return advStopSh(bb);let q=bb.m==='pct'?'What percent are you at now?':bb.m==='pages'?'What page are you on now?':'Pages read this session (optional)';
   return `<div class="sh"><div><h2 style="margin-top:0">Nice session! ${fm(el())}</h2><p class="mu">${q}</p><input class="in" id="f-n" type="number" value="${bb.m==='ch'?'':bb.cur||0}"><div class="row"><button class="bt" onclick="v.sh=null;R();nf()">Cancel</button><button class="bt pr" style="flex:1" onclick="tstop()">Save session</button></div></div></div>`}
  return `<div class="sh"><div><h2 style="margin-top:0">${b?'Edit book':'Add a book'}</h2><div class="row"><input class="in" id="q" placeholder="Search title or author" value="${b?esc(b.t+' '+b.a):''}" onkeydown="if(event.key==='Enter')srch()"><button class="bt pr" onclick="srch()">Search</button></div><div id="res"></div><input class="in" id="f-t" placeholder="Title" value="${b?esc(b.t):''}"><input class="in" id="f-a" placeholder="Author" value="${b?esc(b.a):''}"><input class="in" id="f-p" type="number" placeholder="Total pages (optional)" value="${b&&b.pages?b.pages:''}">
 <textarea class="in" id="f-d" rows="4" placeholder="Description (filled in automatically, you can edit it)">${b?esc(b.ds||''):''}</textarea><p class="mu" style="margin:0 0 8px;text-decoration:underline;cursor:pointer" onclick="fillDesc()">Find description online</p>
@@ -946,7 +946,7 @@ function SH(){let b=v.sh==='edit'?bk(v.id):null;
  <div class="row"><button class="bt" onclick="v.sh=null;R()">Cancel</button>${b?`<button class="bt" onclick="del()">Delete</button>`:''}<button class="bt pr" style="flex:1" onclick="sv()">Save</button></div></div></div>`}
 function cov(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas'),k=Math.min(1,240/i.width);c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);v.cv=c.toDataURL('image/jpeg',.7)};i.src=r.result};r.readAsDataURL(f)}
 /* ======== XML backup (saved to the Downloads folder) ======== */
-var _FL=null;
+var _FL=null;const BUILD_='backup-folder-1109';
 function flGet(){
  if(_FL)return _FL;
  try{var C=window.Capacitor;if(C&&((C.isNativePlatform&&C.isNativePlatform())||(C.getPlatform&&C.getPlatform()!=='web')))_FL=C.registerPlugin('ShelfieFiles')}catch(e){}
@@ -1067,11 +1067,24 @@ async function bkWrite(b){
  r.where=where;r.note=note;return r;
 }
 async function bkup(){
+ let first=false;
  try{
-  const b=await bkBuild('backup'),FL=flGet();
+  const FL=flGet();
+  // First backup in the Android app: open Android's own folder picker (like Google Files) so the person decides where backups go.
+  if(FL&&FL.pickFolder&&appMode()==='app'){
+   const f0=_abf!==undefined?_abf:await abLoad();
+   if(!(f0&&f0.has)){
+    let pr;
+    try{pr=await FL.pickFolder()}catch(e){const m=String(e&&e.message||e);throw new Error(/not implemented|not available/i.test(m)?'This version of the app can’t choose a folder yet. Install the newest Shelfie app update.':m)}
+    if(!pr||pr.cancelled){v.msg='No folder was chosen, so no backup was saved. Tap Back up now again and pick a folder (you can make a new one, like “Shelfie backups”).';scrollTo(0,0);R();return}
+    _abf=pr;_abl=undefined;first=true;
+   }
+  }
+  const b=await bkBuild('backup');
   if(FL){
    const r=await bkWrite(b);S.lb=Date.now();save();_abl=undefined;
-   v.msg='Backup saved and checked ✓ '+r.where+' → '+r.name+' ('+b.sum+', '+Math.max(1,Math.round(r.size/1024))+' KB).'+(r.note?' '+r.note:'');
+   v.msg='Backup saved and checked ✓ '+r.where+' → '+r.name+' ('+b.sum+', '+Math.max(1,Math.round(r.size/1024))+' KB).'+(r.note?' '+r.note:'')+(first?' This is now your backup folder; automatic backups use it too.':'');
+   if(first){abSet({asked:1});if(!abGet().on)v.sh='abfirst'}
   }else{
    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([b.data],{type:b.mime}));a.download=b.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
    S.lb=Date.now();save();
@@ -1121,6 +1134,12 @@ function abAllow(mode){
  if(mode==='folder'){abPickFolder().then(()=>{if(_abf&&_abf.has){abSet({on:true,asked:1});abCheck()}R()});return}
  abAccess().then(ok=>{if(ok){abSet({on:true,asked:1});abCheck()}scrollTo(0,0);R()})
 }
+function ABFIRST(){const f=_abf&&_abf.has?esc(_abf.name||'your folder'):'your folder';
+ return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs"><div class="grab"></div>
+ <h2 style="margin:0 0 6px">Backup saved ✓</h2>
+ <p class="mu" style="margin:0 0 12px">Your backup is in <b>📁 ${f}</b>. Want Shelfie to back up automatically into this same folder? You can change the folder or the schedule any time under Sync &amp; backup.</p>
+ <button class="bt pr" style="width:100%;margin-bottom:8px" onclick="abSet({on:true,asked:1,last:Date.now()});v.sh=null;R()">Turn on automatic backups</button>
+ <button class="bt" style="width:100%" onclick="v.sh=null;R()">Not now</button></div></div>`}
 function ABPERM(){return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs"><div class="grab"></div>
  <h2 style="margin:0 0 6px">Allow Shelfie to save backups?</h2>
  <p class="mu" style="margin:0 0 10px">Automatic backups need somewhere to be saved. Android keeps your files private, so Shelfie has to ask first. Pick one:</p>
@@ -1154,8 +1173,8 @@ function MSYNC(){
   :`<div class="card" style="display:block;cursor:default;border-color:#d9534f"><b>⚠ You’re using the web version</b><div class="mu" style="font-size:13px;margin-top:4px">This copy of Shelfie is running in a browser or as a home-screen web app, not as the installed Android app. Android doesn’t let web pages choose a folder or save files in the background, so automatic backups and folder choice are only in the <b>Shelfie.apk</b> app. You can still save a file with the buttons below.</div></div>`;
  
  const pill=(on,cb,t)=>`<span class="tab ${on?'on':''}" onclick="${cb}">${t}</span>`;
- return `${acct()}<h2>Backup</h2>${modeCard}<p class="mu">Saves your whole library (books, covers, progress, sessions, notes, goals) as an XML file, then reads the file back to check it is complete. ${S.lb?'Last backup: '+esc(new Date(S.lb).toLocaleString())+'.':'No backup yet.'}</p>
- ${nat?`<div class="card" style="display:block;cursor:default"><div class="mu" style="font-size:13px">Save location</div><div style="font-weight:700;margin:2px 0 8px">${f&&f.has?'📁 '+loc:'Downloads (default)'}</div>${f&&f.lost?'<p class="mu" style="margin:0 0 8px">Your folder isn’t available any more — choose it again.</p>':''}<div class="row" style="margin:0"><button class="bt" onclick="abPickFolder()">${f&&f.has?'Change folder':'Choose a folder'}</button>${f&&f.has?'<button class="bt" onclick="abUseDownloads()">Use Downloads</button>':''}</div>${f&&f.has?'<p class="g" style="font-size:13px;margin:10px 0 0">✓ Shelfie has permission to save in this folder.</p>':(_abp&&_abp.runtime&&!_abp.granted?'<p class="r" style="font-size:13px;margin:10px 0 4px">Shelfie needs permission to save files to Downloads.</p><button class="bt pr" onclick="abAllowBtn()">Allow access</button>':'<p class="mu" style="font-size:12px;margin:10px 0 0">Downloads needs no extra permission. To use your own folder, tap “Choose a folder” and allow it when Android asks (create a folder like “Shelfie backups”, then “Use this folder”).</p>')}</div>`:''}
+ return `${acct()}<h2>Backup</h2>${modeCard}<p class="mu" style="font-size:11px;margin:0 0 6px">Page version: ${BUILD_}</p><p class="mu">Saves your whole library (books, covers, progress, sessions, notes, goals) as an XML file, then reads the file back to check it is complete. ${S.lb?'Last backup: '+esc(new Date(S.lb).toLocaleString())+'.':'No backup yet.'}</p>
+ ${nat?`<div class="card" style="display:block;cursor:default"><div class="mu" style="font-size:13px">Save location</div><div style="font-weight:700;margin:2px 0 8px">${f&&f.has?'📁 '+loc:'Not chosen yet — Android will ask when you tap Back up now'}</div>${f&&f.lost?'<p class="mu" style="margin:0 0 8px">Your folder isn’t available any more — choose it again.</p>':''}<div class="row" style="margin:0"><button class="bt" onclick="abPickFolder()">${f&&f.has?'Change folder':'Choose a folder'}</button>${f&&f.has?'<button class="bt" onclick="abUseDownloads()">Use Downloads</button>':''}</div>${f&&f.has?'<p class="g" style="font-size:13px;margin:10px 0 0">✓ Shelfie has permission to save in this folder.</p>':(_abp&&_abp.runtime&&!_abp.granted?'<p class="r" style="font-size:13px;margin:10px 0 4px">Shelfie needs permission to save files to Downloads.</p><button class="bt pr" onclick="abAllowBtn()">Allow access</button>':'<p class="mu" style="font-size:12px;margin:10px 0 0">Downloads needs no extra permission. To use your own folder, tap “Choose a folder” and allow it when Android asks (create a folder like “Shelfie backups”, then “Use this folder”).</p>')}</div>`:''}
  ${mode==='web'?'<div class="row" style="margin-top:10px"><button class="bt pr" onclick="bkup()">Download backup file</button><button class="bt" onclick="bkShare()">Share / save…</button></div>':`<button class="bt pr" style="margin-top:10px" onclick="bkup()">Back up now</button>`}
  ${nat?`<h2 style="margin-top:22px">Automatic backups</h2><div class="card" style="display:block;cursor:default"><div class="row" style="flex-wrap:nowrap;margin:0;align-items:center"><div class="fl"><b>${a.on?'On':'Off'}</b><div class="mu" style="font-size:13px">One backup each ${abFreqName[a.f]} into ${loc}.</div></div><span class="tab ${a.on?'on':''}" onclick="abToggle()">${a.on?'Turn off':'Turn on'}</span></div>
   ${a.on?`<div class="tabs" style="margin:12px 0 4px">${pill(a.f==='day','abFreq(\'day\')','Daily')}${pill(a.f==='week','abFreq(\'week\')','Weekly')}${pill(a.f==='month','abFreq(\'month\')','Monthly')}</div>
