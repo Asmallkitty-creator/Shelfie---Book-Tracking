@@ -973,10 +973,19 @@ function SH(){let b=v.sh==='edit'?bk(v.id):null;
  <div class="row"><button class="bt" onclick="v.sh=null;R()">Cancel</button>${b?`<button class="bt" onclick="del()">Delete</button>`:''}<button class="bt pr" style="flex:1" onclick="sv()">Save</button></div></div></div>`}
 function cov(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas'),k=Math.min(1,240/i.width);c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);v.cv=c.toDataURL('image/jpeg',.7)};i.src=r.result};r.readAsDataURL(f)}
 /* ======== XML backup (saved to the Downloads folder) ======== */
-var _FL=null;const BUILD_='backup-folder-1109b';
+var _FL=null;const BUILD_='backup-folder-1109c';
+var _flErr='';
 function flGet(){
  if(_FL)return _FL;
- try{var C=window.Capacitor;if(C&&((C.isNativePlatform&&C.isNativePlatform())||(C.getPlatform&&C.getPlatform()!=='web')))_FL=C.registerPlugin('ShelfieFiles')}catch(e){}
+ try{
+  var C=window.Capacitor;
+  if(C&&((C.isNativePlatform&&C.isNativePlatform())||(C.getPlatform&&C.getPlatform()!=='web'))){
+   var p=null;
+   try{p=C.Plugins&&C.Plugins.ShelfieFiles}catch(e){}
+   if(!p&&typeof C.registerPlugin==='function'){try{p=C.registerPlugin('ShelfieFiles')}catch(e){_flErr=String(e&&e.message||e)}}
+   if(p)_FL=p;else if(!_flErr)_flErr='Capacitor has no ShelfieFiles plugin';
+  }
+ }catch(e){_flErr=String(e&&e.message||e)}
  return _FL;
 }
 const XB_=/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g;
@@ -1099,6 +1108,7 @@ async function bkup(){
     _abf=pr;_abl=undefined;first=true;
    }
   }
+  if(appMode()!=='web'&&!(FL&&FL.pickFolder))throw new Error('The file-saving part of the app could not be reached ('+(_flErr||'unknown reason')+'). Rebuild the app with the newest native files and install it again.');
   const b=await bkBuild('backup');
   if(FL){
    const r=await bkWrite(b);S.lb=Date.now();save();_abl=undefined;
@@ -1191,7 +1201,8 @@ function MSYNC(){
  if(mode!=='web'&&FL&&_abf===undefined&&!window._abLoadingF){window._abLoadingF=1;abLoad().then(()=>{window._abLoadingF=0;_abl=undefined;if(v.p==='more'&&v.mp==='sync')R()})}
  if(nat&&_abl===undefined&&_abf!==undefined&&!window._abLoading){window._abLoading=1;setTimeout(abList,30)}
  const loc=f&&f.has?esc(f.name):'a folder you choose',fl=(_abl||[]);
- const modeCard=mode==='app'?`<p class="g" style="font-size:13px;margin:8px 0">✓ Running as the Android app — files can be saved to your phone or tablet.</p>`
+ const modeCard=mode==='app'&&!nat?`<div class="card" style="display:block;cursor:default;border-color:#d9534f"><b>⚠ Backups can’t reach the file plugin</b><div class="mu" style="font-size:13px;margin-top:4px">This app build is missing the newest file-saving code${_flErr?' ('+esc(_flErr)+')':''}. Rebuild with the new native files and install the new Shelfie.apk.</div></div>`
+  :mode==='app'?`<p class="g" style="font-size:13px;margin:8px 0">✓ Running as the Android app — files can be saved to your phone or tablet.</p>`
   :mode==='missing'?`<div class="card" style="display:block;cursor:default;border-color:#d9534f"><b>⚠ This installed app can’t save files yet</b><div class="mu" style="font-size:13px;margin-top:4px">The Shelfie app on this device was built without the file-saving part, so backups can’t be written, a folder can’t be chosen and automatic backups can’t run. Rebuild the app with the new files, then install the newest <b>Shelfie.apk</b> from your repo’s Releases page.</div></div>`
   :`<div class="card" style="display:block;cursor:default;border-color:#d9534f"><b>⚠ You’re using the web version</b><div class="mu" style="font-size:13px;margin-top:4px">This copy of Shelfie is running in a browser or as a home-screen web app, not as the installed Android app. Android doesn’t let web pages choose a folder or save files in the background, so automatic backups and folder choice are only in the <b>Shelfie.apk</b> app. You can still save a file with the buttons below.</div></div>`;
  
