@@ -493,6 +493,33 @@ html body #app.bk-open.bk-open .cvl{will-change:auto!important}
 .gpb.on{border-color:var(--ac);background:var(--ac2)}
 .gpk{width:22px;height:22px;border-radius:7px;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:14px;flex:none;color:var(--ac)}
 .gpb.on .gpk{border-color:var(--ac)}
+
+.ssw{position:relative;width:52px;height:30px;flex:none;border-radius:99px;background:rgba(128,128,128,.4);transition:background .2s;cursor:pointer}
+.ssw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 4px #0004;transition:transform .2s}
+.ssw.on{background:var(--ac,#b45309)}.ssw.on::after{transform:translateX(22px)}
+.ssw.lock{opacity:.4;cursor:default}
+
+/* ---- stretchy theme switch (automatic backups) ---- */
+.sw{position:relative;flex:none;width:80px;height:42px;border:0;padding:0;border-radius:99px;cursor:pointer;-webkit-tap-highlight-color:transparent;outline:0;
+ background:var(--ac2);background:color-mix(in srgb,var(--tx) 24%,var(--ac2));
+ box-shadow:inset 0 3px 8px rgba(0,0,0,.30),inset 0 -2px 4px rgba(255,255,255,.28),0 1px 0 rgba(255,255,255,.35);
+ transition:background .4s ease,box-shadow .4s ease,opacity .25s ease}
+.sw.on{background:var(--ac);box-shadow:inset 0 3px 8px rgba(0,0,0,.28),inset 0 -2px 4px rgba(255,255,255,.35),0 0 16px color-mix(in srgb,var(--ac) 55%,transparent)}
+.sw i{position:absolute;top:5px;left:5px;width:32px;height:32px;border-radius:99px;pointer-events:none;
+ background:radial-gradient(circle at 34% 28%,#fff 0,#fbf7f1 38%,#e6dccf 100%);
+ box-shadow:0 3px 7px rgba(0,0,0,.38),0 1px 1px rgba(0,0,0,.2),inset 0 -2px 3px rgba(0,0,0,.12)}
+.sw.on i{left:43px}
+.sw svg{position:absolute;top:50%;width:17px;height:17px;margin-top:-8.5px;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;transition:opacity .3s ease}
+.sw .ck{left:14px;opacity:0;stroke:rgba(255,255,255,.92)}.sw .xx{right:15px;opacity:.4;stroke:var(--tx)}
+.sw.on .ck{opacity:1}.sw.on .xx{opacity:0}
+.sw.swon i{animation:swOn .56s cubic-bezier(.4,.1,.2,1) both}
+.sw.swoff i{animation:swOff .56s cubic-bezier(.4,.1,.2,1) both}
+@keyframes swOn{0%{left:5px;width:32px}38%{left:5px;width:64px}72%{left:31px;width:44px}100%{left:43px;width:32px}}
+@keyframes swOff{0%{left:43px;width:32px}38%{left:11px;width:64px}72%{left:5px;width:44px}100%{left:5px;width:32px}}
+.sw.dis{opacity:.42;cursor:not-allowed;filter:grayscale(.5)}
+.sw.shk{animation:swShk .35s}
+@keyframes swShk{0%,100%{transform:none}25%{transform:translateX(-4px)}60%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){.sw.swon i,.sw.swoff i,.sw.shk{animation:none}}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
@@ -946,7 +973,7 @@ function SH(){let b=v.sh==='edit'?bk(v.id):null;
  <div class="row"><button class="bt" onclick="v.sh=null;R()">Cancel</button>${b?`<button class="bt" onclick="del()">Delete</button>`:''}<button class="bt pr" style="flex:1" onclick="sv()">Save</button></div></div></div>`}
 function cov(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas'),k=Math.min(1,240/i.width);c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);v.cv=c.toDataURL('image/jpeg',.7)};i.src=r.result};r.readAsDataURL(f)}
 /* ======== XML backup (saved to the Downloads folder) ======== */
-var _FL=null;const BUILD_='backup-folder-1109';
+var _FL=null;const BUILD_='backup-folder-1109b';
 function flGet(){
  if(_FL)return _FL;
  try{var C=window.Capacitor;if(C&&((C.isNativePlatform&&C.isNativePlatform())||(C.getPlatform&&C.getPlatform()!=='web')))_FL=C.registerPlugin('ShelfieFiles')}catch(e){}
@@ -1050,21 +1077,13 @@ function _abLoadingDone(){window._abLoading=0}
 // writes a built backup to the chosen folder (or Downloads) and proves it matches
 async function bkWrite(b){
  const FL=flGet();if(!FL)return null;
- const f=_abf!==undefined?_abf:await abLoad();let r,where,note='';
+ const f=_abf!==undefined?_abf:await abLoad();let r;
  const fail=e=>{const m=String(e&&e.message||e);throw new Error(/not implemented|not available/i.test(m)?'This version of the app can’t save files yet. Install the newest Shelfie app update.':m)};
- if(f&&f.has&&FL.saveToFolder){
-  try{r=await FL.saveToFolder({name:b.name,mime:b.mime,data:b.data});where=r.folder||f.name}
-  catch(e){
-   if(String(e&&e.message||e)==='NO_FOLDER'){_abf={lost:1};note='Your backup folder was not available, so this one went to Downloads. Choose the folder again to keep using it.';r=await FL.saveToDownloads({name:b.name,mime:b.mime,data:b.data}).catch(fail);where='Downloads'}
-   else fail(e)
-  }
- }else{
-  if(!(await abAccess()))throw new Error('Shelfie needs permission to save files. Allow it when asked, or choose a folder instead.');
-  if(f&&f.lost)note='Your backup folder was not available, so this one went to Downloads. Choose the folder again to keep using it.';
-  r=await FL.saveToDownloads({name:b.name,mime:b.mime,data:b.data}).catch(fail);where='Downloads';
- }
+ if(!(f&&f.has&&FL.saveToFolder))throw new Error('NO_FOLDER_CHOSEN');
+ try{r=await FL.saveToFolder({name:b.name,mime:b.mime,data:b.data})}
+ catch(e){if(String(e&&e.message||e)==='NO_FOLDER'){_abf={lost:1};throw new Error('NO_FOLDER_CHOSEN')}fail(e)}
  if(r.sha256!==await sha256hex(b.data))throw new Error('The saved file did not match what was sent, so it can’t be trusted. Please try again.');
- r.where=where;r.note=note;return r;
+ r.where=r.folder||f.name;r.note='';return r;
 }
 async function bkup(){
  let first=false;
@@ -1090,7 +1109,7 @@ async function bkup(){
    S.lb=Date.now();save();
    v.msg='Download started: '+b.name+' ('+b.sum+'). Look in your Downloads folder or notification bar. If nothing shows up, use “Share / save…” instead.';
   }
- }catch(err){v.msg='Backup failed: '+(err&&err.message||err)}
+ }catch(err){const m=String(err&&err.message||err);v.msg=m==='NO_FOLDER_CHOSEN'?'No backup folder is set. Tap Back up now again and choose a folder.':'Backup failed: '+m}
  scrollTo(0,0);R();
 }
 // safety copy taken right before a restore replaces the library
@@ -1101,15 +1120,17 @@ async function bkShare(){
  }catch(e){if(e&&e.name==='AbortError')return;v.msg='Could not share the file: '+(e&&e.message||e)}
  scrollTo(0,0);R();
 }
-async function bkSafety(){const FL=flGet();if(!FL)return;const b=await bkBuild('before-restore');await bkWrite(b)}
+async function bkSafety(){const FL=flGet();if(!FL)return;const f=_abf!==undefined?_abf:await abLoad();if(!(f&&f.has))return;const b=await bkBuild('before-restore');await bkWrite(b)}
 async function abRun(){
  if(_abBusy)return;const FL=flGet();if(!FL||!S.b||!S.b.length)return;_abBusy=1;
  try{
+  const f0=_abf!==undefined?_abf:await abLoad();
+  if(!(f0&&f0.has)){abSet({on:false,err:'Automatic backups are off because no backup folder is chosen. Pick a folder to turn them on.'});_abBusy=0;if(v.p==='more'&&v.mp==='sync')R();return}
   const a=abGet(),b=await bkBuild('auto-backup'),r=await bkWrite(b);
   S.lb=Date.now();save();abSet({last:Date.now(),err:r.note||''});
   await abPrune(a.keep);_abl=undefined;
   if(typeof toast==='function')toast('Automatic backup saved ✓');
- }catch(e){abSet({err:'The last automatic backup failed: '+(e&&e.message||e)})}
+ }catch(e){abSet({err:String(e&&e.message||e)==='NO_FOLDER_CHOSEN'?'Your backup folder is not available any more. Choose it again to keep backing up.':'The last automatic backup failed: '+(e&&e.message||e)})}
  _abBusy=0;if(v.p==='more'&&v.mp==='sync')R();
 }
 async function abPrune(keep){
@@ -1124,15 +1145,18 @@ async function abPickFolder(){
  catch(e){v.msg='Could not use that folder: '+(e&&e.message||e)}
  scrollTo(0,0);R();
 }
-async function abUseDownloads(){const FL=flGet();if(FL&&FL.clearFolder)try{await FL.clearFolder()}catch(e){}_abf=null;_abl=[];v.msg='Backups will be saved to your Downloads folder.';R()}
 function abToggle(){
- const a=abGet();if(a.on){abSet({on:false});R();return}
- if(flGet()&&!(_abf&&_abf.has)&&!a.asked){v.sh='abperm';R();return}
- abSet({on:true});abCheck();R()}
+ const a=abGet(),has=!!(_abf&&_abf.has),el=document.getElementById('absw');
+ // locked until a backup folder has been chosen: wiggle, the text next to it says why
+ if(!has){if(el){el.classList.remove('shk');void el.offsetWidth;el.classList.add('shk')}return}
+ const on=!a.on;
+ if(el){el.classList.remove('swon','swoff');void el.offsetWidth;el.classList.add(on?'swon':'swoff');el.classList.toggle('on',on);el.setAttribute('aria-checked',on?'true':'false')}
+ abSet(on?{on:true,asked:1}:{on:false});if(on)abCheck();
+ setTimeout(R,el?580:0); // let the stretch finish, then redraw
+}
 function abAllow(mode){
  v.sh=null;
- if(mode==='folder'){abPickFolder().then(()=>{if(_abf&&_abf.has){abSet({on:true,asked:1});abCheck()}R()});return}
- abAccess().then(ok=>{if(ok){abSet({on:true,asked:1});abCheck()}scrollTo(0,0);R()})
+ abPickFolder().then(()=>{if(_abf&&_abf.has){abSet({on:true,asked:1});abCheck()}R()});
 }
 function ABFIRST(){const f=_abf&&_abf.has?esc(_abf.name||'your folder'):'your folder';
  return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs"><div class="grab"></div>
@@ -1141,11 +1165,10 @@ function ABFIRST(){const f=_abf&&_abf.has?esc(_abf.name||'your folder'):'your fo
  <button class="bt pr" style="width:100%;margin-bottom:8px" onclick="abSet({on:true,asked:1,last:Date.now()});v.sh=null;R()">Turn on automatic backups</button>
  <button class="bt" style="width:100%" onclick="v.sh=null;R()">Not now</button></div></div>`}
 function ABPERM(){return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs"><div class="grab"></div>
- <h2 style="margin:0 0 6px">Allow Shelfie to save backups?</h2>
- <p class="mu" style="margin:0 0 10px">Automatic backups need somewhere to be saved. Android keeps your files private, so Shelfie has to ask first. Pick one:</p>
- <div class="card" style="display:block" onclick="abAllow('folder')"><b>📁 Choose a folder</b><div class="mu" style="font-size:13px">Recommended. Android opens its folder picker. Create a folder such as “Shelfie backups” and tap “Use this folder”, then “Allow”. Shelfie can only touch that one folder.</div></div>
- <div class="card" style="display:block" onclick="abAllow('downloads')"><b>⬇️ Use Downloads</b><div class="mu" style="font-size:13px">Saves into your phone’s Downloads folder. On older Android versions Android will ask for storage permission.</div></div>
- <button class="bt" style="width:100%;margin-top:6px" onclick="v.sh=null;R()">Not now</button></div></div>`}
+ <h2 style="margin:0 0 6px">Choose where to save backups</h2>
+ <p class="mu" style="margin:0 0 10px">Android will open your files so you can pick a folder (you can make one, like “Shelfie backups”) and tap “Use this folder”. Shelfie only ever saves into that folder.</p>
+ <button class="bt pr" style="width:100%;margin-bottom:8px" onclick="abAllow('folder')">📁 Choose a folder</button>
+ <button class="bt" style="width:100%" onclick="v.sh=null;R()">Not now</button></div></div>`}
 function abFreq(f){abSet({f:f,last:abGet().last});R()}
 function abKeep(n){abSet({keep:n});abPrune(n).then(()=>{_abl=undefined;R()});R()}
 async function abPickRestore(){
@@ -1167,18 +1190,18 @@ function MSYNC(){
  const FL=flGet(),a=abGet(),f=_abf,mode=appMode(),nat=mode==='app'&&!!(FL&&FL.pickFolder);
  if(mode!=='web'&&FL&&_abf===undefined&&!window._abLoadingF){window._abLoadingF=1;abLoad().then(()=>{window._abLoadingF=0;_abl=undefined;if(v.p==='more'&&v.mp==='sync')R()})}
  if(nat&&_abl===undefined&&_abf!==undefined&&!window._abLoading){window._abLoading=1;setTimeout(abList,30)}
- const loc=f&&f.has?esc(f.name):'Downloads',fl=(_abl||[]);
+ const loc=f&&f.has?esc(f.name):'a folder you choose',fl=(_abl||[]);
  const modeCard=mode==='app'?`<p class="g" style="font-size:13px;margin:8px 0">✓ Running as the Android app — files can be saved to your phone or tablet.</p>`
   :mode==='missing'?`<div class="card" style="display:block;cursor:default;border-color:#d9534f"><b>⚠ This installed app can’t save files yet</b><div class="mu" style="font-size:13px;margin-top:4px">The Shelfie app on this device was built without the file-saving part, so backups can’t be written, a folder can’t be chosen and automatic backups can’t run. Rebuild the app with the new files, then install the newest <b>Shelfie.apk</b> from your repo’s Releases page.</div></div>`
   :`<div class="card" style="display:block;cursor:default;border-color:#d9534f"><b>⚠ You’re using the web version</b><div class="mu" style="font-size:13px;margin-top:4px">This copy of Shelfie is running in a browser or as a home-screen web app, not as the installed Android app. Android doesn’t let web pages choose a folder or save files in the background, so automatic backups and folder choice are only in the <b>Shelfie.apk</b> app. You can still save a file with the buttons below.</div></div>`;
  
  const pill=(on,cb,t)=>`<span class="tab ${on?'on':''}" onclick="${cb}">${t}</span>`;
  return `${acct()}<h2>Backup</h2>${modeCard}<p class="mu" style="font-size:11px;margin:0 0 6px">Page version: ${BUILD_}</p><p class="mu">Saves your whole library (books, covers, progress, sessions, notes, goals) as an XML file, then reads the file back to check it is complete. ${S.lb?'Last backup: '+esc(new Date(S.lb).toLocaleString())+'.':'No backup yet.'}</p>
- ${nat?`<div class="card" style="display:block;cursor:default"><div class="mu" style="font-size:13px">Save location</div><div style="font-weight:700;margin:2px 0 8px">${f&&f.has?'📁 '+loc:'Not chosen yet — Android will ask when you tap Back up now'}</div>${f&&f.lost?'<p class="mu" style="margin:0 0 8px">Your folder isn’t available any more — choose it again.</p>':''}<div class="row" style="margin:0"><button class="bt" onclick="abPickFolder()">${f&&f.has?'Change folder':'Choose a folder'}</button>${f&&f.has?'<button class="bt" onclick="abUseDownloads()">Use Downloads</button>':''}</div>${f&&f.has?'<p class="g" style="font-size:13px;margin:10px 0 0">✓ Shelfie has permission to save in this folder.</p>':(_abp&&_abp.runtime&&!_abp.granted?'<p class="r" style="font-size:13px;margin:10px 0 4px">Shelfie needs permission to save files to Downloads.</p><button class="bt pr" onclick="abAllowBtn()">Allow access</button>':'<p class="mu" style="font-size:12px;margin:10px 0 0">Downloads needs no extra permission. To use your own folder, tap “Choose a folder” and allow it when Android asks (create a folder like “Shelfie backups”, then “Use this folder”).</p>')}</div>`:''}
+ ${nat?`<div class="card" style="display:block;cursor:default"><div class="mu" style="font-size:13px">Save location</div><div style="font-weight:700;margin:2px 0 8px">${f&&f.has?'📁 '+loc:'Not chosen yet — Android opens your files so you can pick a folder when you tap Back up now'}</div>${f&&f.lost?'<p class="mu" style="margin:0 0 8px">Your folder isn’t available any more — choose it again.</p>':''}<div class="row" style="margin:0"><button class="bt" onclick="abPickFolder()">${f&&f.has?'Change folder':'Choose a folder'}</button></div>${f&&f.has?'<p class="g" style="font-size:13px;margin:10px 0 0">✓ Shelfie has permission to save in this folder.</p>':(_abp&&_abp.runtime&&!_abp.granted?'<p class="r" style="font-size:13px;margin:10px 0 4px">Shelfie needs permission to save files to Downloads.</p><button class="bt pr" onclick="abAllowBtn()">Allow access</button>':'<p class="mu" style="font-size:12px;margin:10px 0 0">Downloads needs no extra permission. To use your own folder, tap “Choose a folder” and allow it when Android asks (create a folder like “Shelfie backups”, then “Use this folder”).</p>')}</div>`:''}
  ${mode==='web'?'<div class="row" style="margin-top:10px"><button class="bt pr" onclick="bkup()">Download backup file</button><button class="bt" onclick="bkShare()">Share / save…</button></div>':`<button class="bt pr" style="margin-top:10px" onclick="bkup()">Back up now</button>`}
- ${nat?`<h2 style="margin-top:22px">Automatic backups</h2><div class="card" style="display:block;cursor:default"><div class="row" style="flex-wrap:nowrap;margin:0;align-items:center"><div class="fl"><b>${a.on?'On':'Off'}</b><div class="mu" style="font-size:13px">One backup each ${abFreqName[a.f]} into ${loc}.</div></div><span class="tab ${a.on?'on':''}" onclick="abToggle()">${a.on?'Turn off':'Turn on'}</span></div>
-  ${a.on?`<div class="tabs" style="margin:12px 0 4px">${pill(a.f==='day','abFreq(\'day\')','Daily')}${pill(a.f==='week','abFreq(\'week\')','Weekly')}${pill(a.f==='month','abFreq(\'month\')','Monthly')}</div>
-  <div class="mu" style="font-size:13px;margin:6px 0 2px">Keep the latest</div><div class="tabs" style="margin:4px 0">${[5,10,20,0].map(n=>pill(a.keep===n,'abKeep('+n+')',n?n:'All')).join('')}</div>
+ ${nat?`<h2 style="margin-top:22px">Automatic backups</h2><div class="card" style="display:block;cursor:default"><div class="row" style="flex-wrap:nowrap;margin:0;align-items:center"><div class="fl"><b>${!(f&&f.has)?'Locked':a.on?'On':'Off'}</b><div class="mu" style="font-size:13px">${f&&f.has?'Backs up your library by itself into '+loc+'.':'Unlocks after you back up once and choose a folder.'}</div></div><button id="absw" class="sw ${a.on&&f&&f.has?'on':''} ${f&&f.has?'':'dis'}" role="switch" aria-checked="${!!(a.on&&f&&f.has)}" aria-label="Automatic backups" onclick="abToggle()"><svg class="ck" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><svg class="xx" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg><i></i></button></div>
+  <div style="${f&&f.has?'':'opacity:.4;pointer-events:none'}"><div class="mu" style="font-size:13px;margin:12px 0 2px">How often</div><div class="tabs" style="margin:4px 0">${pill(a.f==='day','abFreq(\'day\')','Once a day')}${pill(a.f==='week','abFreq(\'week\')','Once a week')}${pill(a.f==='month','abFreq(\'month\')','Once a month')}</div></div>
+  ${a.on&&f&&f.has?`<div class="mu" style="font-size:13px;margin:10px 0 2px">Keep the latest</div><div class="tabs" style="margin:4px 0">${[5,10,20,0].map(n=>pill(a.keep===n,'abKeep('+n+')',n?n:'All')).join('')}</div>
   <p class="mu" style="font-size:12px;margin:8px 0 0">${a.last?'Last automatic backup: '+esc(abFmt(a.last))+'. ':''}Next: ${abNext(a)}. Older automatic backups beyond this number are removed; your own “Back up now” files are never deleted.</p>
   <p class="mu" style="font-size:12px;margin:6px 0 0">Automatic backups run when you open Shelfie or come back to it, so if a backup is due it is saved right away.</p>`:''}
   ${a.err?`<p class="r" style="font-size:13px;margin:8px 0 0">${esc(a.err)}</p>`:''}</div>`:''}
