@@ -39,6 +39,9 @@ body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-app
 h1{font:700 32px/1.1 Georgia,'Iowan Old Style',serif;margin:6px 0 12px}h2{font:700 19px Georgia,serif;margin:22px 0 10px}
 button,input,select,textarea{font:inherit;color:inherit}
 .in{width:100%;padding:12px 16px;border:1px solid var(--bd);border-radius:16px;background:var(--cd);margin:4px 0;outline:none}.in:focus{border-color:var(--ac)}
+.in[type=search]{-webkit-appearance:none;appearance:none}
+.in[type=search]::-webkit-search-decoration{-webkit-appearance:none}
+.in[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;display:block;height:22px;width:22px;margin:0 0 0 6px;cursor:pointer;background-color:var(--mu);opacity:.85;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2a10 10 0 100 20 10 10 0 000-20zm4.3 12.9l-1.4 1.4L12 13.4l-2.9 2.9-1.4-1.4 2.9-2.9-2.9-2.9 1.4-1.4 2.9 2.9 2.9-2.9 1.4 1.4-2.9 2.9z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2a10 10 0 100 20 10 10 0 000-20zm4.3 12.9l-1.4 1.4L12 13.4l-2.9 2.9-1.4-1.4 2.9-2.9-2.9-2.9 1.4-1.4 2.9 2.9 2.9-2.9 1.4 1.4-2.9 2.9z'/%3E%3C/svg%3E") center/contain no-repeat}
 .pillsearch{border-radius:99px;background:var(--ac2);border-color:transparent}
 .bt{border:1px solid var(--bd);background:var(--cd);border-radius:99px;padding:10px 16px;cursor:pointer}.pr{background:var(--ac);color:#fff;border-color:var(--ac)}
 .mu{color:var(--mu);font-size:14px}.g{color:#3a9a5c}.r{color:#d0583a}
@@ -581,6 +584,33 @@ const ST={reading:['Reading','📖'],toread:['To read','🤍'],done:['Finished',
 const dt=t=>new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric'});
 const tgc=(id,c)=>ch(id,b=>{b.cl=b.cl||[];let i=b.cl.indexOf(c);i<0?b.cl.push(c):b.cl.splice(i,1)});
 const meta=b=>`${b.sd?`<p class="mu" style="text-align:center;margin:10px 0 0">Started ${dt(b.sd)}${b.fd&&b.st==='done'?' · Finished '+dt(b.fd):''}</p>`:''}${bcol(b)}`;
+/* ======== Smart search: ignores capitals and accents, forgives small typos ======== */
+const _fzc=new Map();
+function fzN(x){return String(x==null?'':x).toLowerCase().normalize('NFD').replace(/\p{M}+/gu,'').replace(/[^\p{L}\p{N}]+/gu,' ').trim()}
+function fzW(h){let r=_fzc.get(h);if(!r){r=fzN(h).split(' ').filter(Boolean);if(_fzc.size>6000)_fzc.clear();_fzc.set(h,r)}return r}
+function fzD(a,b,max){
+ const la=a.length,lb=b.length;if(Math.abs(la-lb)>max)return max+1;
+ let p2=null,p=[];for(let j=0;j<=lb;j++)p[j]=j;
+ for(let i=1;i<=la;i++){const c=[i];let mn=i;
+  for(let j=1;j<=lb;j++){let x=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));
+   if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])x=Math.min(x,p2[j-2]+1);
+   c[j]=x;if(x<mn)mn=x}
+  if(mn>max)return max+1;p2=p;p=c}
+ return p[lb]}
+const fzS=w=>w.split('').sort().join('');
+function fzTok(t,w){
+ const n=t.length;
+ if(n<4)return false;                       // very short words: exact only
+ if(n===4)return (w.length===4&&fzS(t)===fzS(w))||(w.length>4&&fzS(t)===fzS(w.slice(0,4)))||(Math.abs(w.length-4)===1&&w[0]===t[0]&&fzD(t,w,1)<=1);  // 4 letters: only swapped, missing or extra letter ("dnue", "hary")
+ const max=n>=7?2:1;
+ const ok=x=>(n>=7||x[0]===t[0])&&Math.abs(x.length-n)<=max&&fzD(t,x,max)<=max;
+ if(ok(w))return true;
+ if(w.length>n&&ok(w.slice(0,n)))return true;   // typo while still typing the word
+ return false}
+function fzMatch(hay,q){
+ const nq=fzN(q);if(!nq)return true;
+ const hw=fzW(hay),hs=hw.join(' ');
+ return nq.split(' ').every(t=>hs.indexOf(t)>=0||hw.some(w=>fzTok(t,w)))}
 function bcol(b){const cols=(S.col||[]),mine=(b.cl||[]).map(id=>cols.find(c=>c.id===id)).filter(Boolean);
  return `<div class="bcol"><div class="bch"><b>Collections</b><span class="bca" onclick="bcAdd('${b.id}')">${mine.length?'Edit':'＋ Add'}</span></div>${mine.length?`<div class="bcr">${mine.map(c=>`<span class="bcc" style="background:${cbk(c)}"><span onclick="bcOpen('${c.id}')">${cic(c)} ${esc(c.n)}</span><i onclick="bcRm('${b.id}','${c.id}')" role="button" aria-label="Remove from ${esc(c.n)}">✕</i></span>`).join('')}</div>`:`<div class="mu bce">Not in any collection yet.</div>`}</div>`}
 function bcAdd(id){const b=bk(id);v.pc=(b&&b.cl||[]).slice();v.sh='addcol';R()}
@@ -650,7 +680,7 @@ function gmid(on){const u=v.ccu;if(on&&u.length<3){const x=hx2r(u[0])||[255,255,
 function bnPick(e){const f=e.target.files[0];if(!f)return;const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,900/im.width),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);v.cbn=c.toDataURL('image/jpeg',.74);ccRef()};im.onerror=()=>URL.revokeObjectURL(u);im.src=u;e.target.value=''}
 function cbOpen(id){v.ci='';v.cbid=id;v.cbs=S.b.filter(b=>(b.cl||[]).includes(id)).map(b=>b.id);v.cbq='';v.sh='colbooks';R()}
 function cbOrig(){return S.b.filter(b=>(b.cl||[]).includes(v.cbid)).map(b=>b.id)}
-function cbFilt(){const q=(v.cbq||'').toLowerCase();return S.b.filter(b=>(b.t+' '+b.a).toLowerCase().includes(q))}
+function cbFilt(){const q=v.cbq||'';return S.b.filter(b=>fzMatch(b.t+' '+b.a,q))}
 function cbList(){const l=cbFilt();
  if(!l.length)return `<p class="mu" style="text-align:center;padding:22px 0">${S.b.length?'No books match your search.':'Your shelf is empty. Add a book first.'}</p>`;
  return l.map(b=>`<div class="cbr ${v.cbs.includes(b.id)?'on':''}" data-id="${b.id}" onclick="cbTog('${b.id}')">${cv(b,'cvm')}<div class="fl"><div class="t">${esc(b.t)}</div><div class="mu" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.a)}</div></div><span class="cbk">✓</span></div>`).join('')}
@@ -662,11 +692,11 @@ function cbAll(){const f=cbFilt().map(x=>x.id),all=f.length&&f.every(x=>v.cbs.in
 function cbSave(){const id=v.cbid;{const rm=S.b.filter(b=>(b.cl||[]).includes(id)&&!v.cbs.includes(b.id)).length;if(rm&&!confirm('Remove '+rm+(rm===1?' book':' books')+' from this collection?'))return}S.b.forEach(b=>{const has=(b.cl||[]).includes(id),want=v.cbs.includes(b.id);if(want&&!has){b.cl=(b.cl||[]).concat(id)}else if(!want&&has){b.cl=b.cl.filter(x=>x!==id)}});v.sh=null;S.mm=Date.now();MD=1;save();R()}
 function CBSH(){const c=(S.col||[]).find(x=>x.id===v.cbid);if(!c){return ''}
  return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs cbsh"><div class="grab"></div><div class="row" style="flex-wrap:nowrap;margin:0 0 8px"><div class="fl"><h2 style="margin:0">Add books</h2><div class="mu">to ${cic(c)} ${esc(c.n)}</div></div><span class="xb" onclick="v.sh=null;R()">✕</span></div>
- <input class="in pillsearch" id="cbq" placeholder="Search your books…" value="${esc(v.cbq||'')}" oninput="v.cbq=this.value;$('#cbl').innerHTML=cbList();cbUp()">
+ <input type="search" enterkeyhint="search" autocomplete="off" class="in pillsearch" id="cbq" placeholder="Search your books…" value="${esc(v.cbq||'')}" oninput="v.cbq=this.value;$('#cbl').innerHTML=cbList();cbUp()">
  <div class="row" style="margin:4px 2px;justify-content:space-between"><span class="mu" id="cbs">${v.cbs.length} selected</span><span class="cball" id="cba" onclick="cbAll()">Select all</span></div>
  <div class="cbl" id="cbl">${cbList()}</div>
  <button class="bt pr" id="cbb" style="width:100%;padding:14px;margin-top:10px" onclick="cbSave()">${cbLbl()}</button></div></div>`}
-function lst(){const so=S.so||'new',vw=(S.vw==='coll'?'grid':S.vw)||'shelf',l=S.b.filter(b=>(v.tab==='all'||b.st===v.tab)&&(!v.col||(b.cl||[]).includes(v.col))&&(b.t+' '+b.a).toLowerCase().includes(v.q.toLowerCase()));
+function lst(){const so=S.so||'new',vw=(S.vw==='coll'?'grid':S.vw)||'shelf',l=S.b.filter(b=>(v.tab==='all'||b.st===v.tab)&&(!v.col||(b.cl||[]).includes(v.col))&&fzMatch(b.t+' '+b.a,v.q));
  if(so!=='new')l.sort((x,y)=>so==='title'?x.t.localeCompare(y.t):so==='author'?x.a.localeCompare(y.a):so==='prog'?pc(y)-pc(x):(y.r||0)-(x.r||0));
  if(!l.length)return v.col&&!v.q&&v.tab==='all'?`<div class="cemp"><div class="cemp-i">📚</div><b>This collection is empty</b><div class="mu">Pick books from your shelf to put here.</div><button class="bt pr" onclick="cbOpen('${v.col}')">＋ Add books</button></div>`:(v.col?'<p class="mu">No books match.</p>':'<p class="mu">Nothing here yet. Tap Add to start your shelf.</p>');
  if(vw==='shelf')return shelfHTML(!v.all&&!v.col&&v.tab==='all'&&!v.q&&l.length>8?l.slice(0,8):l);
@@ -711,7 +741,7 @@ function LB(){const n=s=>S.b.filter(b=>b.st===s).length,cols=S.col||[],col=cols.
   ra=!filt&&!cv0&&S.b.length?`<div class="ra"><div class="sech" style="margin:0 0 10px"><span style="color:var(--ac);display:flex">${lbsv(LBIC.cal,22)}</span><h2 style="font-size:18px">Recently added</h2><a onclick="S.so='new';v.all=1;save();R()">See all →</a></div><div class="rai">${S.b.slice(0,10).map(b=>`<div onclick="op('${b.id}')">${cv(b,'cvs')}</div>`).join('')}</div></div>`:'';
   return `<div class="${S.bl===0?'':'blr'}"><div class="lh"><div><h1 style="margin-top:4px;margin-bottom:0">My Library</h1><div class="mu" style="display:flex;align-items:center;gap:6px;margin-top:4px">${lbsv(LBIC.reading,16)} ${S.b.length} books</div></div><span class="ib" onclick="const q=$('#sq');if(q){q.scrollIntoView({block:'center',behavior:'smooth'});q.focus()}">${lbsv(LBIC.search,21)}</span></div>
   <div class="ltabs">${tabs.map(([k,l,c])=>`<span class="lt ${v.tab===k?'on':''}" onclick="v.tab='${k}';R()">${lbsv(LBIC[k],17)}${l} (${c})</span>`).join('')}</div>
-  <div class="lsr"><input class="in pillsearch" id="sq" placeholder="Search your books…" value="${esc(v.q)}" oninput="v.q=this.value;$('#ls').innerHTML=lst()"><select class="in" onchange="S.so=this.value;save();R()">${[['new','Newest'],['title','Title'],['author','Author'],['prog','Progress'],['rate','Rating']].map(([a,c])=>`<option value="${a}" ${(S.so||'new')===a?'selected':''}>${c}</option>`).join('')}</select></div>
+  <div class="lsr"><input type="search" enterkeyhint="search" autocomplete="off" class="in pillsearch" id="sq" placeholder="Search your books…" value="${esc(v.q)}" oninput="v.q=this.value;$('#ls').innerHTML=lst()"><select class="in" onchange="S.so=this.value;save();R()">${[['new','Newest'],['title','Title'],['author','Author'],['prog','Progress'],['rate','Rating']].map(([a,c])=>`<option value="${a}" ${(S.so||'new')===a?'selected':''}>${c}</option>`).join('')}</select></div>
   <div class="vsw">${views.map(([k,l])=>`<span class="${vw===k?'on':''}" onclick="S.vw='${k}';v.col=null;save();R()">${lbsv(LBIC[k],15)}${l}</span>`).join('')}</div>
   ${col?chead(col):''}${colSec}
   ${cv0?'':`<div class="sech"><h2>${col?'Books in this collection':'Your books'}</h2>${more?`<a onclick="v.all=${v.all?0:1};R()">${v.all?'Show less':'See all ('+S.b.length+') →'}</a>`:''}</div><div id="ls">${lst()}</div>`}${ra}</div>`}
@@ -980,7 +1010,7 @@ function SH(){let b=v.sh==='edit'?bk(v.id):null;
  if(v.sh==='cpick')return CPSH();if(v.sh==='coledit')return COLEDIT();if(v.sh==='colmenu')return COLMENU();if(v.sh==='colbooks')return CBSH();
  if(v.sh==='colord')return COLORD();if(v.sh==='col')return COLSH();if(v.sh==='addcol')return ADDCOL();if(v.sh==='abperm')return ABPERM();if(v.sh==='abfirst')return ABFIRST();if(v.sh==='stop'){let bb=bk(S.t.id);if(bb.adv&&bb.ch.length)return advStopSh(bb);let q=bb.m==='pct'?'What percent are you at now?':bb.m==='pages'?'What page are you on now?':'Pages read this session (optional)';
   return `<div class="sh"><div><h2 style="margin-top:0">Nice session! ${fm(el())}</h2><p class="mu">${q}</p><input class="in" id="f-n" type="number" value="${bb.m==='ch'?'':bb.cur||0}"><div class="row"><button class="bt" onclick="v.sh=null;R();nf()">Cancel</button><button class="bt pr" style="flex:1" onclick="tstop()">Save session</button></div></div></div>`}
- return `<div class="sh"><div><h2 style="margin-top:0">${b?'Edit book':'Add a book'}</h2><div class="row"><input class="in" id="q" placeholder="Search title or author" value="${b?esc(b.t+' '+b.a):''}" onkeydown="if(event.key==='Enter')srch()"><button class="bt pr" onclick="srch()">Search</button></div><div id="res"></div><input class="in" id="f-t" placeholder="Title" value="${b?esc(b.t):''}"><input class="in" id="f-a" placeholder="Author" value="${b?esc(b.a):''}"><input class="in" id="f-p" type="number" placeholder="Total pages (optional)" value="${b&&b.pages?b.pages:''}">
+ return `<div class="sh"><div><h2 style="margin-top:0">${b?'Edit book':'Add a book'}</h2><div class="row"><input type="search" enterkeyhint="search" autocomplete="off" class="in" id="q" placeholder="Search title or author" value="${b?esc(b.t+' '+b.a):''}" onkeydown="if(event.key==='Enter')srch()"><button class="bt pr" onclick="srch()">Search</button></div><div id="res"></div><input class="in" id="f-t" placeholder="Title" value="${b?esc(b.t):''}"><input class="in" id="f-a" placeholder="Author" value="${b?esc(b.a):''}"><input class="in" id="f-p" type="number" placeholder="Total pages (optional)" value="${b&&b.pages?b.pages:''}">
 <textarea class="in" id="f-d" rows="4" placeholder="Description (filled in automatically, you can edit it)">${b?esc(b.ds||''):''}</textarea><p class="mu" style="margin:0 0 8px;text-decoration:underline;cursor:pointer" onclick="fillDesc()">Find description online</p>
  <select class="in" id="f-s">${[['reading','Reading now'],['toread','Want to read'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b&&b.st===k?'selected':''}>${l}</option>`).join('')}</select>
  <select class="in" id="f-m">${[['pages','Track by pages'],['pct','Track by percent (Kindle)'],['ch','Track by chapters']].map(([k,l])=>`<option value="${k}" ${b&&b.m===k?'selected':''}>${l}</option>`).join('')}</select>
@@ -988,7 +1018,7 @@ function SH(){let b=v.sh==='edit'?bk(v.id):null;
  <div class="row"><button class="bt" onclick="v.sh=null;R()">Cancel</button>${b?`<button class="bt" onclick="del()">Delete</button>`:''}<button class="bt pr" style="flex:1" onclick="sv()">Save</button></div></div></div>`}
 function cov(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas'),k=Math.min(1,240/i.width);c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);v.cv=c.toDataURL('image/jpeg',.7)};i.src=r.result};r.readAsDataURL(f)}
 /* ======== XML backup (saved to the Downloads folder) ======== */
-var _FL=null;const BUILD_='1.1.0';
+var _FL=null;const BUILD_='1.2.0';
 var _flErr='';
 function flGet(){
  if(_FL)return _FL;
@@ -1356,8 +1386,8 @@ function gSet(k,val){const f=v.gf;f[k]=val;if(k==='t'){if(val==='month'&&f.n===1
 function gPickMode(c){v.gf.pick=c;R()}
 function gRp(c){v.gf.rp=c;R()}
 function gTogR(id,el){const f=v.gf,i=f.rd.findIndex(x=>x==id);if(i>=0)f.rd.splice(i,1);else f.rd.push(id);el.classList.toggle('on',i<0);el.querySelector('.gpk').textContent=i<0?'✓':'';const c=document.getElementById('grcnt');if(c)c.textContent=f.rd.length+' chosen'}
-function gFiltR(q){q=String(q).toLowerCase();document.querySelectorAll('.gpr').forEach(e=>{e.style.display=e.dataset.q.indexOf(q)>=0?'':'none'})}
-function gFilt(q){q=String(q).toLowerCase();document.querySelectorAll('.gpb:not(.gpr)').forEach(e=>{e.style.display=e.dataset.q.indexOf(q)>=0?'':'none'})}
+function gFiltR(q){document.querySelectorAll('.gpr').forEach(e=>{e.style.display=fzMatch(e.dataset.q,q)?'':'none'})}
+function gFilt(q){document.querySelectorAll('.gpb:not(.gpr)').forEach(e=>{e.style.display=fzMatch(e.dataset.q,q)?'':'none'})}
 function gOrd(){
  const f=v.gf;if(!f||!f.pick||!f.bk.length)return '';
  return '<h3 style="margin:14px 0 6px;font-size:15px">Your books, in order</h3>'+f.bk.map((id,i)=>{const b=bk(id);if(!b)return '';
@@ -1373,9 +1403,9 @@ function gForm(){
   ?`<div class="row"><select class="in" onchange="v.gf.m=+this.value">${opt(MN_.map((n,i)=>[i+1,n]),f.m)}</select><select class="in" onchange="v.gf.y=+this.value">${opt(ys.map(y=>[y,y]),f.y)}</select></div>`
   :`<select class="in" onchange="v.gf.y=+this.value">${opt(ys.map(y=>[y,y]),f.y)}</select>`;
  const list=S.b.filter(b=>b.st!=='done'&&b.st!=='dnf'||f.bk.some(i=>i==b.id)).sort((a,b)=>(a.st==='reading'?0:1)-(b.st==='reading'?0:1)||String(a.t).localeCompare(String(b.t)));
- const pick=f.pick?`<p class="mu" id="gcnt">${f.bk.length} chosen</p><input class="in" placeholder="Search your books" oninput="gFilt(this.value)"><div class="gpl">${list.map(b=>{const on=f.bk.some(i=>i==b.id);return`<div class="gpb ${on?'on':''}" data-q="${esc((String(b.t)+' '+(b.a||'')).toLowerCase())}" onclick="gTog('${b.id}',this)"><span class="gpk">${on?'✓':''}</span><div class="fl"><div class="t">${esc(b.t)}</div><div class="mu">${esc(b.a||'')}${b.st==='reading'?' · reading now':''}</div></div></div>`}).join('')||'<p class="mu">No unfinished books on your shelf.</p>'}</div>`:'';
+ const pick=f.pick?`<p class="mu" id="gcnt">${f.bk.length} chosen</p><input type="search" enterkeyhint="search" autocomplete="off" class="in" placeholder="Search your books" oninput="gFilt(this.value)"><div class="gpl">${list.map(b=>{const on=f.bk.some(i=>i==b.id);return`<div class="gpb ${on?'on':''}" data-q="${esc((String(b.t)+' '+(b.a||'')).toLowerCase())}" onclick="gTog('${b.id}',this)"><span class="gpk">${on?'✓':''}</span><div class="fl"><div class="t">${esc(b.t)}</div><div class="mu">${esc(b.a||'')}${b.st==='reading'?' · reading now':''}</div></div></div>`}).join('')||'<p class="mu">No unfinished books on your shelf.</p>'}</div>`:'';
  const dn=S.b.filter(b=>b.st==='done').sort((a,b)=>(b.fd||0)-(a.fd||0));
- const rdl=f.rp?`<p class="mu" id="grcnt">${f.rd.length} chosen</p><input class="in" placeholder="Search your finished books" oninput="gFiltR(this.value)"><div class="gpl">${dn.map(b=>{const on=f.rd.some(i=>i==b.id);return`<div class="gpb gpr ${on?'on':''}" data-q="${esc((String(b.t)+' '+(b.a||'')).toLowerCase())}" onclick="gTogR('${b.id}',this)"><span class="gpk">${on?'✓':''}</span><div class="fl"><div class="t">${esc(b.t)}</div><div class="mu">${esc(b.a||'')}${b.fd?' · finished '+dt(b.fd):''}</div></div></div>`}).join('')||'<p class="mu">You have no books in Finished yet.</p>'}</div>`:'';
+ const rdl=f.rp?`<p class="mu" id="grcnt">${f.rd.length} chosen</p><input type="search" enterkeyhint="search" autocomplete="off" class="in" placeholder="Search your finished books" oninput="gFiltR(this.value)"><div class="gpl">${dn.map(b=>{const on=f.rd.some(i=>i==b.id);return`<div class="gpb gpr ${on?'on':''}" data-q="${esc((String(b.t)+' '+(b.a||'')).toLowerCase())}" onclick="gTogR('${b.id}',this)"><span class="gpk">${on?'✓':''}</span><div class="fl"><div class="t">${esc(b.t)}</div><div class="mu">${esc(b.a||'')}${b.fd?' · finished '+dt(b.fd):''}</div></div></div>`}).join('')||'<p class="mu">You have no books in Finished yet.</p>'}</div>`:'';
  const nums=f.pick?'<p class="mu">The target is the number of books you choose.</p>':`<div class="row" style="align-items:center"><span class="mu" style="flex:1">How many books do you want to read?</span><input class="in" style="width:90px;flex:none;margin:0" type="number" inputmode="numeric" min="1" value="${f.n||''}" onchange="v.gf.n=+this.value||0"></div><div class="row" style="align-items:center"><span class="mu" style="flex:1">How many have you already read? (0 if none)</span><input class="in" style="width:90px;flex:none;margin:0" type="number" inputmode="numeric" min="0" value="${f.a||0}" onchange="v.gf.a=+this.value||0"></div>`;
  return`<div class="row"><button class="bt" onclick="v.gf=null;R()">← Goals</button></div><h2>${f.id?'Edit goal':'New goal'}</h2><div class="seg"><b class="${f.t==='year'?'on':''}" onclick="gSet('t','year')">Year</b><b class="${f.t==='month'?'on':''}" onclick="gSet('t','month')">Month</b></div>${per}${nums}<label class="advt"><input type="checkbox" ${f.ib?'checked':''} onchange="v.gf.ib=this.checked?1:0"><span>Also count books already marked finished in this ${f.t}</span></label><label class="advt"><input type="checkbox" ${f.pick?'checked':''} onchange="gPickMode(this.checked)"><span>Choose which books I want to read (optional)</span></label><div id="gord">${gOrd()}</div>${pick}<label class="advt"><input type="checkbox" ${f.rp?'checked':''} onchange="gRp(this.checked)"><span>Choose which finished books I’ve already read (optional)</span></label>${f.rp?'<p class="mu" style="margin:0 0 6px">These count toward the goal even if you finished them earlier.</p>':''}${rdl}<div class="row" style="margin-top:14px"><button class="bt" onclick="v.gf=null;R()">Cancel</button><button class="bt pr" style="flex:1" onclick="gSave()">Save goal</button></div>`;
 }
