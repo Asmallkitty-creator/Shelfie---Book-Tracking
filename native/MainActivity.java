@@ -1,6 +1,7 @@
 package com.shelfie.app;
 
 import android.os.Bundle;
+import androidx.activity.OnBackPressedCallback;
 import android.view.View;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -13,6 +14,7 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(ShelfieTimerPlugin.class);
         registerPlugin(ShelfieFilesPlugin.class);
+        registerPlugin(ShelfieIconPlugin.class);
         super.onCreate(savedInstanceState);
 
         // Draw edge to edge, then pad the page so it never sits under the
@@ -28,5 +30,19 @@ public class MainActivity extends BridgeActivity {
             return WindowInsetsCompat.CONSUMED;
         });
         ViewCompat.requestApplyInsets(content);
+
+        // Android's back button: the app goes back one page itself. It only closes
+        // when the app answers "exit" (at the start page, pressed twice).
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (getBridge() == null || getBridge().getWebView() == null) { finish(); return; }
+                getBridge().getWebView().evaluateJavascript(
+                    "(function(){try{return window.shBack?window.shBack():'exit'}catch(e){return 'exit'}})()",
+                    value -> {
+                        if (value != null && value.contains("exit")) finish();
+                    });
+            }
+        });
     }
 }
