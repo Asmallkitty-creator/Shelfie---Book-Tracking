@@ -569,7 +569,7 @@ setInterval(tk,1000);
 function tpause(){let t=S.t;if(t.p){t.g=(t.g||0)+Date.now()-t.p;t.p=null}else t.p=Date.now();save();R();nf()}
 const IC={home:'<path d="M3 11l9-8 9 8M5 10v10h14V10"/>',lib:'<rect x="3" y="4" width="4" height="16" rx="1"/><rect x="9" y="4" width="4" height="16" rx="1"/><path d="M15 6l4-1 3 14-4 1z"/>',add:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',stats:'<rect x="3" y="12" width="4" height="8" rx="1"/><rect x="10" y="4" width="4" height="16" rx="1"/><rect x="17" y="9" width="4" height="11" rx="1"/>',more:'<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>'};
 const navIdx=()=>['home','lib','add','stats','more'].findIndex(k=>v.p===k||(v.p==='book'&&k===(v.pp||'home')));const nav=()=>`<div class="nav"><i class="lens" style="--i:${window._pi==null?Math.max(0,navIdx()):window._pi}"></i>${[['home','Home'],['lib','Library'],['add','Add'],['stats','Stats'],['more','More']].map(([k,l])=>`<div class="ni ${(v.p===k||(v.p==='book'&&k===(v.pp||'home')))?'on':''}" onclick="${k==='add'?"v.sh='add';v.cv='';R()":"go('"+k+"')"}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IC[k]}</svg>${l}</div>`).join('')}</div>`;
-const go=(p,keep)=>{v.sc=v.sc||{};v.sc[v.p]=scrollY;const y=keep?(v.sc[p]||0):0;v.an=1;v.cnd=null;v.p=p;v.adv=0;v.mp=null;if(p!=='home')v.msg='';scrollTo(0,0);R();if(y)scrollTo(0,y)};const op=id=>{if(v.p!=='book')v.pp=v.p;v.id=id;go('book')};
+const go=(p,keep)=>{v.hs=v.hs||[];if(keep){if(v.hs[v.hs.length-1]===p)v.hs.pop()}else if(p!==v.p){if(p==='home')v.hs=[];else{if(v.hs[v.hs.length-1]!==v.p)v.hs.push(v.p);if(v.hs.length>30)v.hs.shift()}}v.sc=v.sc||{};v.sc[v.p]=scrollY;const y=keep?(v.sc[p]||0):0;v.an=1;v.cnd=null;v.p=p;v.adv=0;v.mp=null;if(p!=='home')v.msg='';scrollTo(0,0);R();if(y)scrollTo(0,y)};const op=id=>{if(v.p!=='book')v.pp=v.p;v.id=id;go('book')};
 const CL=[['#f8c6c6','#fbe4a8'],['#e4c9f6','#a9d9f6'],['#c7ecd1','#f6f0a8'],['#f7d2a9','#f3a7a7'],['#bcd8f8','#cdb7f3'],['#ffd6e0','#ffb3c6'],['#d0f4de','#a9def9'],['#fde68a','#fca5a5'],['#c7d2fe','#a5b4fc'],['#bbf7d0','#6ee7b7'],['#a5f3fc','#67e8f9'],['#e9d5ff','#c084fc'],['#fed7aa','#fdba74'],['#cbd5e1','#94a3b8'],['#312e81','#6d28d9'],['#134e4a','#0f766e'],['#7f1d1d','#be123c'],['#1f2937','#4b5563']];
 const cgrad=c=>c.cu||CL[(c.c||0)%CL.length];
 const ctx=g=>{const l=x=>{const c=hx2r(x)||[255,255,255];return(.299*c[0]+.587*c[1]+.114*c[2])/255};return g.reduce((t,x)=>t+l(x),0)/g.length<.5?'#fff':'#33254a'};
@@ -609,6 +609,9 @@ function ADDCOL(){const b=bk(v.id),cols=S.col||[];v.pc=v.pc||[];
  return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs"><div class="grab"></div><div class="row" style="flex-wrap:nowrap;margin:0 0 4px"><div class="fl"><h2 style="margin:0">Add to collection</h2><div class="mu">Choose where to save this book.</div></div><span class="xb" onclick="v.sh=null;R()">✕</span></div>
  ${cols.length?`<div class="crl">${cols.map(c=>{const g=cgrad(c),n=S.b.filter(x=>(x.cl||[]).includes(c.id)).length,f=S.b.filter(x=>(x.cl||[]).includes(c.id)&&x.cover)[0];return `<div class="cc ${v.pc.includes(c.id)?'on':''}" data-id="${c.id}" onclick="pcSel('${c.id}')" style="background:${f?`linear-gradient(transparent 35%,rgba(10,5,30,.8)),url(${f.cover}) center/cover`:`${cbk(c)}`};color:${f||c.bn?'#fff':ctx(g)}"><span class="ck">✓</span><div class="cn2">${cic(c)} ${esc(c.n)}</div><div class="cn3">${n} book${n===1?'':'s'}</div></div>`}).join('')}<div class="cc nw" onclick="v.sh='col';v.cc=0;v.ci='';v.dr=null;v.ccu=CL[0].slice();v.cbn='';v.cga=135;v.cip=0;R()"><span style="font-size:26px">＋</span><div class="cn3" style="opacity:1">New</div></div></div>`:`<p class="mu" style="text-align:center;margin:22px 0">No collections yet.</p><div class="row" style="justify-content:center"><button class="bt" onclick="v.sh='col';v.cc=0;v.ci='';v.dr=null;v.ccu=CL[0].slice();v.cbn='';v.cga=135;v.cip=0;R()">＋ Create one</button></div>`}
  ${cols.length?`<button class="bt pr" id="pcb" style="width:100%;padding:14px;margin-top:6px" onclick="pcSave()">${pcLbl()}</button>`:''}</div></div>`}
+function COLORD(){const a=S.col||[];
+ return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs" style="max-height:80vh;overflow:auto"><div class="grab"></div><h2 style="margin:0 0 6px">Order of collections</h2><p class="mu" style="margin:0 0 10px">Move a collection up or down. This is the order they show in your library.</p>${a.map((c,i)=>`<div class="card" style="align-items:center;gap:8px;cursor:default;padding:8px 10px"><span class="mu" style="width:20px;text-align:center">${i+1}</span><div class="fl" style="min-width:0"><div class="t">${esc(c.n)}</div></div><button class="bt" style="padding:6px 12px" ${i?'':'disabled'} onclick="colMv(${i},-1)">↑</button><button class="bt" style="padding:6px 12px" ${i<a.length-1?'':'disabled'} onclick="colMv(${i},1)">↓</button></div>`).join('')}<div class="row"><button class="bt pr" style="flex:1;padding:13px" onclick="v.sh=null;R()">Done</button></div></div></div>`}
+function colMv(i,d){const a=S.col||[],j=i+d;if(j<0||j>=a.length)return;const t=a[i];a[i]=a[j];a[j]=t;S.mm=Date.now();MD=1;save();R()}
 function COLSH(){return `<div class="sh"><div><h2 style="margin-top:0">New collection</h2><input class="in" id="cn" oninput="cisUp()" placeholder="Name (e.g. Beach reads)" value="${esc((v.dr||{}).n||'')}"><div class="cip"><span class="pv" id="cipv">${v.ci?`<img src="${v.ci}" alt="">`:'📚'}</span><input class="in" id="ce" oninput="cisUp()" placeholder="Emoji (optional)" maxlength="4" value="${esc((v.dr||{}).e||'')}" style="margin:0"></div><label class="bt" style="display:inline-block;cursor:pointer;margin:2px 0 8px">Use a picture instead<input type="file" accept="image/*" onchange="newIco(event)" style="display:none"></label>${cisUI()}${ccUI()}<div class="row"><button class="bt" onclick="v.sh=null;R()">Cancel</button><button class="bt pr" style="flex:1" onclick="savec()">Create</button></div></div></div>`}
 
 /* ---- Collections: header, options, add-books sheet ---- */
@@ -703,7 +706,7 @@ function LB(){const n=s=>S.b.filter(b=>b.st===s).length,cols=S.col||[],col=cols.
   tabs=[['all','All',S.b.length],['reading','Reading',n('reading')],['toread','Up next',n('toread')],['done','Finished',n('done')],['dnf','Gave up',n('dnf')]],
   views=[['shelf','Shelf'],['grid','Grid'],['list','List'],['coll','Collection']],
   filt=v.tab!=='all'||!!v.q||!!v.col,cv0=vw==='coll'&&!v.col,
-  colSec=v.col?'':cv0?`<div class="sech"><h2>Collections</h2></div>${cols.map(c=>cban(c,'full')).join('')}${cnew('full')}`:`<div class="sech"><h2 style="display:flex;align-items:center;gap:8px"><span style="color:var(--ac);display:flex">${lbsv(LBIC.spark,20)}</span>Collections</h2>${cols.length?`<a onclick="S.vw='coll';save();R()">See all →</a>`:''}</div><div class="crail">${cols.map(c=>cban(c,cols.length===1?'one':'')).join('')}${cnew()}</div>`,
+  colSec=v.col?'':cv0?`<div class="sech"><h2>Collections</h2>${cols.length>1?`<a onclick="v.sh='colord';R()">Reorder</a>`:''}</div>${cols.map(c=>cban(c,'full')).join('')}${cnew('full')}`:`<div class="sech"><h2 style="display:flex;align-items:center;gap:8px"><span style="color:var(--ac);display:flex">${lbsv(LBIC.spark,20)}</span>Collections</h2><span style="flex:1"></span>${cols.length>1?`<a onclick="v.sh='colord';R()" style="margin-right:14px">Reorder</a>`:''}${cols.length?`<a onclick="S.vw='coll';save();R()">See all →</a>`:''}</div><div class="crail">${cols.map(c=>cban(c,cols.length===1?'one':'')).join('')}${cnew()}</div>`,
   more=!filt&&vw==='shelf'&&S.b.length>8,
   ra=!filt&&!cv0&&S.b.length?`<div class="ra"><div class="sech" style="margin:0 0 10px"><span style="color:var(--ac);display:flex">${lbsv(LBIC.cal,22)}</span><h2 style="font-size:18px">Recently added</h2><a onclick="S.so='new';v.all=1;save();R()">See all →</a></div><div class="rai">${S.b.slice(0,10).map(b=>`<div onclick="op('${b.id}')">${cv(b,'cvs')}</div>`).join('')}</div></div>`:'';
   return `<div class="${S.bl===0?'':'blr'}"><div class="lh"><div><h1 style="margin-top:4px;margin-bottom:0">My Library</h1><div class="mu" style="display:flex;align-items:center;gap:6px;margin-top:4px">${lbsv(LBIC.reading,16)} ${S.b.length} books</div></div><span class="ib" onclick="const q=$('#sq');if(q){q.scrollIntoView({block:'center',behavior:'smooth'});q.focus()}">${lbsv(LBIC.search,21)}</span></div>
@@ -782,7 +785,14 @@ function cnEd(){const c=cnDr(),dy=cnDirty(),wd=c.fmt==='wide';
   <div class="row" style="margin-top:14px"><button class="bt" id="cnds" onclick="cnDiscard()" ${dy?'':'disabled'}>Discard</button><button class="bt pr" id="cnsv" style="flex:1;padding:13px" onclick="cnSave()" ${dy?'':'disabled'}>${dy?'Save notification style':'Saved ✓'}</button></div></div>`}
 
 function setNth(k){if(k!=='custom')v.cnd=null;S.nth=k;save();applyNth();flushSave();R()}
-function setIco(k){S.ico=k;save();v.msg=NT&&NT.setIcon?'Icon changed. Your launcher can take a few seconds to update (the app may close once).':'Icon switching works in the Android app.';if(NT&&NT.setIcon){try{NT.setIcon({name:k})}catch(e){}}R()}
+var _IC=null;
+function icGet(){if(_IC)return _IC;try{const C=window.Capacitor;if(C&&((C.isNativePlatform&&C.isNativePlatform())||(C.getPlatform&&C.getPlatform()!=='web')))_IC=(C.Plugins&&C.Plugins.ShelfieIcon)||C.registerPlugin('ShelfieIcon')}catch(e){}return _IC}
+async function setIco(k){
+ S.ico=k;save();const P=icGet(),nm=(ICO.find(x=>x[0]===k)||[k,k])[1];
+ if(!P){v.msg='Icon switching works in the Android app.';R();return}
+ try{await P.setIcon({name:k});v.msg='Icon changed to '+nm+'. Your home screen can take a few seconds to update (the app may close once).'}
+ catch(e){const m=String(e&&e.message||e);v.msg=/not implemented|unimplemented/i.test(m)?'This app build can’t change the icon yet. Build and install the newest Shelfie update.':'Could not change the icon: '+m}
+ R()}
 function pairTh(k){if(AES[k]&&NTH[AES[k]]){S.nth=AES[k];applyNth()}}
 function aesApply(th){const r=document.documentElement,st=r.style,KS=['--bg','--cd','--tx','--mu','--ac','--ac2','--bd','--ov','--endc','color-scheme'];
  const sHero=(k,u)=>{if(window._hk!==k){window._hk=k;st.setProperty('--hero','url('+u+')')}};
@@ -814,7 +824,7 @@ function nsec(){
  const svg=(c1,c2)=>`<svg viewBox="49 73 415 415" width="100%" height="100%">`+bars.map(b=>`<rect x="${b[0]}" y="${b[1]}" width="47" height="${b[2]}" rx="10" fill="${b[3]?c2:c1}"/>`).join('')+`<rect x="130" y="385" width="253" height="18" rx="9" fill="${c1}"/></svg>`;
  return `${shelfSec()}<h2>Book page</h2><p class="mu">Blurred panel behind a book's info page and your Library, so text stays readable on picture themes.</p><div class="seg"><b class="${S.bl===0?'':'on'}" onclick="S.bl=1;save();R()">Blurred</b><b class="${S.bl===0?'on':''}" onclick="S.bl=0;save();R()">Clear</b></div><h2>Notification style</h2><p class="mu">${NT?'Tap a design to use it for your reading timer.':'Preview only. The timer notification styles work in the Android app.'}</p>`
  +['classic','custom'].concat(Object.keys(NTH).filter(k=>k!=='classic'&&k!=='custom')).map(k=>`<div onclick="setNth('${k}')" style="margin:10px 0;cursor:pointer;border-radius:24px;outline:3px solid ${cur===k?'var(--ac)':'transparent'};outline-offset:2px"><div style="font-size:12px;margin:0 4px 3px">${NTH[k].n}${k==='custom'?' · make your own':''}${cur===k?' ✓':''}</div>${k==='custom'?`<div id="cnpv">${ntPrev(k)}</div>`:ntPrev(k)}</div>${k==='custom'&&cur==='custom'?cnEd():''}`).join('')
- +`<h2>App icon</h2><p class="mu">${NT?'Pick a color scheme for the icon on your home screen.':'Icon colors can be changed in the Android app.'}</p><div class="row" style="gap:14px">`
+ +`<h2>App icon</h2><p class="mu">${(icGet()||NT)?'Pick a color scheme for the icon on your home screen.':'Icon colors can be changed in the Android app.'}</p><div class="row" style="gap:14px">`
  +ICO.map(([k,l,bg,c1,c2])=>`<div onclick="setIco('${k}')" style="text-align:center;font-size:12px;cursor:pointer"><div style="width:58px;height:58px;border-radius:18px;background:${bg};margin-bottom:4px;border:3px solid ${ic===k?'var(--tx)':'var(--bd)'};box-sizing:border-box">${svg(c1,c2)}</div>${l}</div>`).join('')+`</div>`}
 const stripH=s=>(s||'').replace(/<br\s*\/?>/gi,'\n').replace(/<\/p>/gi,'\n\n').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&nbsp;/g,' ').replace(/\n{3,}/g,'\n\n').trim();
 const cleanT=t=>(t||'').replace(/\s*[\(\[].*?[\)\]]/g,'').replace(/\s*[:\-–—]\s.*$/,'').replace(/\s+/g,' ').trim();
@@ -939,8 +949,10 @@ function ASUI(){const A=v.as||{id:'',t:'',a:'',on:SRCS,res:null},b=bk(A.id);
    return `<div class="card asc ${j===0&&c.score>=75?'top':''}" style="display:block;cursor:default"><div style="display:flex;gap:10px">${c.cover?`<img src="${esc(c.cover)}" loading="lazy" style="width:52px;height:78px;object-fit:cover;border-radius:8px;flex:none" onerror="this.style.display='none'">`:''}<div style="min-width:0"><div style="font-weight:700">${esc(c.title)}</div><div class="mu" style="font-size:12px">${esc(c.author||'unknown author')}${c.pages?' · '+c.pages+' pages':''}</div><div style="font-size:12px;margin:2px 0" class="${g[1]}">${c.score}% · ${g[0]}</div><div class="mu dsx" style="font-size:13px">${c.desc?esc(c.desc.slice(0,150))+(c.desc.length>150?'…':''):'No description from this source'}</div></div></div><div class="row" style="margin:8px 0 0">${c.cover?`<button class="bt" onclick="asUse(${i},'c')">Use cover</button>`:''}${c.desc?`<button class="bt" onclick="asUse(${i},'d')">Use description</button>`:''}${c.cover&&c.desc?`<button class="bt pr" onclick="asUse(${i},'b')">Use both</button>`:''}</div></div>`}).join('')+`</div>`}).join('')+`</div>`}
  return h}
 function MTOOLS(){return `<h2>Covers</h2><p class="mu">Finds covers online for every book that doesn’t have one. Keep this page open while it works.</p><button class="bt pr" onclick="allcov()">Find all covers</button><p class="mu" id="cvst"></p><h2>Descriptions</h2><p class="mu" id="dsst">Find missing book descriptions online.</p><button class="bt pr" onclick="allDesc()">Find descriptions for all books</button><p class="mu">Searches Google Books, Open Library, Apple Books, Internet Archive and Wikipedia.</p>${ASUI()}`}
-function MHUB(){const it=(k,t,s)=>`<div class="card" onclick="v.an=1;v.mp='${k}';scrollTo(0,0);R()" style="align-items:center;gap:14px"><span style="color:var(--ac)">${IC_[k]}</span><div class="fl"><div class="t">${t}</div><div class="mu">${s}</div></div><span class="mu" style="font-size:22px">›</span></div>`;
- return `${it('goals','Reading goals','Yearly and monthly goals, optionally with the books you want to read')}${it('cust','Customisation','Themes, shelf style, wood, icon, notifications')}${it('sync','Sync &amp; backup','Account, backup, restore, Goodreads import')}${it('tools','Covers &amp; descriptions','Find missing covers and descriptions, or pick them by hand with Advanced search')}`}
+function MHUB(){const lb=S.lb?'Last backup: '+new Date(S.lb).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'Saves your whole library in one tap';
+ const qb=`<div class="card" onclick="bkQuick()" style="align-items:center;gap:14px;border-color:var(--ac)"><span style="color:var(--ac)">${IC_.sync}</span><div class="fl"><div class="t">Quick backup</div><div class="mu">${lb}</div></div><span class="mu" style="font-size:13px">Tap</span></div>`;
+ const it=(k,t,s)=>`<div class="card" onclick="v.an=1;v.mp='${k}';scrollTo(0,0);R()" style="align-items:center;gap:14px"><span style="color:var(--ac)">${IC_[k]}</span><div class="fl"><div class="t">${t}</div><div class="mu">${s}</div></div><span class="mu" style="font-size:22px">›</span></div>`;
+ return `${qb}${it('goals','Reading goals','Yearly and monthly goals, optionally with the books you want to read')}${it('cust','Customisation','Themes, shelf style, wood, icon, notifications')}${it('sync','Sync &amp; backup','Account, backup, restore, Goodreads import')}${it('tools','Covers &amp; descriptions','Find missing covers and descriptions, or pick them by hand with Advanced search')}`}
 const IC_={cust:`<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1.1"/><circle cx="12" cy="7.5" r="1.1"/><circle cx="16" cy="10" r="1.1"/><path d="M12 21c2 0 2-2 .5-3-1-.7-.5-2 1-2h3.5a3 3 0 0 0 3-3"/></svg>`,sync:`<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/></svg>`,tools:`<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>`};
 function MR(){if(v.adv)return ADV();
  const ttl={goals:'Reading goals',cust:'Customisation',sync:'Sync &amp; backup',tools:'Covers &amp; descriptions'},msg=v.msg?`<p class="g">${esc(v.msg)}</p>`:'';
@@ -966,7 +978,7 @@ function T(){let ss=S.s,tot=ss.reduce((a,s)=>a+s.k,0),pa=avg('p'),qa=avg('%'),da
  <h2>Speed by book</h2>${per.length?per.map(x=>{let o=avg(x.u);return `<div class="ses"><span>${esc(x.b.t)}</span><span>${x.a.toFixed(1)} ${U(x.u)} ${o?(x.a>=o?'<span class="g">▲':'<span class="r">▼')+Math.abs((x.a/o-1)*100).toFixed(0)+'%</span>':''}</span></div>`}).join(''):'<p class="mu">Log a few timed sessions to see how fast you read.</p>'}`}
 function SH(){let b=v.sh==='edit'?bk(v.id):null;
  if(v.sh==='cpick')return CPSH();if(v.sh==='coledit')return COLEDIT();if(v.sh==='colmenu')return COLMENU();if(v.sh==='colbooks')return CBSH();
- if(v.sh==='col')return COLSH();if(v.sh==='addcol')return ADDCOL();if(v.sh==='abperm')return ABPERM();if(v.sh==='abfirst')return ABFIRST();if(v.sh==='stop'){let bb=bk(S.t.id);if(bb.adv&&bb.ch.length)return advStopSh(bb);let q=bb.m==='pct'?'What percent are you at now?':bb.m==='pages'?'What page are you on now?':'Pages read this session (optional)';
+ if(v.sh==='colord')return COLORD();if(v.sh==='col')return COLSH();if(v.sh==='addcol')return ADDCOL();if(v.sh==='abperm')return ABPERM();if(v.sh==='abfirst')return ABFIRST();if(v.sh==='stop'){let bb=bk(S.t.id);if(bb.adv&&bb.ch.length)return advStopSh(bb);let q=bb.m==='pct'?'What percent are you at now?':bb.m==='pages'?'What page are you on now?':'Pages read this session (optional)';
   return `<div class="sh"><div><h2 style="margin-top:0">Nice session! ${fm(el())}</h2><p class="mu">${q}</p><input class="in" id="f-n" type="number" value="${bb.m==='ch'?'':bb.cur||0}"><div class="row"><button class="bt" onclick="v.sh=null;R();nf()">Cancel</button><button class="bt pr" style="flex:1" onclick="tstop()">Save session</button></div></div></div>`}
  return `<div class="sh"><div><h2 style="margin-top:0">${b?'Edit book':'Add a book'}</h2><div class="row"><input class="in" id="q" placeholder="Search title or author" value="${b?esc(b.t+' '+b.a):''}" onkeydown="if(event.key==='Enter')srch()"><button class="bt pr" onclick="srch()">Search</button></div><div id="res"></div><input class="in" id="f-t" placeholder="Title" value="${b?esc(b.t):''}"><input class="in" id="f-a" placeholder="Author" value="${b?esc(b.a):''}"><input class="in" id="f-p" type="number" placeholder="Total pages (optional)" value="${b&&b.pages?b.pages:''}">
 <textarea class="in" id="f-d" rows="4" placeholder="Description (filled in automatically, you can edit it)">${b?esc(b.ds||''):''}</textarea><p class="mu" style="margin:0 0 8px;text-decoration:underline;cursor:pointer" onclick="fillDesc()">Find description online</p>
@@ -976,7 +988,7 @@ function SH(){let b=v.sh==='edit'?bk(v.id):null;
  <div class="row"><button class="bt" onclick="v.sh=null;R()">Cancel</button>${b?`<button class="bt" onclick="del()">Delete</button>`:''}<button class="bt pr" style="flex:1" onclick="sv()">Save</button></div></div></div>`}
 function cov(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas'),k=Math.min(1,240/i.width);c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);v.cv=c.toDataURL('image/jpeg',.7)};i.src=r.result};r.readAsDataURL(f)}
 /* ======== XML backup (saved to the Downloads folder) ======== */
-var _FL=null;const BUILD_='1.0-final';
+var _FL=null;const BUILD_='1.1.0';
 var _flErr='';
 function flGet(){
  if(_FL)return _FL;
@@ -1073,9 +1085,10 @@ function abNext(a){
 }
 async function bkBuild(tag){
  const d=new Date(),p=n=>String(n).padStart(2,'0'),stamp=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'_'+p(d.getHours())+'-'+p(d.getMinutes());
- const snap=JSON.parse(JSON.stringify(S)),xml=toXml(snap);
+ const snap=JSON.parse(JSON.stringify(S));try{const x={};['shf_bg','shf_nc'].forEach(k=>{const t=localStorage.getItem(k);if(t)x[k]=t});if(Object.keys(x).length)snap._x=x}catch(e){}
+ const xml=toXml(snap);
  let same=false;try{same=JSON.stringify(fromXml(xml))===JSON.stringify(snap)}catch(e){}
- return {name:'shelfie-'+(tag||'backup')+'-'+stamp+(same?'.xml':'.json'),data:same?xml:JSON.stringify(snap),mime:same?'text/xml':'application/json',sum:(snap.b||[]).length+' books, '+(snap.s||[]).length+' sessions'};
+ return {name:'shelfie-'+(tag||'backup')+'-'+stamp+(same?'.xml':'.json'),data:same?xml:JSON.stringify(snap),mime:same?'text/xml':'application/json',sum:(snap.b||[]).length+' books, '+(snap.s||[]).length+' sessions, '+((snap.col||[]).length)+' collections, '+((snap.goals||[]).length)+' goals'};
 }
 var _abm='';
 function appMode(){try{var C=window.Capacitor;if(C&&((C.isNativePlatform&&C.isNativePlatform())||(C.getPlatform&&C.getPlatform()!=='web')))return _abm==='missing'?'missing':'app'}catch(e){}return 'web'}
@@ -1097,6 +1110,14 @@ async function bkWrite(b){
  if(r.sha256!==await sha256hex(b.data))throw new Error('The saved file did not match what was sent, so it can’t be trusted. Please try again.');
  r.where=r.folder||f.name;r.note='';return r;
 }
+async function bkQuick(){
+ if(window._qb)return;window._qb=1;
+ try{
+  const FL=flGet(),f=FL?(_abf!==undefined?_abf:await abLoad()):null;
+  if(FL&&f&&f.has){const b=await bkBuild('backup'),r=await bkWrite(b);S.lb=Date.now();save();_abl=undefined;toast('Backup saved ✓ '+b.sum);if(v.p==='more'&&v.mp==='sync'){v.msg='Quick backup saved ✓ '+r.where+' → '+r.name+' ('+b.sum+').';R()}else if(v.p==='more'&&!v.mp)R()}
+  else{go('more');v.an=1;v.mp='sync';R();bkup()}
+ }catch(e){toast('Backup failed: '+String(e&&e.message||e).slice(0,90))}
+ window._qb=0}
 async function bkup(){
  let first=false;
  try{
@@ -1223,8 +1244,53 @@ function MSYNC(){
  <button class="bt" onclick="abPickRestore()">Choose a backup file…</button><input id="rfile" type="file" accept=".xml,.json,text/xml,application/xml,application/json" onchange="rest(event)" style="display:none">
  <p class="mu" style="font-size:12px;margin:6px 0 0">Only .xml and .json backup files are shown.</p>
  ${nat&&f&&f.has?`<div class="row" style="margin:14px 0 4px;flex-wrap:nowrap"><b style="flex:1">Backups in ${loc}</b><span class="mu" style="cursor:pointer;text-decoration:underline" onclick="_abl=undefined;R()">Refresh</span></div>${_abl===undefined?'<p class="mu">Looking…</p>':fl.length?fl.slice(0,12).map((x,i)=>`<div class="card" style="display:block;cursor:default;padding:10px 12px"><div style="font-size:14px;word-break:break-all">${esc(x.name)}</div><div class="mu" style="font-size:12px">${esc(abFmt(x.modified))} · ${Math.max(1,Math.round(x.size/1024))} KB</div><div class="row" style="margin:6px 0 0"><button class="bt" onclick="abRestoreFrom(${i})">Restore this</button></div></div>`).join('')+(fl.length>12?'<p class="mu" style="font-size:12px">Showing the 12 newest of '+fl.length+'.</p>':''):'<p class="mu">No Shelfie backups in this folder yet.</p>'}`:''}
- <p class="mu" style="margin:16px 0 2px">Check a backup file without restoring it:</p><input type="file" accept=".xml,.json,text/xml,application/xml,application/json" onchange="bkCheck(event)">
+ ${COLREC()}<p class="mu" style="margin:16px 0 2px">Check a backup file without restoring it:</p><input type="file" accept=".xml,.json,text/xml,application/xml,application/json" onchange="bkCheck(event)">
  <h2>Import from Goodreads</h2><p class="mu">On a computer: Goodreads → My Books → Import and export → Export Library. Then pick that CSV file here.</p><input type="file" onchange="imp(event)"><p class="mu">Can’t pick the file? Open the CSV in any text or notes app, copy everything, and paste it here:</p><textarea class="in" id="pt" rows="3"></textarea><button class="bt pr" onclick="imp(null,$('#pt').value)">Import pasted text</button>`}
+/* ======== Recover lost collections ======== */
+function colRecoverBooks(){
+ const have=new Set((S.col||[]).map(c=>c.id)),miss={};
+ S.b.forEach(b=>(b.cl||[]).forEach(id=>{if(!have.has(id))(miss[id]=miss[id]||[]).push(b)}));
+ const ids=Object.keys(miss);
+ if(!ids.length){v.msg='No lost collections were found on your books. If you have a backup file, use “Recover from a backup file” instead.'}
+ else{
+  S.col=S.col||[];
+  ids.forEach((id,i)=>S.col.push({id:id,n:'Recovered '+(i+1)+' · '+String(miss[id][0].t).slice(0,22),e:'',c:0}));
+  S.mm=Date.now();MD=1;save();
+  v.msg='Recovered '+ids.length+' collection'+(ids.length===1?'':'s')+' with their books. Their names were lost, so open each one and rename it (⋯ menu).';
+ }
+ scrollTo(0,0);R();
+}
+function colRecoverUndo(){
+ const bk0=S.colBak||[];if(!bk0.length)return;
+ const have=new Set((S.col||[]).map(c=>c.id));let n=0;
+ bk0.forEach(c=>{if(!have.has(c.id)){(S.col=S.col||[]).push(c);n++}});
+ S.colBak=[];S.mm=Date.now();MD=1;save();
+ v.msg='Brought back '+n+' collection'+(n===1?'':'s')+' that the last sync had replaced.';scrollTo(0,0);R();
+}
+function colApply(text,name){
+ let x=null;try{x=bkParse(text)}catch(e){}
+ if(!x||!Array.isArray(x.b)){v.msg='That is not a valid Shelfie backup file.';scrollTo(0,0);R();return}
+ const have=new Set((S.col||[]).map(c=>c.id));let added=0,links=0;
+ (x.col||[]).forEach(c=>{if(c&&c.id&&!have.has(c.id)){(S.col=S.col||[]).push(c);have.add(c.id);added++}});
+ x.b.forEach(ob=>{const b=S.b.find(k=>k.id===ob.id);if(!b)return;(ob.cl||[]).forEach(id=>{if(have.has(id)){b.cl=b.cl||[];if(b.cl.indexOf(id)<0){b.cl.push(id);links++}}})});
+ if(added||links){S.mm=Date.now();MD=1;save()}
+ v.msg=added||links?'Recovered '+added+' collection'+(added===1?'':'s')+' and '+links+' book link'+(links===1?'':'s')+' from '+(name||'the backup')+'. Nothing else was changed.':'That backup has no collections that are missing here. Nothing was changed.';
+ scrollTo(0,0);R();
+}
+async function colFromBackup(){
+ const FL=flGet();
+ if(FL&&FL.pickBackupFile){
+  try{const r=await FL.pickBackupFile();if(r&&r.cancelled)return;colApply(r.data,r.name)}
+  catch(e){v.msg='Could not read that file.';scrollTo(0,0);R()}
+ }else{const i=document.getElementById('cfile');if(i)i.click()}
+}
+function colFile(e){const f=e.target.files[0];if(!f)return;e.target.value='';const r=new FileReader();r.onload=()=>colApply(r.result,f.name);r.readAsText(f)}
+function COLREC(){
+ return `<h2 style="margin-top:22px">Lost your collections?</h2><div class="card" style="display:block;cursor:default"><p class="mu" style="margin:0 0 10px">These only <b>add back</b> collections that are missing. They never delete or replace anything.</p>
+ <div class="row" style="margin:0 0 8px"><button class="bt" onclick="colRecoverBooks()">Rebuild from my books</button></div>
+ <div class="row" style="margin:0"><button class="bt" onclick="colFromBackup()">Recover from a backup file</button></div><input id="cfile" type="file" accept=".xml,.json,text/xml,application/xml,application/json" onchange="colFile(event)" style="display:none">
+ ${(S.colBak||[]).length?`<div class="row" style="margin:10px 0 0"><button class="bt pr" onclick="colRecoverUndo()">Bring back ${S.colBak.length} collection${S.colBak.length===1?'':'s'} replaced by the last sync</button></div>`:''}</div>`;
+}
 function bkCheck(e){
  const f=e.target.files[0];if(!f)return;
  const r=new FileReader();
@@ -1292,7 +1358,14 @@ function gRp(c){v.gf.rp=c;R()}
 function gTogR(id,el){const f=v.gf,i=f.rd.findIndex(x=>x==id);if(i>=0)f.rd.splice(i,1);else f.rd.push(id);el.classList.toggle('on',i<0);el.querySelector('.gpk').textContent=i<0?'✓':'';const c=document.getElementById('grcnt');if(c)c.textContent=f.rd.length+' chosen'}
 function gFiltR(q){q=String(q).toLowerCase();document.querySelectorAll('.gpr').forEach(e=>{e.style.display=e.dataset.q.indexOf(q)>=0?'':'none'})}
 function gFilt(q){q=String(q).toLowerCase();document.querySelectorAll('.gpb:not(.gpr)').forEach(e=>{e.style.display=e.dataset.q.indexOf(q)>=0?'':'none'})}
-function gTog(id,el){const f=v.gf,i=f.bk.findIndex(x=>x==id);if(i>=0)f.bk.splice(i,1);else f.bk.push(id);el.classList.toggle('on',i<0);el.querySelector('.gpk').textContent=i<0?'✓':'';const c=document.getElementById('gcnt');if(c)c.textContent=f.bk.length+' chosen'}
+function gOrd(){
+ const f=v.gf;if(!f||!f.pick||!f.bk.length)return '';
+ return '<h3 style="margin:14px 0 6px;font-size:15px">Your books, in order</h3>'+f.bk.map((id,i)=>{const b=bk(id);if(!b)return '';
+  return `<div class="card" style="align-items:center;gap:8px;cursor:default;padding:8px 10px"><span class="mu" style="width:20px;text-align:center">${i+1}</span><div class="fl" style="min-width:0"><div class="t" style="white-space:normal">${esc(b.t)}</div></div><button class="bt" style="padding:6px 12px" ${i?'':'disabled'} onclick="gMv(${i},-1)">↑</button><button class="bt" style="padding:6px 12px" ${i<f.bk.length-1?'':'disabled'} onclick="gMv(${i},1)">↓</button><button class="bt" style="padding:6px 12px" onclick="gRm(${i})">✕</button></div>`}).join('');
+}
+function gMv(i,d){const a=v.gf.bk,j=i+d;if(j<0||j>=a.length)return;const t=a[i];a[i]=a[j];a[j]=t;R()}
+function gRm(i){v.gf.bk.splice(i,1);R()}
+function gTog(id,el){const f=v.gf,i=f.bk.findIndex(x=>x==id);if(i>=0)f.bk.splice(i,1);else f.bk.push(id);el.classList.toggle('on',i<0);el.querySelector('.gpk').textContent=i<0?'✓':'';const c=document.getElementById('gcnt');if(c)c.textContent=f.bk.length+' chosen';const o=document.getElementById('gord');if(o)o.innerHTML=gOrd()}
 function gForm(){
  const f=v.gf,y0=new Date().getFullYear(),ys=[];for(let y=y0-1;y<=y0+3;y++)ys.push(y);
  const opt=(arr,sel)=>arr.map(a=>`<option value="${a[0]}" ${a[0]==sel?'selected':''}>${a[1]}</option>`).join('');
@@ -1304,7 +1377,7 @@ function gForm(){
  const dn=S.b.filter(b=>b.st==='done').sort((a,b)=>(b.fd||0)-(a.fd||0));
  const rdl=f.rp?`<p class="mu" id="grcnt">${f.rd.length} chosen</p><input class="in" placeholder="Search your finished books" oninput="gFiltR(this.value)"><div class="gpl">${dn.map(b=>{const on=f.rd.some(i=>i==b.id);return`<div class="gpb gpr ${on?'on':''}" data-q="${esc((String(b.t)+' '+(b.a||'')).toLowerCase())}" onclick="gTogR('${b.id}',this)"><span class="gpk">${on?'✓':''}</span><div class="fl"><div class="t">${esc(b.t)}</div><div class="mu">${esc(b.a||'')}${b.fd?' · finished '+dt(b.fd):''}</div></div></div>`}).join('')||'<p class="mu">You have no books in Finished yet.</p>'}</div>`:'';
  const nums=f.pick?'<p class="mu">The target is the number of books you choose.</p>':`<div class="row" style="align-items:center"><span class="mu" style="flex:1">How many books do you want to read?</span><input class="in" style="width:90px;flex:none;margin:0" type="number" inputmode="numeric" min="1" value="${f.n||''}" onchange="v.gf.n=+this.value||0"></div><div class="row" style="align-items:center"><span class="mu" style="flex:1">How many have you already read? (0 if none)</span><input class="in" style="width:90px;flex:none;margin:0" type="number" inputmode="numeric" min="0" value="${f.a||0}" onchange="v.gf.a=+this.value||0"></div>`;
- return`<div class="row"><button class="bt" onclick="v.gf=null;R()">← Goals</button></div><h2>${f.id?'Edit goal':'New goal'}</h2><div class="seg"><b class="${f.t==='year'?'on':''}" onclick="gSet('t','year')">Year</b><b class="${f.t==='month'?'on':''}" onclick="gSet('t','month')">Month</b></div>${per}${nums}<label class="advt"><input type="checkbox" ${f.ib?'checked':''} onchange="v.gf.ib=this.checked?1:0"><span>Also count books already marked finished in this ${f.t}</span></label><label class="advt"><input type="checkbox" ${f.pick?'checked':''} onchange="gPickMode(this.checked)"><span>Choose which books I want to read (optional)</span></label>${pick}<label class="advt"><input type="checkbox" ${f.rp?'checked':''} onchange="gRp(this.checked)"><span>Choose which finished books I’ve already read (optional)</span></label>${f.rp?'<p class="mu" style="margin:0 0 6px">These count toward the goal even if you finished them earlier.</p>':''}${rdl}<div class="row" style="margin-top:14px"><button class="bt" onclick="v.gf=null;R()">Cancel</button><button class="bt pr" style="flex:1" onclick="gSave()">Save goal</button></div>`;
+ return`<div class="row"><button class="bt" onclick="v.gf=null;R()">← Goals</button></div><h2>${f.id?'Edit goal':'New goal'}</h2><div class="seg"><b class="${f.t==='year'?'on':''}" onclick="gSet('t','year')">Year</b><b class="${f.t==='month'?'on':''}" onclick="gSet('t','month')">Month</b></div>${per}${nums}<label class="advt"><input type="checkbox" ${f.ib?'checked':''} onchange="v.gf.ib=this.checked?1:0"><span>Also count books already marked finished in this ${f.t}</span></label><label class="advt"><input type="checkbox" ${f.pick?'checked':''} onchange="gPickMode(this.checked)"><span>Choose which books I want to read (optional)</span></label><div id="gord">${gOrd()}</div>${pick}<label class="advt"><input type="checkbox" ${f.rp?'checked':''} onchange="gRp(this.checked)"><span>Choose which finished books I’ve already read (optional)</span></label>${f.rp?'<p class="mu" style="margin:0 0 6px">These count toward the goal even if you finished them earlier.</p>':''}${rdl}<div class="row" style="margin-top:14px"><button class="bt" onclick="v.gf=null;R()">Cancel</button><button class="bt pr" style="flex:1" onclick="gSave()">Save goal</button></div>`;
 }
 function gSave(){
  const f=v.gf,bks=f.pick?f.bk.slice():null;
@@ -1370,7 +1443,7 @@ function gStats(chips){
  // each book
  const ok=new Set(done.map(x=>String(x.id))),ids=g.bk&&g.bk.length?g.bk:null;
  let list=ids?ids.map(i=>bk(i)).filter(Boolean).concat((g.rd||[]).map(i=>bk(i)).filter(x=>x&&!ids.some(i=>i==x.id))):done.concat(S.b.filter(x=>x.st==='reading'&&!done.includes(x)));
- list=list.slice().sort((x,y)=>(x.st==='reading'?0:x.st==='done'?1:2)-(y.st==='reading'?0:y.st==='done'?1:2)||(y.fd||0)-(x.fd||0));
+ if(!ids)list=list.slice().sort((x,y)=>(x.st==='reading'?0:x.st==='done'?1:2)-(y.st==='reading'?0:y.st==='done'?1:2)||(y.fd||0)-(x.fd||0));
  const row=x=>{
   const p=pc(x),c=ok.has(String(x.id)),lbl=x.st==='done'?(c?((g.rd||[]).some(i=>i==x.id)?'Already read':'Finished '+dt(x.fd))+' · counts toward this goal':'Finished '+(x.fd?dt(x.fd):'')+' · before the goal started'):x.st==='reading'?(((x.m==='pages'||x.adv)&&x.pages?(x.cur||0)+' / '+x.pages+' pages · ':'')+Math.round(p)+'%'+(ids?'':' · counts when finished')):x.st==='dnf'?'Gave up':'Not started yet';
   return `<div class="card" style="align-items:center;gap:12px;cursor:pointer" onclick="op('${x.id}')"><div style="width:46px;flex:none">${cv(x,'cvs')}</div><div class="fl" style="min-width:0"><div class="t" style="white-space:normal">${esc(x.t)}</div><div class="mu">${esc(x.a)}</div><div class="bar"><i style="width:${p}%"></i></div><div class="mu ${x.st==='done'&&c?'g':''}" style="font-size:12px">${lbl}</div></div></div>`;
@@ -1451,7 +1524,7 @@ function cfUse(id,i){
 }
 
 
-function restApply(x,label){if(!x||!x.b)throw 0;if(!confirm('Replace everything on this device with this backup ('+x.b.length+' books)'+(label?' from '+label:'')+'?'))return;try{bkSafety()}catch(e){}let od=S.dl||{},op=S.dp||[],old=S.b.map(b=>b.id);S=x;S.sd=1;S.dl=Object.assign({},od,S.dl||{});S.dp=[...op];old.forEach(i=>{if(!S.b.some(b=>b.id===i)){S.dl[i]=Date.now();S.dp.push(i)}});S.uid=(window.fbUser&&window.fbUser.uid)||undefined;MD=1;for(let k in BL)delete BL[k];save();v.msg='Backup restored ('+S.b.length+' books)';v.tab='all';scrollTo(0,0);R();v.msg='Backup restored ('+S.b.length+' books)';v.tab='all';scrollTo(0,0);R()}
+function restApply(x,label){if(!x||!x.b)throw 0;if(!confirm('Replace everything on this device with this backup ('+x.b.length+' books)'+(label?' from '+label:'')+'?'))return;try{bkSafety()}catch(e){}let od=S.dl||{},op=S.dp||[],old=S.b.map(b=>b.id);const ex=x._x;delete x._x;S=x;if(ex){try{for(const k in ex)if(k==='shf_bg'||k==='shf_nc')localStorage.setItem(k,ex[k]);window._bgc=undefined;window._hk=null}catch(e){}}S.sd=1;S.dl=Object.assign({},od,S.dl||{});S.dp=[...op];old.forEach(i=>{if(!S.b.some(b=>b.id===i)){S.dl[i]=Date.now();S.dp.push(i)}});S.uid=(window.fbUser&&window.fbUser.uid)||undefined;S.mm=Date.now();MD=1;for(let k in BL)delete BL[k];save();v.msg='Backup restored ('+S.b.length+' books)';v.tab='all';scrollTo(0,0);R();v.msg='Backup restored ('+S.b.length+' books)';v.tab='all';scrollTo(0,0);R()}
 const bkOk=n=>/\.(xml|json)$/i.test(n||'');
 function rest(e){let f=e.target.files[0];if(!f)return;e.target.value='';if(!bkOk(f.name)){v.msg='Please choose a Shelfie backup file (.xml or .json).';scrollTo(0,0);R();return}let r=new FileReader();r.onload=()=>{try{restApply(bkParse(r.result),f.name)}catch(err){v.msg='That file is not a valid Shelfie backup.';scrollTo(0,0);R()}};r.readAsText(f)}
 async function c2d(u){try{let b=await (await fetch(u)).blob();return await new Promise(ok=>{let f=new FileReader();f.onload=()=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas'),k=Math.min(1,240/i.width);c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.7))};i.onerror=()=>ok(u);i.src=f.result};f.readAsDataURL(b)})}catch(e){return u}}
@@ -1729,7 +1802,14 @@ async function sync(){if(!U||busy)return;busy=true;v.am='Syncing…';stat();
    if(!l.mt)l.mt=Date.now();DIRTY.add(l.id)}
   const seen=new Set(S.s.map(x=>x.b+'_'+x.s));(cm.s||[]).forEach(x=>{if(!seen.has(x.b+'_'+x.s))S.s.push(x)});
   S.s.sort((a,b)=>a.s-b.s);if(S.s.length!==(cm.s||[]).length)MD=1;
-  if((cm.mm||0)>(S.mm||0)){S.gl=cm.gl||0;if(cm.goals)S.goals=cm.goals;S.col=cm.col||[];S.mm=cm.mm}else if((S.mm||0)>(cm.mm||0))MD=1;
+  if((cm.mm||0)>(S.mm||0)){
+   const lc=S.col||[],cc=cm.col||[],lg=S.goals||[],cg=cm.goals||[];
+   S.gl=cm.gl||0;
+   if(lc.length&&!cc.length){MD=1;S.mm=Date.now()}      /* cloud has none, this device has some: keep them and upload them */
+   else{if(lc.length&&JSON.stringify(lc)!==JSON.stringify(cc))S.colBak=lc.slice();S.col=cc;S.mm=cm.mm}
+   if(lg.length&&!cg.length){MD=1;S.mm=Date.now()}
+   else if(cm.goals)S.goals=cm.goals;
+  }else if((S.mm||0)>(cm.mm||0))MD=1;
   await pushAll(toDel);v.am=''}
  catch(e){v.am='Sync failed: '+err(e)}
  finally{busy=false}stat();soft()}
@@ -1743,7 +1823,7 @@ window.fb={
  sync:()=>sync()};
 onAuthStateChanged(auth,async u=>{U=u;window.fbUser=u;
  if(u){if(S.uid&&S.uid!==u.uid){if(!confirm('This device holds another account’s library. Replace it with this account’s data?')){await signOut(auth);return}
-   S.b=[];S.s=[];S.dl={};S.dp=[];S.gl=0;S.goals=[];S.mm=0;for(const k in BL)delete BL[k];DIRTY.clear()}
+   S.b=[];S.s=[];S.dl={};S.dp=[];S.gl=0;S.goals=[];S.col=[];S.mm=0;for(const k in BL)delete BL[k];DIRTY.clear()}
   S.uid=u.uid;persist();v.am='';R();await sync()}
  else{v.am='';R()}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&U&&Date.now()-(S.ls||0)>60000)sync()});
@@ -1763,8 +1843,10 @@ function goBack(){
  if(v.p==='book'){bye(()=>go(v.pp&&v.pp!=='book'?v.pp:'home',1));return 1}
  if(v.p==='lib'&&v.col){bye(()=>{v.col=null;v.q='';R()});return 1}
  if(v.p==='lib'&&v.q){v.q='';R();return 1}
- if(v.p!=='home'){go('home',1);return 1}
+ if(v.p!=='home'){const pr=(v.hs||[])[(v.hs||[]).length-1];go(pr&&pr!==v.p?pr:'home',1);return 1}
  return 0}
+/* Android's back button calls this: go back one page, or ask to press again before closing */
+window.shBack=function(){try{if(goBack())return 'ok';const n=Date.now();if(window._bx&&n-window._bx<2200)return 'exit';window._bx=n;toast('Press back again to exit');return 'ok'}catch(e){return 'exit'}};
 try{history.replaceState({g:0},'');history.pushState({g:1},'')}catch(e){}
 addEventListener('popstate',()=>{
  if(goBack()){history.pushState({g:1},'');return}
