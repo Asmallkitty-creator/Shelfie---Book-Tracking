@@ -601,6 +601,13 @@ html body #app.bk-open.bk-open .cvl{will-change:auto!important}
 .cb.rf .fl{flex:1 1 0;min-width:0}
 .cb.rf .cf{margin-right:14px;margin-left:auto}
 .cb.rf .cf>div{margin-left:-22px!important}.cb.rf .cf>div:first-child{margin-left:0!important}
+
+/* perfectly centred plus button (drawn with CSS, not a text glyph) */
+.cgp{position:relative;font-size:0!important;line-height:0;color:transparent!important;flex:none}
+.cgp::before,.cgp::after{content:"";position:absolute;left:50%;top:50%;background:#33254a;border-radius:2px;transform:translate(-50%,-50%)}
+.cgp::before{width:12px;height:2.5px}.cgp::after{width:2.5px;height:12px}
+.cb.rf .cgp{width:26px;height:26px;top:8px;right:8px}
+.cb.rf .cf{margin-right:36px!important}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
