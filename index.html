@@ -576,6 +576,21 @@ html body #app.bk-open.bk-open .cvl{will-change:auto!important}
 .bkpg .big{font-size:32px}
 .bkpg .bcol{margin:10px 0 0}.bkpg .bch b{font-size:15px}.bkpg .bca{font-size:12px;padding:4px 10px}.bkpg .bcc{font-size:13px}
 .bkpg .row{gap:10px}
+
+/* ---- star sits at the end of "My Library" ---- */
+.lh::after{display:none!important}
+.lht::after{content:"✦";display:inline-block;margin-left:-2px;font-size:15px;vertical-align:top;position:relative;top:.1em;color:var(--ac);pointer-events:none;animation:mTw 3.2s ease-in-out infinite}
+/* ---- collections header fits inside the box ---- */
+.sech{flex-wrap:nowrap}.sech h2{min-width:0;white-space:nowrap}
+.sech:has(.crail),.sech h2[style*="align-items"]{font-size:18px}
+.sech h2[style*="align-items"]{font-size:18px;flex:none}
+.sech a{font-size:13px}
+.sech a:last-child{margin-right:4px}
+/* ---- home: reading cards keep the same neat size ---- */
+.hero>.row{padding:14px;align-items:center!important;gap:14px}
+.hero .cvh{width:80px;height:118px;font-size:32px}
+.hero .fl .t{font-size:16px!important;line-height:1.25!important;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.hero .fl .mu{font-size:13px!important}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
@@ -807,7 +822,7 @@ function LB(){const n=s=>S.b.filter(b=>b.st===s).length,cols=S.col||[],col=cols.
   colSec=v.col?'':cv0?`<div class="sech"><h2>Collections</h2>${cols.length>1?`<a onclick="v.sh='colord';R()">Reorder</a>`:''}</div>${cols.map(c=>cban(c,'full')).join('')}${cnew('full')}`:`<div class="sech"><h2 style="display:flex;align-items:center;gap:8px"><span style="color:var(--ac);display:flex">${lbsv(LBIC.spark,20)}</span>Collections</h2><span style="flex:1"></span>${cols.length>1?`<a onclick="v.sh='colord';R()" style="margin-right:14px">Reorder</a>`:''}${cols.length?`<a onclick="S.vw='coll';save();R()">See all →</a>`:''}</div><div class="crail">${cols.map(c=>cban(c,'rf')).join('')}${cnew('rn')}</div>`,
   more=!filt&&vw==='shelf'&&S.b.length>8,
   ra=!filt&&!cv0&&S.b.length?`<div class="ra"><div class="sech" style="margin:0 0 10px"><span style="color:var(--ac);display:flex">${lbsv(LBIC.cal,22)}</span><h2 style="font-size:18px">Recently added</h2><a onclick="S.so='new';v.all=1;save();R()">See all →</a></div><div class="rai">${S.b.slice(0,10).map(b=>`<div onclick="op('${b.id}')">${cv(b,'cvs')}</div>`).join('')}</div></div>`:'';
-  return `<div class="${S.bl===0?'':'blr'}"><div class="lh"><div><h1 style="margin-top:4px;margin-bottom:0">My Library</h1><div class="mu" style="display:flex;align-items:center;gap:6px;margin-top:4px">${lbsv(LBIC.reading,16)} ${S.b.length} books</div></div><span class="ib" onclick="const q=$('#sq');if(q){q.scrollIntoView({block:'center',behavior:'smooth'});q.focus()}">${lbsv(LBIC.search,21)}</span></div>
+  return `<div class="${S.bl===0?'':'blr'}"><div class="lh"><div><h1 class="lht" style="margin-top:4px;margin-bottom:0">My Library</h1><div class="mu" style="display:flex;align-items:center;gap:6px;margin-top:4px">${lbsv(LBIC.reading,16)} ${S.b.length} books</div></div><span class="ib" onclick="const q=$('#sq');if(q){q.scrollIntoView({block:'center',behavior:'smooth'});q.focus()}">${lbsv(LBIC.search,21)}</span></div>
   <div class="ltabs">${tabs.map(([k,l,c])=>`<span class="lt ${v.tab===k?'on':''}" onclick="v.tab='${k}';R()">${lbsv(LBIC[k],17)}${l} (${c})</span>`).join('')}</div>
   <div class="lsr"><input type="search" enterkeyhint="search" autocomplete="off" class="in pillsearch" id="sq" placeholder="Search your books…" value="${esc(v.q)}" oninput="v.q=this.value;$('#ls').innerHTML=lst()"><select class="in" onchange="S.so=this.value;save();R()">${[['new','Newest'],['title','Title'],['author','Author'],['prog','Progress'],['rate','Rating']].map(([a,c])=>`<option value="${a}" ${(S.so||'new')===a?'selected':''}>${c}</option>`).join('')}</select></div>
   <div class="vsw">${views.map(([k,l])=>`<span class="${vw===k?'on':''}" onclick="S.vw='${k}';v.col=null;save();R()">${lbsv(LBIC[k],15)}${l}</span>`).join('')}</div>
