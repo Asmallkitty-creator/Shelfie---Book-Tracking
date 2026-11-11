@@ -124,7 +124,7 @@ html,body{max-width:100%;overflow-x:hidden}img{max-width:100%}input[type=file]{m
 .cb{position:relative;display:flex;align-items:center;gap:10px;height:112px;border-radius:26px;overflow:hidden;padding:0 14px 0 20px;cursor:pointer;flex:0 0 88%;border:1px solid rgba(255,255,255,.55);color:#33254a;box-shadow:0 6px 18px #0002}
 .cb.one{flex-basis:100%}.cb.new{flex:0 0 42%;background:var(--cd);color:var(--tx);border:1.5px dashed var(--mu);box-shadow:none;justify-content:center;flex-direction:column;gap:4px;padding:0 12px;text-align:center;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .cb.full{flex:none;width:100%;margin:10px 0}
-.cf{display:flex;align-items:center;flex:none;padding-right:4px}.cf>div .cvf{width:100%;height:100%}.cb .fl{min-width:0}.cb .cbt{white-space:normal;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}.cf>div{flex:none}
+.cf{display:flex;align-items:center;flex:none;padding-right:4px}.cf>div .cvf{width:100%;height:100%}.cb .fl{min-width:0}.cb .cbt{white-space:normal;overflow-wrap:break-word;word-break:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}.cf>div{flex:none}
 .cg{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;flex:none;font-size:18px}
 .pb{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);padding:2px 9px;border-radius:99px;font-size:11px;font-weight:700;color:#fff;background:rgba(30,20,60,.55);border:1px solid rgba(255,255,255,.25);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);pointer-events:none}
 .ra{margin-top:18px;padding:14px;border-radius:26px;background:var(--cd);border:1px solid var(--bd);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
@@ -545,6 +545,21 @@ html body #app.bk-open.bk-open .cvl{will-change:auto!important}
 .chr .ib2{background:var(--cd);color:var(--tx);border:1px solid var(--bd)}
 .chrt{font-size:14px;opacity:.75}
 .cb.full{margin:10px 0 8px}
+
+/* ---- one file, several books ---- */
+.omc{margin:12px 0 4px;padding:12px;border:1px solid var(--bd);border-radius:18px;background:var(--cd)}
+.omt{font-weight:700}
+.omr{display:flex;gap:6px;align-items:center;margin:6px 0}
+.omr{box-sizing:border-box;width:100%}
+.omr .in{margin:0;box-sizing:border-box}
+.omn{width:20px;text-align:center;opacity:.6;font-weight:700;flex:none}
+.sh .omr .omt1{flex:1 1 0!important;min-width:0!important;width:auto!important}
+.sh .omr .oms{flex:0 0 104px!important;width:104px!important;min-width:0}
+.sh .omr .xb{flex:none;margin:0}
+.omps{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+.omp{border:1px solid var(--bd);border-radius:14px;padding:6px 10px;font-size:13px;cursor:pointer}
+.omp.on{border-color:var(--ac);font-weight:700}
+.omlk{text-decoration:underline;cursor:pointer}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
@@ -680,7 +695,7 @@ function COLSH(){return `<div class="sh"><div><h2 style="margin-top:0">New colle
 /* ---- Collections: header, options, add-books sheet ---- */
 function chead(c){
  // same banner (size, text, covers) as in the collection list, so every opened collection is the same size
- return `<div class="chr"><span class="ib2" onclick="bye(()=>{v.col=null;R()})" role="button" aria-label="Back to all collections">‹</span><span class="chrt">All collections</span><span style="flex:1"></span><span class="ib2" onclick="v.sh='colmenu';R()" role="button" aria-label="Collection options">⋯</span></div>${cban(c,'full',1)}<button class="bt pr chadd" onclick="cbOpen('${c.id}')">＋ Add books</button>`}
+ return `<div class="chr"><span class="ib2" onclick="bye(()=>{v.col=null;R()})" role="button" aria-label="Back to all collections">‹</span><span class="chrt">All collections</span><span style="flex:1"></span><span class="ib2" onclick="v.sh='colmenu';R()" role="button" aria-label="Collection options">⋯</span></div>${cban(c,'full',1,1)}<button class="bt pr chadd" onclick="cbOpen('${c.id}')">＋ Add books</button>`}
 function COLMENU(){const c=(S.col||[]).find(x=>x.id===v.col);if(!c)return '';
  return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs"><div class="grab"></div><div class="row" style="flex-wrap:nowrap;margin:0 0 6px"><div class="fl"><h2 style="margin:0">${cic(c)} ${esc(c.n)}</h2><div class="mu">Collection options</div></div><span class="xb" onclick="v.sh=null;R()">✕</span></div>
  <div class="mrow" onclick="cbOpen('${c.id}')"><span>＋</span><div class="fl">Add or remove books</div></div>
@@ -765,15 +780,15 @@ const lbsv=(d,s)=>`<svg viewBox="0 0 24 24" width="${s||18}" height="${s||18}" f
 const LBIC={all:'<path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/>',reading:'<path d="M3 5.5C5.5 4.3 8.5 4.5 12 6.5c3.5-2 6.5-2.2 9-1v13c-2.5-1.2-5.5-1-9 1-3.5-2-6.5-2.2-9-1z"/><path d="M12 6.5v13"/>',toread:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',done:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',dnf:'<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',shelf:'<rect x="4" y="4" width="4" height="13" rx="1"/><rect x="10" y="7" width="4" height="10" rx="1"/><path d="M16 5.5l3.4-.7 2 11.8-3.4.7z"/><path d="M3 20h18"/>',grid:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',list:'<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',coll:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',cal:'<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>'};
 function csOpt(){return Object.assign({sz:'m',ts:'m',ha:'l',va:'m',cv:3,cs:'r'},S.cs||{})}
 function csH(){return {s:92,m:112,l:140,x:172}[csOpt().sz]||112}
-function cban(c,k,nolink){const o=csOpt(),bs=S.b.filter(b=>(b.cl||[]).includes(c.id)),H=csH(),F={s:17,m:21,l:25,x:30}[o.ts]||21,
-  ch=Math.round(H*.66),cw=Math.round(ch*2/3),ta={l:'left',c:'center',r:'right'}[o.ha]||'left',vs={t:'flex-start',m:'center',b:'flex-end'}[o.va]||'center',ji={l:'flex-start',c:'center',r:'flex-end'}[o.ha]||'flex-start',nc=+o.cv||0;
+function cban(c,k,nolink,big){const o=csOpt(),bs=S.b.filter(b=>(b.cl||[]).includes(c.id)),H=big?Math.round(csH()*1.35):csH(),F={s:17,m:21,l:25,x:30}[o.ts]||21,
+  ch=Math.round(big===2?csH()*.66:H*(big?.58:.66)),cw=Math.round(ch*2/3),ta={l:'left',c:'center',r:'right'}[o.ha]||'left',vs={t:'flex-start',m:'center',b:'flex-end'}[o.va]||'center',ji={l:'flex-start',c:'center',r:'flex-end'}[o.ha]||'flex-start',nc=+o.cv||0;
  return `<div class="cb ${k||''}" style="background:${cbk(c)};color:${ctc(c)};height:${H}px" ${nolink?'':`onclick="v.col='${c.id}';v.tab='all';R()"`}><div class="fl" style="text-align:${ta};align-self:${vs};max-height:${H-14}px;overflow:hidden"><div class="t cbt" style="font:700 ${F}px/1.15 Georgia,serif;-webkit-line-clamp:${Math.max(1,Math.floor((H-14-Math.round(F*.62)-8)/(F*1.15)))}">${cic(c,'cb')} ${esc(c.n)}</div><div style="font-size:${Math.max(12,Math.round(F*.62))}px;opacity:.75;display:flex;gap:5px;align-items:center;margin-top:3px;justify-content:${ji}">${lbsv(LBIC.reading,14)} ${bs.length} book${bs.length===1?'':'s'}</div></div>${nc?`<div class="cf" style="order:${o.cs==='l'?-1:0}">${bs.slice(0,nc).map((b,i,a)=>`<div style="transform:rotate(${(i-(a.length-1)/2)*8}deg);z-index:${i===1?3:1};margin-left:${i?-18:0}px;width:${cw}px;height:${ch}px">${cv(b,'cvf')}</div>`).join('')}</div>`:''}${nolink?'':`<span class="cg cgp" onclick="event.stopPropagation();cbOpen('${c.id}')" aria-label="Add books to ${esc(c.n)}">＋</span>`}</div>`}
-const cnew=k=>`<div class="cb new ${k||''}" style="height:${csH()}px" onclick="v.sh='col';v.cc=0;v.ci='';v.dr=null;v.ccu=CL[0].slice();v.cbn='';v.cga=135;v.cip=0;R()"><span style="font-size:24px;line-height:1">＋</span><b style="font-size:14px">New collection</b></div>`;
+const cnew=k=>`<div class="cb new ${k||''}" style="height:${k?csH():Math.round(csH()*1.35)}px" onclick="v.sh='col';v.cc=0;v.ci='';v.dr=null;v.ccu=CL[0].slice();v.cbn='';v.cga=135;v.cip=0;R()"><span style="font-size:24px;line-height:1">＋</span><b style="font-size:14px">New collection</b></div>`;
 function LB(){const n=s=>S.b.filter(b=>b.st===s).length,cols=S.col||[],col=cols.find(c=>c.id===v.col),vw=S.vw||'shelf',
   tabs=[['all','All',S.b.length],['reading','Reading',n('reading')],['toread','Up next',n('toread')],['done','Finished',n('done')],['dnf','Gave up',n('dnf')]],
   views=[['shelf','Shelf'],['grid','Grid'],['list','List'],['coll','Collection']],
   filt=v.tab!=='all'||!!v.q||!!v.col,cv0=vw==='coll'&&!v.col,
-  colSec=v.col?'':cv0?`<div class="sech"><h2>Collections</h2>${cols.length>1?`<a onclick="v.sh='colord';R()">Reorder</a>`:''}</div>${cols.map(c=>cban(c,'full')).join('')}${cnew('full')}`:`<div class="sech"><h2 style="display:flex;align-items:center;gap:8px"><span style="color:var(--ac);display:flex">${lbsv(LBIC.spark,20)}</span>Collections</h2><span style="flex:1"></span>${cols.length>1?`<a onclick="v.sh='colord';R()" style="margin-right:14px">Reorder</a>`:''}${cols.length?`<a onclick="S.vw='coll';save();R()">See all →</a>`:''}</div><div class="crail">${cols.map(c=>cban(c,cols.length===1?'one':'')).join('')}${cnew()}</div>`,
+  colSec=v.col?'':cv0?`<div class="sech"><h2>Collections</h2>${cols.length>1?`<a onclick="v.sh='colord';R()">Reorder</a>`:''}</div>${cols.map(c=>cban(c,'full')).join('')}${cnew('full')}`:`<div class="sech"><h2 style="display:flex;align-items:center;gap:8px"><span style="color:var(--ac);display:flex">${lbsv(LBIC.spark,20)}</span>Collections</h2><span style="flex:1"></span>${cols.length>1?`<a onclick="v.sh='colord';R()" style="margin-right:14px">Reorder</a>`:''}${cols.length?`<a onclick="S.vw='coll';save();R()">See all →</a>`:''}</div><div class="crail">${cols.map(c=>cban(c,cols.length===1?'one':'',0,2)).join('')}${cnew()}</div>`,
   more=!filt&&vw==='shelf'&&S.b.length>8,
   ra=!filt&&!cv0&&S.b.length?`<div class="ra"><div class="sech" style="margin:0 0 10px"><span style="color:var(--ac);display:flex">${lbsv(LBIC.cal,22)}</span><h2 style="font-size:18px">Recently added</h2><a onclick="S.so='new';v.all=1;save();R()">See all →</a></div><div class="rai">${S.b.slice(0,10).map(b=>`<div onclick="op('${b.id}')">${cv(b,'cvs')}</div>`).join('')}</div></div>`:'';
   return `<div class="${S.bl===0?'':'blr'}"><div class="lh"><div><h1 style="margin-top:4px;margin-bottom:0">My Library</h1><div class="mu" style="display:flex;align-items:center;gap:6px;margin-top:4px">${lbsv(LBIC.reading,16)} ${S.b.length} books</div></div><span class="ib" onclick="const q=$('#sq');if(q){q.scrollIntoView({block:'center',behavior:'smooth'});q.focus()}">${lbsv(LBIC.search,21)}</span></div>
@@ -1150,13 +1165,13 @@ function MR(){if(v.adv)return ADV();
  return `<div class="${S.bl===0?'':'blr2'}"><div class="row"><button class="bt" onclick="v.an=1;v.mp=null;v.cnd=null;v.gf=null;v.cf=null;scrollTo(0,0);R()">← Back</button></div><h1>${ttl[v.mp]}</h1>${msg}${v.mp==='cust'?MCUST():v.mp==='sync'?MSYNC():v.mp==='goals'?MGOALS():MTOOLS()}</div>`}
 function D(){let b=bk(v.id);if(!b){v.p='home';return H()}
  let p=pc(b),run=S.t&&S.t.id===b.id,ss=S.s.filter(s=>s.b===b.id).reverse(),u=b.m==='pct'?'%':'p',ba=avg(u,b.id),oa=avg(u),id=b.id,ctl='',spd=ba||oa,rem=b.m==='pct'?100-(+b.cur||0):(b.m==='pages'||b.adv)&&b.pages?b.pages-(+b.cur||0):0,eta=spd&&rem>0&&b.st!=='done'?'<p class="mu" style="text-align:center">⏳ About '+fm(Math.round(rem/spd*3600))+' left at your pace</p>':'';
- if(b.m==='pages')ctl=`<div class="row pgr"><button class="bt" onclick="bump('${id}',-10)">−10</button><button class="bt" onclick="bump('${id}',-1)">−1</button><input class="in" type="number" value="${b.cur||0}" onchange="setCur('${id}',this.value)"><button class="bt" onclick="bump('${id}',1)">+1</button><button class="bt" onclick="bump('${id}',10)">+10</button></div><div class="row"><span class="mu">Total pages in your edition</span><input class="in" type="number" value="${b.pages||''}" placeholder="?" onchange="setTot('${id}',this.value)"></div>`;
+ if(b.fs)ctl=omCtl(b);else if(b.m==='pages')ctl=`<div class="row pgr"><button class="bt" onclick="bump('${id}',-10)">−10</button><button class="bt" onclick="bump('${id}',-1)">−1</button><input class="in" type="number" value="${b.cur||0}" onchange="setCur('${id}',this.value)"><button class="bt" onclick="bump('${id}',1)">+1</button><button class="bt" onclick="bump('${id}',10)">+10</button></div><div class="row"><span class="mu">Total pages in your edition</span><input class="in" type="number" value="${b.pages||''}" placeholder="?" onchange="setTot('${id}',this.value)"></div>`;
  else if(b.m==='pct')ctl=`<div class="big" id="pv">${b.cur||0}%</div><input type="range" min="0" max="100" value="${b.cur||0}" oninput="$('#pv').textContent=this.value+'%'" onchange="setCur('${id}',this.value)">`;
  else ctl=b.adv?advUI(b):b.ch.map((c,i)=>`<div class="ch"><input type="checkbox" ${c.d?'checked':''} onchange="chT('${id}',${i})"><input class="in" value="${esc(c.n)}" onchange="chN('${id}',${i},this.value)"><input class="in cp" type="number" placeholder="pages" value="${c.p||''}" onchange="chP('${id}',${i},this.value)"><button class="bt" onclick="chX('${id}',${i})">✕</button></div>`).join('')+cfBar(b)+`<div class="row"><input class="in" id="f-cn" type="number" placeholder="How many chapters?"><input class="in" id="f-cp" type="number" placeholder="Pages each (optional)"><button class="bt pr" onclick="chA('${id}')">Add</button></div><p class="mu">Add page counts to chapters for more accurate progress. Leave blank to count chapters equally.</p>`+advTog(b);
  return `<div class="${S.bl===0?'':'blr'}"><div class="row"><button class="bt" onclick="bye(()=>go(v.pp||'home',1))">← Back</button><span style="flex:1"></span><button class="bt" onclick="v.sh='edit';v.cv='';R()">Edit</button></div>
  <div class="row" style="align-items:flex-start;gap:14px"><div class="cvw">${cv(b,'cvl')}</div><div class="fl"><h1 class="dsx" style="font-size:24px;margin:0">${esc(b.t)}</h1><div class="mu">${esc(b.a)}${b.sr?' · '+esc(b.sr):''}</div>${((b.cat||[]).length||b.bt)?`<div>${(b.cat||[]).map(c=>`<span class="cat" onclick="catGo('${esc(c)}')">#${esc(c)}</span>`).join('')}${b.bt?`<span class="cat bt">${BTL[b.bt]||''}</span>`:''}</div>`:''}<select class="in" onchange="setSt('${id}',this.value)">${[['toread','Want to read'],['reading','Reading'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b.st===k?'selected':''}>${l}</option>`).join('')}</select></div></div>
  ${meta(b)}${descSec(b)}<div style="text-align:center;margin-top:10px">${[1,2,3,4,5].map(n=>`<span onclick="rate('${id}',${n})" style="font-size:28px;cursor:pointer;color:${n<=(b.r||0)?'#e0a030':'var(--bd)'}">★</span>`).join('')}</div><div class="big">${p.toFixed(0)}%</div><div class="bar"><i style="width:${p}%"></i></div>${eta}
- <div class="seg">${[['pages','Pages'],['pct','Percent'],['ch','Chapters']].map(([k,l])=>`<b class="${b.m===k?'on':''}" onclick="setM('${id}','${k}')">${l}</b>`).join('')}</div>${ctl}
+ ${b.fs?'':`<div class="seg">${[['pages','Pages'],['pct','Percent'],['ch','Chapters']].map(([k,l])=>`<b class="${b.m===k?'on':''}" onclick="setM('${id}','${k}')">${l}</b>`).join('')}</div>`}${ctl}
  <h2>Reading timer</h2>${nfLine()}${run?`<div class="big"><span class="tm"></span></div><button class="bt" style="width:100%;margin-bottom:8px" onclick="tpause()">${S.t.p?'Resume':'Pause'}</button><button class="bt pr" style="width:100%" onclick="tstopOpen()">Stop and log session</button><button class="bt" style="width:100%;margin-top:8px" onclick="if(confirm('Discard this reading session? The time will not be saved.'))tdisc()">Discard</button>`:`<button class="bt pr" style="width:100%" onclick="tstart('${id}')" ${S.t?'disabled':''}>Start reading session</button>`}
  ${ba?`<p class="mu">Your speed on this book: <b>${ba.toFixed(1)} ${U(u)}</b>${oa?` (${ba>=oa?'<span class="g">▲ ':'<span class="r">▼ '}${Math.abs((ba/oa-1)*100).toFixed(0)}% vs your overall average</span>)`:''}</p>`:''}
  ${ss.map(s=>{let sp=s.d>0&&s.k>30?s.d/s.k*3600:0,a=avg(s.u);return `<div class="ses"><span>${new Date(s.s).toLocaleDateString()}<br><span class="mu">${fm(s.k)}${s.d?` · +${s.d}${s.u==='%'?'%':' pages'}`:''}</span></span><span style="text-align:right">${sp?sp.toFixed(1)+' '+U(s.u):'-'}${sp&&a?`<br>${sp>=a?'<span class="g">▲ ':'<span class="r">▼ '}${Math.abs((sp/a-1)*100).toFixed(0)}% vs avg</span>`:''}</span></div>`}).join('')}<h2>Notes</h2><textarea class="in" rows="4" placeholder="Thoughts, quotes, favorite parts…" onchange="note('${id}',this.value)">${esc(b.nt||'')}</textarea></div>`}
@@ -1167,11 +1182,11 @@ function T(){let ss=S.s,tot=ss.reduce((a,s)=>a+s.k,0),pa=avg('p'),qa=avg('%'),da
  <h2>Last 7 days (minutes)</h2><div class="wk">${days.map((d,i)=>`<div style="--n:${i}"><span>${Math.round(d.m)||''}</span><i style="height:${d.m/mx*80}%"></i>${d.l}</div>`).join('')}</div>
  <h2>Speed by book</h2>${per.length?per.map(x=>{let o=avg(x.u);return `<div class="ses"><span>${esc(x.b.t)}</span><span>${x.a.toFixed(1)} ${U(x.u)} ${o?(x.a>=o?'<span class="g">▲':'<span class="r">▼')+Math.abs((x.a/o-1)*100).toFixed(0)+'%</span>':''}</span></div>`}).join(''):'<p class="mu">Log a few timed sessions to see how fast you read.</p>'}`}
 function SH(){let b=v.sh==='edit'?bk(v.id):null;
- if(v.sh==='catmiss')return CATMISS();
+ if(v.sh==='omni')return OMSH();if(v.sh==='catmiss')return CATMISS();
  if(v.sh==='cpick')return CPSH();if(v.sh==='coledit')return COLEDIT();if(v.sh==='colmenu')return COLMENU();if(v.sh==='colbooks')return CBSH();
  if(v.sh==='pgw'&&bk(v.id))return PGSH(bk(v.id),0);if(v.sh==='gordg')return GORDG();if(v.sh==='colord')return COLORD();if(v.sh==='col')return COLSH();if(v.sh==='addcol')return ADDCOL();if(v.sh==='abperm')return ABPERM();if(v.sh==='abfirst')return ABFIRST();if(v.sh==='stop'){let bb=bk(S.t.id);if(bb.adv&&bb.ch.length)return advStopSh(bb);if(bb.m==='pages'||bb.m==='pct')return PGSH(bb,'stop');let q=bb.m==='pct'?'What percent are you at now?':bb.m==='pages'?'What page are you on now?':'Pages read this session (optional)';
   return `<div class="sh"><div><h2 style="margin-top:0">Nice session! ${fm(el())}</h2><p class="mu">${q}</p><input class="in" id="f-n" type="number" value="${bb.m==='ch'?'':bb.cur||0}">${stChips()}<div class="row"><button class="bt" onclick="tstopCancel()">Cancel</button><button class="bt pr" style="flex:1" onclick="tstop()">Save session</button></div>${stDiscardBtn()}</div></div>`}
- return `<div class="sh"><div><h2 style="margin-top:0">${b?'Edit book':'Add a book'}</h2><div class="row"><input type="search" enterkeyhint="search" autocomplete="off" class="in" id="q" placeholder="Search title or author" value="${b?esc(b.t+' '+b.a):''}" onkeydown="if(event.key==='Enter')srch()"><button class="bt pr" onclick="srch()">Search</button></div><div id="res"></div><input class="in" id="f-t" placeholder="Title" value="${b?esc(b.t):''}"><input class="in" id="f-a" placeholder="Author" value="${b?esc(b.a):''}"><input class="in" id="f-p" type="number" placeholder="Total pages (optional)" value="${b&&b.pages?b.pages:''}">
+ return `<div class="sh"><div><h2 style="margin-top:0">${b?'Edit book':'Add a book'}</h2>${b?'':'<p class="mu" style="margin:-2px 0 10px"><span class="omlk" onclick="omOpen()">📖 One file with several books? Set it up here</span></p>'}<div class="row"><input type="search" enterkeyhint="search" autocomplete="off" class="in" id="q" placeholder="Search title or author" value="${b?esc(b.t+' '+b.a):''}" onkeydown="if(event.key==='Enter')srch()"><button class="bt pr" onclick="srch()">Search</button></div><div id="res"></div><input class="in" id="f-t" placeholder="Title" value="${b?esc(b.t):''}"><input class="in" id="f-a" placeholder="Author" value="${b?esc(b.a):''}"><input class="in" id="f-p" type="number" placeholder="Total pages (optional)" value="${b&&b.pages?b.pages:''}">
 <textarea class="in" id="f-d" rows="4" placeholder="Description (filled in automatically, you can edit it)">${b?esc(b.ds||''):''}</textarea><p class="mu" style="margin:0 0 8px;text-decoration:underline;cursor:pointer" onclick="fillDesc()">Find description online</p>
  <input class="in" id="f-cat" placeholder="Categories, separated by commas (Horror, Thriller)" value="${b?esc((b.cat||[]).join(', ')):''}"><p class="mu" style="margin:0 0 8px;text-decoration:underline;cursor:pointer" onclick="fillInfo()">Find categories, description and pages online</p>
  <p class="mu" style="margin:8px 0 0">Book type — scroll to choose</p><input type="hidden" id="f-bt" value="${b&&b.bt||''}">${whHtml(BTI.map(x=>x[1]),Math.max(0,BTI.findIndex(x=>x[0]===(b&&b.bt||''))),'whBt','sm')}
@@ -1843,10 +1858,10 @@ function stApply(b){
 function PGSH(b,stop){
  const pct=b.m==='pct',pg=+b.pages||0,tot=pct?100:(pg||Math.max(300,(+b.cur||0)+300)),
   cur=Math.min(tot,Math.max(0,v.pw!=null?+v.pw:(+b.cur||0))),kb=S.pk==='k',items=[];
- for(let i=0;i<=tot;i++)items.push(pct?i+'%':'p. '+i+(pg?' <small>('+(i/pg*100).toFixed(1).replace(/\.0$/,'')+'%)</small>':''));
+ for(let i=0;i<=tot;i++)items.push(pct?i+'%':'p. '+(b.fs?b.fs-1+i:i)+(pg?' <small>('+(i/pg*100).toFixed(1).replace(/\.0$/,'')+'%)</small>':''));
  const chips=stop?stChips():'';
- const head=stop?'<h2 style="margin:0 0 2px">Nice session! '+fm(el())+'</h2><p class="mu" style="margin:0 0 4px">'+(pct?'What percent are you at now?':'How much did you read? Scroll to your page.')+'</p>':'<h2 style="margin:0 0 2px">'+esc(b.t)+'</h2><p class="mu" style="margin:0 0 4px">'+(pct?'What percent are you at?':'Which page are you on?')+'</p>';
- const body=kb?'<input class="in" id="f-n" type="number" inputmode="numeric" value="'+cur+'" placeholder="'+(pct?'Percent':'Page')+'">':'<input type="hidden" id="f-n" value="'+cur+'">'+whHtml(items,cur,'whPg');
+ const head=stop?'<h2 style="margin:0 0 2px">Nice session! '+fm(el())+'</h2><p class="mu" style="margin:0 0 4px">'+(pct?'What percent are you at now?':(b.fs?'Which page of your file are you on now?':'How much did you read? Scroll to your page.'))+'</p>':'<h2 style="margin:0 0 2px">'+esc(b.t)+'</h2><p class="mu" style="margin:0 0 4px">'+(pct?'What percent are you at?':(b.fs?'Which page of your file are you on?':'Which page are you on?'))+'</p>';
+ const body=kb?'<input class="in" id="f-n" type="number" inputmode="numeric" '+(b.fs?'data-fp="1" ':'')+'value="'+(b.fs?b.fs-1+cur:cur)+'" placeholder="'+(pct?'Percent':'Page')+'">':'<input type="hidden" id="f-n" value="'+cur+'">'+whHtml(items,cur,'whPg');
  return '<div class="sh"><div>'+head+'<button class="bt" style="width:100%;margin:4px 0" onclick="pkToggle()">'+(kb?'Change to scroll wheel':'Change to keyboard mode')+'</button>'+body+chips
   +'<div class="row"><button class="bt" onclick="'+(stop?'tstopCancel()':'pgwClose()')+'">Cancel</button><button class="bt pr" style="flex:1" onclick="'+(stop?'tstop()':'pgwSave()')+'">'+(stop?'Save session':'Save')+'</button></div>'+(stop?stDiscardBtn():'')+'</div></div>';
 }
@@ -2160,4 +2175,137 @@ setTimeout(function(){try{abLoad().then(abCheck)}catch(e){}},4000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden)try{abCheck()}catch(e){}});
 setInterval(function(){try{abCheck()}catch(e){}},30*60*1000);
 </script>
-</body></html>
+<script>
+/* collection cards: make the full name readable */
+function cbFit(){
+ var cards=document.querySelectorAll('.cb:not(.new)');
+ for(var i=0;i<cards.length;i++){
+  var fl=cards[i].querySelector('.fl'),t=cards[i].querySelector('.cbt');
+  if(!fl||!t)continue;
+  var cf=cards[i].querySelector('.cf'),kids=cf?Array.prototype.slice.call(cf.children):[];
+  var base=parseFloat(getComputedStyle(t).fontSize)||21,cnt=kids.length;
+  t.style.webkitLineClamp='unset';
+  function over(){return fl.scrollHeight>fl.clientHeight+1||t.scrollWidth>t.clientWidth+1}
+  function fit(min){var z=base;t.style.fontSize=z+'px';while(over()&&z>min){z-=1;t.style.fontSize=z+'px'}return !over()}
+  var ok=fit(18);
+  while(!ok&&cnt>1){cnt--;kids[cnt].style.display='none';ok=fit(18)}
+  if(!ok){ok=fit(14)}
+  if(!ok){ok=fit(11)}
+ }
+}
+(function(){
+ var o=R,q=0;
+ R=function(){var r=o.apply(this,arguments);try{cancelAnimationFrame(q);q=requestAnimationFrame(cbFit)}catch(e){}return r};
+ window.addEventListener('resize',function(){try{cbFit()}catch(e){}});
+ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){try{cbFit()}catch(e){}});
+ try{setTimeout(cbFit,60)}catch(e){}
+})();
+</script><script>
+/* ======== One file, several books ========
+   Each book inside the file is a normal Shelfie book that remembers which pages of the file it covers
+   (fs = first page, fe = last page, fg = file id, ft = file name). You always type the page your e-reader shows. */
+function omParts(b){return S.b.filter(function(x){return x.fg&&x.fg===b.fg}).sort(function(a,c){return a.fs-c.fs})}
+function omGo(id,fp,quiet){
+ var b=bk(id);if(!b||!b.fs)return;fp=Math.max(0,Math.round(+fp||0));
+ var now=Date.now(),msg='',ps=omParts(b),i=ps.findIndex(function(x){return x.id===b.id});
+ for(var j=i;j<ps.length;j++){var p=ps[j];
+  if(p.pages>0&&fp>=p.fe){
+   p.cur=p.pages;p.lr=now;
+   if(p.st!=='done'&&p.st!=='dnf'){p.st='done';p.fd=p.fd||now;p.sd=p.sd||now;msg=(msg?msg+' · ':'')+'Finished '+p.t+' 🎉'}
+   var q=ps[j+1];
+   if(!q)break;
+   if(fp===p.fe){if(q.st==='toread'){q.st='reading';q.sd=q.sd||now;q.lr=now;msg+=' · Now reading '+q.t}break}
+   continue
+  }
+  p.cur=fp>=p.fs?fp-p.fs+1:0;p.lr=now;
+  if(p.cur>0&&p.st==='toread'){p.st='reading';p.sd=p.sd||now}
+  if(p.st==='done'&&p.cur<p.pages){p.st='reading';p.fd=0}
+  break
+ }
+ save();R();if(msg)toast(msg)
+}
+function omBump(id,n){var b=bk(id);if(!b)return;omGo(id,b.fs-1+(+b.cur||0)+n)}
+function omSet(id,x){if(String(x).trim()==='')return;omGo(id,+x)}
+function omCtl(b){
+ var id=b.id,fp=b.fs-1+(+b.cur||0),ps=omParts(b);
+ var chips=ps.map(function(p){var ic=p.st==='done'?'✓ ':p.st==='reading'?'📖 ':'';
+  return '<span class="omp'+(p.id===b.id?' on':'')+'"'+(p.id===b.id?'':' onclick="op(\''+p.id+'\')"')+'>'+ic+esc(p.t)+'</span>'}).join('');
+ return '<div class="omc"><div class="omt">'+esc(b.ft||'Your file')+'</div>'
+  +'<p class="mu" style="margin:2px 0 8px">Type the page your e-reader shows. This book is pages '+b.fs+'–'+b.fe+' of the file.</p>'
+  +'<div class="row pgr"><button class="bt" onclick="omBump(\''+id+'\',-10)">−10</button><button class="bt" onclick="omBump(\''+id+'\',-1)">−1</button>'
+  +'<input class="in" type="number" inputmode="numeric" value="'+(b.cur?fp:'')+'" placeholder="'+b.fs+'" onchange="omSet(\''+id+'\',this.value)">'
+  +'<button class="bt" onclick="omBump(\''+id+'\',1)">+1</button><button class="bt" onclick="omBump(\''+id+'\',10)">+10</button></div>'
+  +'<p class="mu" style="text-align:center;margin:6px 0 0">Page '+(b.cur||0)+' of '+b.pages+' in this book</p>'
+  +(ps.length>1?'<p class="mu" style="margin:12px 0 0">Books in this file</p><div class="omps">'+chips+'</div>':'')
+  +'<div class="row" style="margin-top:6px"><button class="bt" onclick="omOpen(\''+b.fg+'\')">Edit the books in this file</button></div></div>'
+}
+function omOpen(fg){
+ var o;
+ if(fg){var ps=S.b.filter(function(x){return x.fg===fg}).sort(function(a,c){return a.fs-c.fs});
+  if(!ps.length)return;
+  o={fg:fg,ft:ps[0].ft||'',a:ps[0].a||'',total:String(Math.max.apply(null,ps.map(function(x){return x.fe}))),cp:'',
+   rows:ps.map(function(x){return {id:x.id,t:x.t,s:String(x.fs)}}),orig:ps.map(function(x){return x.id})}}
+ else o={fg:null,ft:'',a:'',total:'',cp:'',rows:[{t:'',s:'1'},{t:'',s:''}],orig:[]};
+ v.om=o;v.sh='omni';R()
+}
+function omAdd(){v.om.rows.push({t:'',s:''});R()}
+function omDel(i){if(v.om.rows.length<=1)return;v.om.rows.splice(i,1);R()}
+function OMSH(){
+ var o=v.om;if(!o){v.sh=null;return ''}
+ var rows=o.rows.map(function(r,i){
+  return '<div class="omr"><span class="omn">'+(i+1)+'</span><input class="in omt1" placeholder="Book title" value="'+esc(r.t)+'" oninput="v.om.rows['+i+'].t=this.value">'
+   +'<input class="in oms" type="number" inputmode="numeric" placeholder="Starts on page" value="'+esc(r.s)+'" oninput="v.om.rows['+i+'].s=this.value"><span class="xb" onclick="omDel('+i+')">✕</span></div>'}).join('');
+ return '<div class="sh"><div><h2 style="margin-top:0">'+(o.fg?'Edit this file':'One file, several books')+'</h2>'
+  +'<p class="mu">Each book in the file becomes its own book in Shelfie, with its own progress and finish date. You keep typing the page your e-reader shows.</p>'
+  +'<input class="in" placeholder="Name of the file (e.g. Seven Wonders: Complete Collection)" value="'+esc(o.ft)+'" oninput="v.om.ft=this.value">'
+  +'<input class="in" placeholder="Author" value="'+esc(o.a)+'" oninput="v.om.a=this.value">'
+  +'<input class="in" type="number" inputmode="numeric" placeholder="Total pages in the file" value="'+esc(o.total)+'" oninput="v.om.total=this.value">'
+  +'<p class="mu" style="margin:10px 0 2px">The books, in order. Give each title and the page it starts on.</p>'+rows
+  +'<button class="bt" style="width:100%;margin:6px 0" onclick="omAdd()">＋ Add another book</button>'
+  +(o.fg?'':'<input class="in" type="number" inputmode="numeric" placeholder="Page you are on now in the file (optional)" oninput="v.om.cp=this.value">')
+  +'<div class="row"><button class="bt" onclick="v.sh=null;v.om=null;R()">Cancel</button><button class="bt pr" style="flex:1" onclick="omSave()">'+(o.fg?'Save':'Create books')+'</button></div></div></div>'
+}
+function omSave(){
+ var o=v.om;if(!o)return;
+ var rows=o.rows.filter(function(r){return String(r.t||'').trim()||String(r.s||'').trim()});
+ if(!rows.length)return toast('Add at least one book');
+ for(var i=0;i<rows.length;i++){var s=+rows[i].s;if(!String(rows[i].t||'').trim()||!(s>=1))return toast('Each book needs a title and a start page')}
+ rows.sort(function(a,c){return +a.s-+c.s});
+ for(i=1;i<rows.length;i++)if(+rows[i].s<=+rows[i-1].s)return toast('Each book must start on a later page than the one before');
+ var total=Math.round(+o.total||0);
+ if(!(total>=+rows[rows.length-1].s))return toast('Enter the total pages of the file (at least the last start page)');
+ var fg=o.fg||uid(),ft=String(o.ft||'').trim()||String(rows[0].t).trim(),a=String(o.a||'').trim(),now=Date.now(),made=[];
+ var keep=rows.filter(function(r){return r.id}).map(function(r){return r.id});
+ (o.orig||[]).forEach(function(id){if(keep.indexOf(id)<0){var b=bk(id);if(b){delete b.fg;delete b.fs;delete b.fe;delete b.ft}}});
+ var colId=null,first=keep.length?bk(keep[0]):null;
+ if(!o.fg){S.col=S.col||[];var ex=S.col.find(function(c){return c.n===ft});if(ex)colId=ex.id;else{colId=uid();S.col.push({id:colId,n:ft,e:'',c:0})}}
+ var cl0=first?(first.cl||[]).slice():(colId?[colId]:[]);
+ rows.forEach(function(r,i){
+  var s=Math.round(+r.s),e=i<rows.length-1?Math.round(+rows[i+1].s)-1:total,pages=e-s+1,t=String(r.t).trim();
+  if(r.id){var b=bk(r.id);if(b){b.t=t;b.fg=fg;b.ft=ft;b.fs=s;b.fe=e;b.pages=pages;if(a)b.a=a;if((+b.cur||0)>pages)b.cur=pages}}
+  else{var nb={id:uid(),t:t,a:a,pages:pages,ds:'',st:'toread',m:'pages',cat:[],bt:'',cur:0,cover:'',ch:[],r:0,sd:0,fd:0,fg:fg,ft:ft,fs:s,fe:e,cl:cl0.slice()};made.push(nb)}
+ });
+ made.slice().reverse().forEach(function(nb){S.b.unshift(nb)});
+ var cp=Math.round(+o.cp||0);
+ S.mm=Date.now();MD=1;v.sh=null;v.om=null;
+ if(cp>0&&!o.fg){var p0=S.b.find(function(x){return x.fg===fg&&x.fs===Math.round(+rows[0].s)});if(p0){omGo(p0.id,cp,1)}}
+ save();R();
+ toast(o.fg?'File updated':'Created '+made.length+' book'+(made.length===1?'':'s'));
+ try{made.forEach(function(nb){autoDesc(nb.id)})}catch(e){}
+}
+(function(){
+ var _tv=tstopV,_pw=pgwSave;
+ tstopV=function(n){
+  var b=S.t&&bk(S.t.id),fp=null,id=b&&b.id;
+  if(b&&b.fs&&n!==''&&v.ss!=='all'){var e=document.getElementById('f-n');if(e&&e.dataset&&e.dataset.fp==='1'){fp=Math.max(0,Math.round(+n||0));n=String(Math.max(0,Math.min(b.pages,fp-(b.fs-1))))}}
+  var r=_tv(n);
+  if(id){var b2=bk(id);if(b2&&b2.fs)omGo(id,fp!=null?fp:b2.fs-1+(+b2.cur||0),1)}
+  return r};
+ pgwSave=function(){
+  var id=v.id,b=bk(id),e=document.getElementById('f-n'),fp=null;
+  if(b&&b.fs&&e&&e.dataset&&e.dataset.fp==='1'){fp=Math.max(0,Math.round(+e.value||0));e.value=String(Math.max(0,Math.min(b.pages,fp-(b.fs-1))))}
+  var r=_pw();
+  if(b&&b.fs){var b2=bk(id);if(b2)omGo(id,fp!=null?fp:b2.fs-1+(+b2.cur||0),1)}
+  return r};
+})();
+</script></body></html>
