@@ -2221,7 +2221,7 @@ function cbFit(){
   t.style.webkitLineClamp='unset';
   function over(){return fl.scrollHeight>fl.clientHeight+1||t.scrollWidth>t.clientWidth+1}
   function fit(min){var z=base;t.style.fontSize=z+'px';while(over()&&z>min){z-=1;t.style.fontSize=z+'px'}return !over()}
-  var ok=fit(18);
+  var ok=fit(cards[i].classList.contains('rf')?15:18);
   while(!ok&&cnt>1){cnt--;kids[cnt].style.display='none';ok=fit(18)}
   if(!ok){ok=fit(14)}
   if(!ok){ok=fit(11)}
