@@ -39,6 +39,16 @@ body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-app
 h1{font:700 32px/1.1 Georgia,'Iowan Old Style',serif;margin:6px 0 12px}h2{font:700 19px Georgia,serif;margin:22px 0 10px}
 button,input,select,textarea{font:inherit;color:inherit}
 .in{width:100%;padding:12px 16px;border:1px solid var(--bd);border-radius:16px;background:var(--cd);margin:4px 0;outline:none}.in:focus{border-color:var(--ac)}
+.cat{display:inline-block;padding:3px 11px;margin:6px 6px 0 0;border-radius:999px;background:color-mix(in srgb,var(--ac) 16%,transparent);color:var(--ac);font-size:12.5px;font-weight:600;cursor:pointer}.cat.bt{background:transparent;border:1px solid color-mix(in srgb,var(--ac) 45%,transparent)}
+.dr{display:flex;align-items:center;gap:8px;position:relative}
+.dr.dg{z-index:6;box-shadow:0 10px 26px #0005;background:color-mix(in srgb,var(--ac) 18%,var(--cd))!important;border-color:var(--ac)!important;transition:none!important;animation:none!important}
+.dh{flex:none;display:flex;align-items:center;justify-content:center;width:46px;height:46px;margin:-10px -4px -10px 0;touch-action:none;cursor:grab;color:var(--mu);-webkit-user-select:none;user-select:none}
+.dh svg{width:24px;height:24px}
+.whb{position:relative;margin:6px 0}.whb:after{content:'';position:absolute;left:0;right:0;top:calc(50% - 22px);height:44px;border-radius:12px;background:color-mix(in srgb,var(--ac) 16%,transparent);border:1px solid color-mix(in srgb,var(--ac) 40%,transparent);pointer-events:none}
+.whl{position:relative;height:176px;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;overscroll-behavior:contain;-webkit-mask-image:linear-gradient(transparent,#000 28%,#000 72%,transparent);mask-image:linear-gradient(transparent,#000 28%,#000 72%,transparent)}
+.whl.sm{height:132px}.whl.sm .wp{height:44px}.whl::-webkit-scrollbar{display:none}@keyframes whin{from{opacity:.995}to{opacity:1}}.whl{animation:whin .01s}.whl .wp{height:66px}
+.whl .wi{height:44px;display:flex;align-items:center;justify-content:center;gap:6px;scroll-snap-align:center;font-size:16px;color:var(--mu);cursor:pointer}
+.whl .wi small{font-size:12px;opacity:.8}.whl .wi.on{color:var(--tx);font-weight:700;font-size:21px}.whl .wi.on small{font-size:13px}
 .in[type=search]{-webkit-appearance:none;appearance:none}
 .in[type=search]::-webkit-search-decoration{-webkit-appearance:none}
 .in[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;display:block;height:22px;width:22px;margin:0 0 0 6px;cursor:pointer;background-color:var(--mu);opacity:.85;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2a10 10 0 100 20 10 10 0 000-20zm4.3 12.9l-1.4 1.4L12 13.4l-2.9 2.9-1.4-1.4 2.9-2.9-2.9-2.9 1.4-1.4 2.9 2.9 2.9-2.9 1.4 1.4-2.9 2.9z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2a10 10 0 100 20 10 10 0 000-20zm4.3 12.9l-1.4 1.4L12 13.4l-2.9 2.9-1.4-1.4 2.9-2.9-2.9-2.9 1.4-1.4 2.9 2.9 2.9-2.9 1.4 1.4-2.9 2.9z'/%3E%3C/svg%3E") center/contain no-repeat}
@@ -56,7 +66,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .fl{flex:1;min-width:0}.t{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}.row>.in{flex:1;min-width:70px;width:auto}
 .seg{display:flex;background:var(--ac2);border-radius:99px;padding:4px;margin:12px 0}.seg b{flex:1;text-align:center;padding:8px;border-radius:99px;cursor:pointer;font-weight:normal;font-size:14px}.seg b.on{background:var(--cd);font-weight:700}
-.big{font:700 44px Georgia,serif;color:var(--ac);text-align:center;margin:8px 0 0}
+.big{font:700 44px Georgia,serif;color:var(--ac);text-align:center;margin:8px 0 0}.big .pz{display:block;font:600 12px/1 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--mu);margin:6px 0 12px}
 .av,.sb{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;cursor:pointer;flex:none}.av{background:var(--cd);box-shadow:0 2px 10px #0002}.sb{background:var(--ac)}
 .hero{display:block;padding:0;overflow:hidden;border-radius:16px 16px 72px 16px;cursor:pointer}.hero>.row{padding:18px;margin:0}
 .hb{height:10px;background:var(--ac2)}.hb i{display:block;height:100%;background:var(--ac)}
@@ -114,7 +124,7 @@ html,body{max-width:100%;overflow-x:hidden}img{max-width:100%}input[type=file]{m
 .cb{position:relative;display:flex;align-items:center;gap:10px;height:112px;border-radius:26px;overflow:hidden;padding:0 14px 0 20px;cursor:pointer;flex:0 0 88%;border:1px solid rgba(255,255,255,.55);color:#33254a;box-shadow:0 6px 18px #0002}
 .cb.one{flex-basis:100%}.cb.new{flex:0 0 42%;background:var(--cd);color:var(--tx);border:1.5px dashed var(--mu);box-shadow:none;justify-content:center;flex-direction:column;gap:4px;padding:0 12px;text-align:center;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .cb.full{flex:none;width:100%;margin:10px 0}
-.cf{display:flex;align-items:center;flex:none;padding-right:4px}.cf>div{flex:none}
+.cf{display:flex;align-items:center;flex:none;padding-right:4px}.cf>div .cvf{width:100%;height:100%}.cb .fl{min-width:0}.cb .cbt{white-space:normal;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}.cf>div{flex:none}
 .cg{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;flex:none;font-size:18px}
 .pb{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);padding:2px 9px;border-radius:99px;font-size:11px;font-weight:700;color:#fff;background:rgba(30,20,60,.55);border:1px solid rgba(255,255,255,.25);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);pointer-events:none}
 .ra{margin-top:18px;padding:14px;border-radius:26px;background:var(--cd);border:1px solid var(--bd);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
@@ -567,7 +577,7 @@ function ap(){const r=document.documentElement,st=r.style;['--bg','--cd','--tx',
 function R(){{const a0=document.getElementById('app');if(!v.an&&a0)a0.classList.remove('pg-in');document.documentElement.style.setProperty('--ph',((Date.now()/1000)%4620).toFixed(2))}if(S.th==='park'||S.th==='swan'||S.th==='sakura')S.th='cream';if(S.nth&&S.nth!=='custom'&&!NTH[S.nth]&&S.nth!=='classic'){S.nth='forest';try{save();applyNth()}catch(e){}}document.documentElement.dataset.th=S.th||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'midnight':'cream');ap();aesApply(document.documentElement.dataset.th);$('#app').innerHTML=({home:H,lib:LB,book:D,stats:T,more:MR}[v.p]||H)()+nav()+(S.t&&v.p!=='book'?`<div class="pill" onclick="op('${S.t.id}')">⏱ <span class="tm"></span></div>`:'')+(v.sh?SH():'');tk();{const L=$('.lens'),c=Math.max(0,navIdx());if(L){const chg=window._pi!=null&&window._pi!==c;window._pi=c;if(chg)requestAnimationFrame(()=>requestAnimationFrame(()=>{L.style.setProperty('--i',c);L.classList.add('mv')}));else L.style.setProperty('--i',c)}}{if(v.p==='lib'&&!v.an){const l=$('#ls');if(l)l.classList.add('ls-in')}}{if(v.an){document.querySelectorAll('.big').forEach(e=>{const m=/^(\d+)%$/.exec(e.textContent.trim());if(!m)return;const t=+m[1],t0=performance.now();(function f(n){const k=Math.min(1,(n-t0-250)/800);e.textContent=Math.round(t*(1-Math.pow(1-Math.max(0,k),3)))+'%';if(k<1)requestAnimationFrame(f)})(t0)})}}{const a=$('#app');if(v.an){v.an=0;a.classList.remove('pg-in');void a.offsetWidth;a.classList.add('pg-in');clearTimeout(window._pgt);window._pgt=setTimeout(()=>a.classList.remove('pg-in'),v.p==='stats'?3400:v.p==='more'?1600:800)}}{const k=v.sh?String(v.sh):'',sh0=$('#app>.sh');if(sh0&&k===window._shk)sh0.classList.add('shs');window._shk=k}}
 const el=()=>Math.max(0,Math.round(((S.t.p||Date.now())-S.t.s-(S.t.g||0))/1000));
 const clk=k=>{let h=Math.floor(k/3600),m=Math.floor(k%3600/60),s=k%60,p=n=>String(n).padStart(2,'0');return (h?h+':'+p(m):m)+':'+p(s)};
-const tk=()=>{if(S.t)document.querySelectorAll('.tm').forEach(e=>e.textContent=clk(el())+(S.t.p?' · paused':''))};
+const tk=()=>{if(S.t)document.querySelectorAll('.tm').forEach(e=>e.innerHTML=clk(el())+(S.t.p?'<small class="pz">Paused</small>':''))};
 setInterval(tk,1000);
 function tpause(){let t=S.t;if(t.p){t.g=(t.g||0)+Date.now()-t.p;t.p=null}else t.p=Date.now();save();R();nf()}
 const IC={home:'<path d="M3 11l9-8 9 8M5 10v10h14V10"/>',lib:'<rect x="3" y="4" width="4" height="16" rx="1"/><rect x="9" y="4" width="4" height="16" rx="1"/><path d="M15 6l4-1 3 14-4 1z"/>',add:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',stats:'<rect x="3" y="12" width="4" height="8" rx="1"/><rect x="10" y="4" width="4" height="16" rx="1"/><rect x="17" y="9" width="4" height="11" rx="1"/>',more:'<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>'};
@@ -580,7 +590,7 @@ const gcss=(g,a)=>{a=a==null?135:a;const st=g.join(',');return a==='r'?`radial-g
 const cbg=c=>gcss(cgrad(c),c.ga);
 const cbk=c=>c.bn?`linear-gradient(90deg,rgba(12,6,30,.72),rgba(12,6,30,.12) 80%),url('${c.bn}') center/cover`:cbg(c);
 const ctc=c=>c.bn?'#fff':ctx(cgrad(c));
-const ST={reading:['Reading','📖'],toread:['To read','🤍'],done:['Finished','✅'],dnf:['Gave up','✖️']};
+const ST={reading:['Reading','📖'],toread:['Want to read','🤍'],done:['Finished','✅'],dnf:['Gave up','✖️']};
 const dt=t=>new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric'});
 const tgc=(id,c)=>ch(id,b=>{b.cl=b.cl||[];let i=b.cl.indexOf(c);i<0?b.cl.push(c):b.cl.splice(i,1)});
 const meta=b=>`${b.sd?`<p class="mu" style="text-align:center;margin:10px 0 0">Started ${dt(b.sd)}${b.fd&&b.st==='done'?' · Finished '+dt(b.fd):''}</p>`:''}${bcol(b)}`;
@@ -598,19 +608,27 @@ function fzD(a,b,max){
   if(mn>max)return max+1;p2=p;p=c}
  return p[lb]}
 const fzS=w=>w.split('').sort().join('');
-function fzTok(t,w){
- const n=t.length;
- if(n<4)return false;                       // very short words: exact only
- if(n===4)return (w.length===4&&fzS(t)===fzS(w))||(w.length>4&&fzS(t)===fzS(w.slice(0,4)))||(Math.abs(w.length-4)===1&&w[0]===t[0]&&fzD(t,w,1)<=1);  // 4 letters: only swapped, missing or extra letter ("dnue", "hary")
- const max=n>=7?2:1;
- const ok=x=>(n>=7||x[0]===t[0])&&Math.abs(x.length-n)<=max&&fzD(t,x,max)<=max;
- if(ok(w))return true;
- if(w.length>n&&ok(w.slice(0,n)))return true;   // typo while still typing the word
- return false}
-function fzMatch(hay,q){
- const nq=fzN(q);if(!nq)return true;
- const hw=fzW(hay),hs=hw.join(' ');
- return nq.split(' ').every(t=>hs.indexOf(t)>=0||hw.some(w=>fzTok(t,w)))}
+function fzFuzzy(t,w){
+ const n=t.length;if(n<3)return 0;
+ const d=(a,b,m)=>fzD(a,b,m);
+ if(n===3)return (w.length>=3&&w[0]===t[0]&&d(t,w.slice(0,3),1)<=1)?1.5:0;                 // "rik" -> "ric(k)"
+ if(n===4)return ((Math.abs(w.length-4)<=1&&d(t,w,1)<=1)||(w.length>4&&d(t,w.slice(0,4),1)<=1))?2:0;   // "sone" -> "zone"
+ const m=n>=7?2:1;
+ if(Math.abs(w.length-n)<=m&&d(t,w,m)<=m)return m===2?1.6:2;
+ if(w.length>n&&d(t,w.slice(0,n),m)<=m)return 1.8;                                          // typo while still typing
+ return 0}
+/* how well a book matches what you typed: 0 = no match. Any word order, small typos, accents, capitals. */
+function fzScore(hay,q){
+ const nq=fzN(q);if(!nq)return 1;
+ const hw=fzW(hay);let tot=0,toks=nq.split(' ');
+ for(const t of toks){let best=0;
+  for(const w of hw){let c=0;
+   if(w===t)c=6;else if(w.startsWith(t))c=5;else if(t.length>=2&&w.indexOf(t)>=0)c=t.length>=4?3:1.4;else c=fzFuzzy(t,w);
+   if(c>best){best=c;if(c===6)break}}
+  if(!best)return 0;tot+=best}
+ return tot/toks.length}
+function fzMatch(hay,q){return fzScore(hay,q)>0}
+const bhay=b=>b.t+' '+b.a+' '+((b.cat||[]).join(' '))+' '+(b.sr||'');
 function bcol(b){const cols=(S.col||[]),mine=(b.cl||[]).map(id=>cols.find(c=>c.id===id)).filter(Boolean);
  return `<div class="bcol"><div class="bch"><b>Collections</b><span class="bca" onclick="bcAdd('${b.id}')">${mine.length?'Edit':'＋ Add'}</span></div>${mine.length?`<div class="bcr">${mine.map(c=>`<span class="bcc" style="background:${cbk(c)}"><span onclick="bcOpen('${c.id}')">${cic(c)} ${esc(c.n)}</span><i onclick="bcRm('${b.id}','${c.id}')" role="button" aria-label="Remove from ${esc(c.n)}">✕</i></span>`).join('')}</div>`:`<div class="mu bce">Not in any collection yet.</div>`}</div>`}
 function bcAdd(id){const b=bk(id);v.pc=(b&&b.cl||[]).slice();v.sh='addcol';R()}
@@ -640,8 +658,11 @@ function ADDCOL(){const b=bk(v.id),cols=S.col||[];v.pc=v.pc||[];
  ${cols.length?`<div class="crl">${cols.map(c=>{const g=cgrad(c),n=S.b.filter(x=>(x.cl||[]).includes(c.id)).length,f=S.b.filter(x=>(x.cl||[]).includes(c.id)&&x.cover)[0];return `<div class="cc ${v.pc.includes(c.id)?'on':''}" data-id="${c.id}" onclick="pcSel('${c.id}')" style="background:${f?`linear-gradient(transparent 35%,rgba(10,5,30,.8)),url(${f.cover}) center/cover`:`${cbk(c)}`};color:${f||c.bn?'#fff':ctx(g)}"><span class="ck">✓</span><div class="cn2">${cic(c)} ${esc(c.n)}</div><div class="cn3">${n} book${n===1?'':'s'}</div></div>`}).join('')}<div class="cc nw" onclick="v.sh='col';v.cc=0;v.ci='';v.dr=null;v.ccu=CL[0].slice();v.cbn='';v.cga=135;v.cip=0;R()"><span style="font-size:26px">＋</span><div class="cn3" style="opacity:1">New</div></div></div>`:`<p class="mu" style="text-align:center;margin:22px 0">No collections yet.</p><div class="row" style="justify-content:center"><button class="bt" onclick="v.sh='col';v.cc=0;v.ci='';v.dr=null;v.ccu=CL[0].slice();v.cbn='';v.cga=135;v.cip=0;R()">＋ Create one</button></div>`}
  ${cols.length?`<button class="bt pr" id="pcb" style="width:100%;padding:14px;margin-top:6px" onclick="pcSave()">${pcLbl()}</button>`:''}</div></div>`}
 function COLORD(){const a=S.col||[];
- return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs" style="max-height:80vh;overflow:auto"><div class="grab"></div><h2 style="margin:0 0 6px">Order of collections</h2><p class="mu" style="margin:0 0 10px">Move a collection up or down. This is the order they show in your library.</p>${a.map((c,i)=>`<div class="card" style="align-items:center;gap:8px;cursor:default;padding:8px 10px"><span class="mu" style="width:20px;text-align:center">${i+1}</span><div class="fl" style="min-width:0"><div class="t">${esc(c.n)}</div></div><button class="bt" style="padding:6px 12px" ${i?'':'disabled'} onclick="colMv(${i},-1)">↑</button><button class="bt" style="padding:6px 12px" ${i<a.length-1?'':'disabled'} onclick="colMv(${i},1)">↓</button></div>`).join('')}<div class="row"><button class="bt pr" style="flex:1;padding:13px" onclick="v.sh=null;R()">Done</button></div></div></div>`}
-function colMv(i,d){const a=S.col||[],j=i+d;if(j<0||j>=a.length)return;const t=a[i];a[i]=a[j];a[j]=t;S.mm=Date.now();MD=1;save();R()}
+ return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs" style="max-height:80vh;overflow:auto"><div class="grab"></div><h2 style="margin:0 0 6px">Order of collections</h2><p class="mu" style="margin:0 0 10px">Hold the ≡ lines at the end of a row and drag it up or down.</p><div class="drl" data-cb="colDrag">${a.map((c,i)=>`<div class="card dr" data-i="${i}" style="align-items:center;gap:8px;cursor:default;padding:10px 6px 10px 12px"><span class="mu" style="width:20px;text-align:center">${i+1}</span><div class="fl" style="min-width:0"><div class="t">${esc(c.n)}</div></div>${DHI}</div>`).join('')}</div><div class="row"><button class="bt pr" style="flex:1;padding:13px" onclick="v.sh=null;R()">Done</button></div></div></div>`}
+function colDrag(o){const a=S.col||[];S.col=o.map(i=>a[i]);S.mm=Date.now();MD=1;save();R()}
+function GORDG(){const a=S.goals||[];
+ return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs" style="max-height:80vh;overflow:auto"><div class="grab"></div><h2 style="margin:0 0 6px">Order of goals</h2><p class="mu" style="margin:0 0 10px">Hold the ≡ lines and drag a goal up or down. This is the order your current goals show in.</p><div class="drl" data-cb="gDragG">${a.map((g,i)=>`<div class="card dr" data-i="${i}" style="align-items:center;gap:8px;cursor:default;padding:10px 6px 10px 12px"><span class="mu" style="width:20px;text-align:center">${i+1}</span><div class="fl" style="min-width:0"><div class="t">${gIc(g)}${esc(gTitle(g))}${g.bk&&g.bk.length?' · picks':''}</div></div>${DHI}</div>`).join('')}</div><div class="row"><button class="bt pr" style="flex:1;padding:13px" onclick="v.sh=null;R()">Done</button></div></div></div>`}
+function gDragG(o){const a=S.goals||[];S.goals=o.map(i=>a[i]);S.go=1;S.mm=Date.now();MD=1;save();R()}
 function COLSH(){return `<div class="sh"><div><h2 style="margin-top:0">New collection</h2><input class="in" id="cn" oninput="cisUp()" placeholder="Name (e.g. Beach reads)" value="${esc((v.dr||{}).n||'')}"><div class="cip"><span class="pv" id="cipv">${v.ci?`<img src="${v.ci}" alt="">`:'📚'}</span><input class="in" id="ce" oninput="cisUp()" placeholder="Emoji (optional)" maxlength="4" value="${esc((v.dr||{}).e||'')}" style="margin:0"></div><label class="bt" style="display:inline-block;cursor:pointer;margin:2px 0 8px">Use a picture instead<input type="file" accept="image/*" onchange="newIco(event)" style="display:none"></label>${cisUI()}${ccUI()}<div class="row"><button class="bt" onclick="v.sh=null;R()">Cancel</button><button class="bt pr" style="flex:1" onclick="savec()">Create</button></div></div></div>`}
 
 /* ---- Collections: header, options, add-books sheet ---- */
@@ -680,7 +701,7 @@ function gmid(on){const u=v.ccu;if(on&&u.length<3){const x=hx2r(u[0])||[255,255,
 function bnPick(e){const f=e.target.files[0];if(!f)return;const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,900/im.width),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);v.cbn=c.toDataURL('image/jpeg',.74);ccRef()};im.onerror=()=>URL.revokeObjectURL(u);im.src=u;e.target.value=''}
 function cbOpen(id){v.ci='';v.cbid=id;v.cbs=S.b.filter(b=>(b.cl||[]).includes(id)).map(b=>b.id);v.cbq='';v.sh='colbooks';R()}
 function cbOrig(){return S.b.filter(b=>(b.cl||[]).includes(v.cbid)).map(b=>b.id)}
-function cbFilt(){const q=v.cbq||'';return S.b.filter(b=>fzMatch(b.t+' '+b.a,q))}
+function cbFilt(){const q=v.cbq||'';return S.b.filter(b=>fzMatch(bhay(b),q))}
 function cbList(){const l=cbFilt();
  if(!l.length)return `<p class="mu" style="text-align:center;padding:22px 0">${S.b.length?'No books match your search.':'Your shelf is empty. Add a book first.'}</p>`;
  return l.map(b=>`<div class="cbr ${v.cbs.includes(b.id)?'on':''}" data-id="${b.id}" onclick="cbTog('${b.id}')">${cv(b,'cvm')}<div class="fl"><div class="t">${esc(b.t)}</div><div class="mu" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(b.a)}</div></div><span class="cbk">✓</span></div>`).join('')}
@@ -696,8 +717,8 @@ function CBSH(){const c=(S.col||[]).find(x=>x.id===v.cbid);if(!c){return ''}
  <div class="row" style="margin:4px 2px;justify-content:space-between"><span class="mu" id="cbs">${v.cbs.length} selected</span><span class="cball" id="cba" onclick="cbAll()">Select all</span></div>
  <div class="cbl" id="cbl">${cbList()}</div>
  <button class="bt pr" id="cbb" style="width:100%;padding:14px;margin-top:10px" onclick="cbSave()">${cbLbl()}</button></div></div>`}
-function lst(){const so=S.so||'new',vw=(S.vw==='coll'?'grid':S.vw)||'shelf',l=S.b.filter(b=>(v.tab==='all'||b.st===v.tab)&&(!v.col||(b.cl||[]).includes(v.col))&&fzMatch(b.t+' '+b.a,v.q));
- if(so!=='new')l.sort((x,y)=>so==='title'?x.t.localeCompare(y.t):so==='author'?x.a.localeCompare(y.a):so==='prog'?pc(y)-pc(x):(y.r||0)-(x.r||0));
+function lst(){const so=S.so||'new',vw=(S.vw==='coll'?'grid':S.vw)||'shelf',l=S.b.filter(b=>(v.tab==='all'||b.st===v.tab)&&(!v.col||(b.cl||[]).includes(v.col))&&fzMatch(bhay(b),v.q));
+ if(v.q){const sc=new Map(l.map(b=>[b,fzScore(bhay(b),v.q)]));l.sort((x,y)=>sc.get(y)-sc.get(x))}else if(so!=='new')l.sort((x,y)=>so==='title'?x.t.localeCompare(y.t):so==='author'?x.a.localeCompare(y.a):so==='prog'?pc(y)-pc(x):(y.r||0)-(x.r||0));
  if(!l.length)return v.col&&!v.q&&v.tab==='all'?`<div class="cemp"><div class="cemp-i">📚</div><b>This collection is empty</b><div class="mu">Pick books from your shelf to put here.</div><button class="bt pr" onclick="cbOpen('${v.col}')">＋ Add books</button></div>`:(v.col?'<p class="mu">No books match.</p>':'<p class="mu">Nothing here yet. Tap Add to start your shelf.</p>');
  if(vw==='shelf')return shelfHTML(!v.all&&!v.col&&v.tab==='all'&&!v.q&&l.length>8?l.slice(0,8):l);
  if(vw==='grid')return '<div class="gd">'+l.map(b=>`<div onclick="op('${b.id}')" style="cursor:pointer">${cv(b,'cvg')}<div class="bar" style="height:5px"><i style="width:${pc(b).toFixed(0)}%"></i></div><div class="t" style="font-size:13px">${esc(b.t)}</div></div>`).join('')+'</div>';
@@ -717,21 +738,24 @@ function icVar(){let e=document.getElementById('icp');if(!e){e=document.createEl
  return sa<.18?5:(h>=15&&h<70)?4:(h>=70&&h<170)?3:(h>=170&&h<255)?2:(h>=255&&h<320)?0:1}
 const tico=k=>`<img class="tic" src="${TICD[icVar()][TICK[k]]}" alt="" draggable="false">`;
 function H(){const n=s=>S.b.filter(b=>b.st===s).length,y=new Date().getFullYear(),dn=S.b.filter(b=>b.st==='done'&&b.fd&&new Date(b.fd).getFullYear()===y).length,k=stk(),ex=(S.gl||0)*((Date.now()-new Date(y,0,1))/864e5)/365,gt=S.gl?(dn>=S.gl?'Goal reached!':dn>=ex?'on track':'about '+Math.ceil(ex-dn)+' behind pace'):'',
- rd=S.b.filter(b=>b.st==='reading'),nx=S.b.filter(b=>b.st==='toread').slice(0,10),fin=S.b.filter(b=>b.st==='done').sort((a,b)=>(b.fd||0)-(a.fd||0)).slice(0,10);
- const hero=b=>{const p=pc(b);return `<div class="row" style="margin:14px 6px 6px;justify-content:space-between"><b>${b.sd?'Day '+Math.max(1,Math.ceil((Date.now()-b.sd)/864e5)):'Reading'}</b><span>${(b.m==='pages'||b.adv)&&b.pages?`${b.cur||0} <span class="mu">/ ${b.pages}</span> `:''}(${p.toFixed(0)}%)</span></div><div class="card hero" onclick="op('${b.id}')"><div class="hb"><i style="width:${p}%"></i></div><div class="row" style="flex-wrap:nowrap;gap:16px">${cv(b,'cvh')}<div class="fl"><div class="t" style="white-space:normal;font-size:19px;font-family:Georgia,serif">${esc(b.t)}</div><div class="mu">${esc(b.a)}</div>${b.sd?`<div class="mu" style="margin-top:8px;font-size:13px">Started on ${dt(b.sd)}</div>`:''}${S.t&&S.t.id===b.id?'<div style="color:var(--ac);margin-top:6px">⏱ Session running</div>':''}</div></div></div>`};
+ rd=S.b.filter(b=>b.st==='reading').sort((a,b)=>lastRead(b)-lastRead(a)),nx=S.b.filter(b=>b.st==='toread').slice(0,10),fin=S.b.filter(b=>b.st==='done').sort((a,b)=>(b.fd||0)-(a.fd||0)).slice(0,10);
+ const hero=b=>{const p=pc(b);return `<div class="row" style="margin:14px 6px 6px;justify-content:space-between"><b>${b.sd?'Day '+Math.max(1,Math.ceil((Date.now()-b.sd)/864e5)):'Reading'}</b><span>${(b.m==='pages'||b.adv)&&b.pages?`${b.cur||0} <span class="mu">/ ${b.pages}</span> `:''}(${p.toFixed(0)}%)</span></div><div class="card hero" onclick="op('${b.id}')"><div class="hb"><i style="width:${p}%"></i></div><div class="row" style="flex-wrap:nowrap;gap:16px">${cv(b,'cvh')}<div class="fl"><div class="t" style="white-space:normal;font-size:19px;font-family:Georgia,serif">${esc(b.t)}</div><div class="mu">${esc(b.a)}</div>${lastRead(b)?`<div class="mu" style="margin-top:8px;font-size:13px">Last read ${agoTxt(lastRead(b))}</div>`:''}${b.sd?`<div class="mu" style="margin-top:4px;font-size:13px">Started on ${dt(b.sd)}</div>`:''}${S.t&&S.t.id===b.id?'<div style="color:var(--ac);margin-top:6px">⏱ Session running</div>':''}</div></div></div>`};
  const rail=(l,t,tab)=>l.length?`<div class="row" style="margin-bottom:0"><h2 style="margin:0;flex:1">${t}</h2><span class="tab" onclick="v.tab='${tab}';go('lib')">View all</span></div><div class="rail">${l.map(b=>`<div class="rl" onclick="op('${b.id}')"><div style="position:relative">${cv(b,'cvr')}<i class="rb"></i></div><div class="t" style="margin-top:10px">${esc(b.t)}</div><div class="mu" style="color:var(--ac)">${esc(b.a)}</div></div>`).join('')}</div>`:'';
  return `<div class="row" style="justify-content:space-between;margin-top:0"><h1 style="margin:0">Hi, ${esc(S.nm||'reader')}!</h1><span class="av" onclick="go('more')">📖</span></div>
  <div class="row"><input class="in pillsearch" style="flex:1" placeholder="Search for books" onfocus="go('lib')"><span class="sb" onclick="go('lib')">🔍</span></div>
  ${rd.length?`<h2 style="text-align:center">You’re currently reading ${rd.length} book${rd.length>1?'s':''}!</h2>${rd.slice(0,2).map(hero).join('')}`:'<p class="mu" style="text-align:center">Nothing in progress. Pick something from your up next list!</p>'}
- <div class="tl">${[['toread','To Read'],['done','Finished'],['reading','Reading'],['dnf','Gave Up']].map(([s,l])=>`<div class="tile" onclick="v.tab='${s}';go('lib')"><div><b>${n(s)}</b>${l}</div><span class="ic">${tico(s)}</span></div>`).join('')}</div>
+ <div class="tl">${[['toread','Want to Read'],['done','Finished'],['reading','Reading'],['dnf','Gave Up']].map(([s,l])=>`<div class="tile" onclick="v.tab='${s}';go('lib')"><div><b>${n(s)}</b>${l}</div><span class="ic">${tico(s)}</span></div>`).join('')}</div>
  <div class="tile" style="margin-bottom:12px" onclick="v.tab='all';go('lib')"><div style="flex:1;text-align:center"><b>${S.b.length}</b>My Bookshelf</div><span class="ic">${tico('shelf')}</span></div>
  ${goalsHome(k)}
  ${rail(nx,'Up next','toread')}${rail(fin,'Recently finished','done')}`}
 const lbsv=(d,s)=>`<svg viewBox="0 0 24 24" width="${s||18}" height="${s||18}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 const LBIC={all:'<path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/>',reading:'<path d="M3 5.5C5.5 4.3 8.5 4.5 12 6.5c3.5-2 6.5-2.2 9-1v13c-2.5-1.2-5.5-1-9 1-3.5-2-6.5-2.2-9-1z"/><path d="M12 6.5v13"/>',toread:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',done:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',dnf:'<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',shelf:'<rect x="4" y="4" width="4" height="13" rx="1"/><rect x="10" y="7" width="4" height="10" rx="1"/><path d="M16 5.5l3.4-.7 2 11.8-3.4.7z"/><path d="M3 20h18"/>',grid:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',list:'<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',coll:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',cal:'<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>'};
-function cban(c,k){const bs=S.b.filter(b=>(b.cl||[]).includes(c.id)),g=cgrad(c);
- return `<div class="cb ${k||''}" style="background:${cbk(c)};color:${ctc(c)}" onclick="v.col='${c.id}';v.tab='all';R()"><div class="fl"><div class="t" style="font:700 21px Georgia,serif">${cic(c,'cb')} ${esc(c.n)}</div><div style="font-size:13px;opacity:.75;display:flex;gap:5px;align-items:center;margin-top:3px">${lbsv(LBIC.reading,14)} ${bs.length} books</div></div><div class="cf">${bs.slice(0,3).map((b,i)=>`<div style="transform:rotate(${(i-1)*8}deg);z-index:${i===1?3:1};margin-left:${i?-18:0}px">${cv(b,'cvf')}</div>`).join('')}</div><span class="cg cgp" onclick="event.stopPropagation();cbOpen('${c.id}')" aria-label="Add books to ${esc(c.n)}">＋</span></div>`}
-const cnew=k=>`<div class="cb new ${k||''}" onclick="v.sh='col';v.cc=0;v.ci='';v.dr=null;v.ccu=CL[0].slice();v.cbn='';v.cga=135;v.cip=0;R()"><span style="font-size:24px;line-height:1">＋</span><b style="font-size:14px">New collection</b></div>`;
+function csOpt(){return Object.assign({sz:'m',ts:'m',ha:'l',va:'m',cv:3,cs:'r'},S.cs||{})}
+function csH(){return {s:92,m:112,l:140,x:172}[csOpt().sz]||112}
+function cban(c,k,nolink){const o=csOpt(),bs=S.b.filter(b=>(b.cl||[]).includes(c.id)),H=csH(),F={s:17,m:21,l:25,x:30}[o.ts]||21,
+  ch=Math.round(H*.66),cw=Math.round(ch*2/3),ta={l:'left',c:'center',r:'right'}[o.ha]||'left',vs={t:'flex-start',m:'center',b:'flex-end'}[o.va]||'center',ji={l:'flex-start',c:'center',r:'flex-end'}[o.ha]||'flex-start',nc=+o.cv||0;
+ return `<div class="cb ${k||''}" style="background:${cbk(c)};color:${ctc(c)};height:${H}px" ${nolink?'':`onclick="v.col='${c.id}';v.tab='all';R()"`}><div class="fl" style="text-align:${ta};align-self:${vs};max-height:${H-14}px;overflow:hidden"><div class="t cbt" style="font:700 ${F}px/1.15 Georgia,serif;-webkit-line-clamp:${Math.max(1,Math.floor((H-14-Math.round(F*.62)-8)/(F*1.15)))}">${cic(c,'cb')} ${esc(c.n)}</div><div style="font-size:${Math.max(12,Math.round(F*.62))}px;opacity:.75;display:flex;gap:5px;align-items:center;margin-top:3px;justify-content:${ji}">${lbsv(LBIC.reading,14)} ${bs.length} book${bs.length===1?'':'s'}</div></div>${nc?`<div class="cf" style="order:${o.cs==='l'?-1:0}">${bs.slice(0,nc).map((b,i,a)=>`<div style="transform:rotate(${(i-(a.length-1)/2)*8}deg);z-index:${i===1?3:1};margin-left:${i?-18:0}px;width:${cw}px;height:${ch}px">${cv(b,'cvf')}</div>`).join('')}</div>`:''}${nolink?'':`<span class="cg cgp" onclick="event.stopPropagation();cbOpen('${c.id}')" aria-label="Add books to ${esc(c.n)}">＋</span>`}</div>`}
+const cnew=k=>`<div class="cb new ${k||''}" style="height:${csH()}px" onclick="v.sh='col';v.cc=0;v.ci='';v.dr=null;v.ccu=CL[0].slice();v.cbn='';v.cga=135;v.cip=0;R()"><span style="font-size:24px;line-height:1">＋</span><b style="font-size:14px">New collection</b></div>`;
 function LB(){const n=s=>S.b.filter(b=>b.st===s).length,cols=S.col||[],col=cols.find(c=>c.id===v.col),vw=S.vw||'shelf',
   tabs=[['all','All',S.b.length],['reading','Reading',n('reading')],['toread','Up next',n('toread')],['done','Finished',n('done')],['dnf','Gave up',n('dnf')]],
   views=[['shelf','Shelf'],['grid','Grid'],['list','List'],['coll','Collection']],
@@ -852,32 +876,134 @@ function nsec(){
  cnSync();const cur=S.nth||'forest',ic=S.ico||'terracotta';
  const bars=[[150,181,170,0],[210,159,214,1],[270,175,183,0],[330,164,204,1]];
  const svg=(c1,c2)=>`<svg viewBox="49 73 415 415" width="100%" height="100%">`+bars.map(b=>`<rect x="${b[0]}" y="${b[1]}" width="47" height="${b[2]}" rx="10" fill="${b[3]?c2:c1}"/>`).join('')+`<rect x="130" y="385" width="253" height="18" rx="9" fill="${c1}"/></svg>`;
- return `${shelfSec()}<h2>Book page</h2><p class="mu">Blurred panel behind a book's info page and your Library, so text stays readable on picture themes.</p><div class="seg"><b class="${S.bl===0?'':'on'}" onclick="S.bl=1;save();R()">Blurred</b><b class="${S.bl===0?'on':''}" onclick="S.bl=0;save();R()">Clear</b></div><h2>Notification style</h2><p class="mu">${NT?'Tap a design to use it for your reading timer.':'Preview only. The timer notification styles work in the Android app.'}</p>`
+ return `${shelfSec()}${collSec()}<h2>Book page</h2><p class="mu">Blurred panel behind a book's info page and your Library, so text stays readable on picture themes.</p><div class="seg"><b class="${S.bl===0?'':'on'}" onclick="S.bl=1;save();R()">Blurred</b><b class="${S.bl===0?'on':''}" onclick="S.bl=0;save();R()">Clear</b></div><h2>Notification style</h2><p class="mu">${NT?'Tap a design to use it for your reading timer.':'Preview only. The timer notification styles work in the Android app.'}</p>`
  +['classic','custom'].concat(Object.keys(NTH).filter(k=>k!=='classic'&&k!=='custom')).map(k=>`<div onclick="setNth('${k}')" style="margin:10px 0;cursor:pointer;border-radius:24px;outline:3px solid ${cur===k?'var(--ac)':'transparent'};outline-offset:2px"><div style="font-size:12px;margin:0 4px 3px">${NTH[k].n}${k==='custom'?' · make your own':''}${cur===k?' ✓':''}</div>${k==='custom'?`<div id="cnpv">${ntPrev(k)}</div>`:ntPrev(k)}</div>${k==='custom'&&cur==='custom'?cnEd():''}`).join('')
  +`<h2>App icon</h2><p class="mu">${(icGet()||NT)?'Pick a color scheme for the icon on your home screen.':'Icon colors can be changed in the Android app.'}</p><div class="row" style="gap:14px">`
  +ICO.map(([k,l,bg,c1,c2])=>`<div onclick="setIco('${k}')" style="text-align:center;font-size:12px;cursor:pointer"><div style="width:58px;height:58px;border-radius:18px;background:${bg};margin-bottom:4px;border:3px solid ${ic===k?'var(--tx)':'var(--bd)'};box-sizing:border-box">${svg(c1,c2)}</div>${l}</div>`).join('')+`</div>`}
 const stripH=s=>(s||'').replace(/<br\s*\/?>/gi,'\n').replace(/<\/p>/gi,'\n\n').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&nbsp;/g,' ').replace(/\n{3,}/g,'\n\n').trim();
 const cleanT=t=>(t||'').replace(/\s*[\(\[].*?[\)\]]/g,'').replace(/\s*[:\-–—]\s.*$/,'').replace(/\s+/g,' ').trim();
-async function jget(u){try{let r=await fetch(u);if(!r.ok){getDesc.fail=true;return null}return await r.json()}catch(x){getDesc.fail=true;return null}}
 const sim=(a,b)=>{const w=s=>(s||'').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu,' ').split(/\s+/).filter(x=>x.length>2);let A=w(a),B=new Set(w(b));return A.length?A.filter(x=>B.has(x)).length/A.length:0};
+/* ======== Book info lookup: descriptions, covers, categories ======== */
+async function jget(u){
+ const ac=typeof AbortController!=='undefined'?new AbortController():null,tm=ac?setTimeout(()=>ac.abort(),9000):0;
+ try{let r=await fetch(u,ac?{signal:ac.signal}:undefined);if(tm)clearTimeout(tm);if(!r.ok){getDesc.fail=true;return null}return await r.json()}
+ catch(x){if(tm)clearTimeout(tm);getDesc.fail=true;return null}
+}
+/* tidy a description: remove links, "[1]: http://…" lines, "Source:" lines, auto-summary notes */
+const cleanDesc=s=>{s=String(s||'');
+ s=s.split(/\n-{5,}/)[0].replace(/\r/g,'');
+ s=s.replace(/^\s*\[\d+\]:\s*\S+.*$/gm,'');
+ s=s.replace(/\[([^\]]*)\]\((?:https?:)?[^)]*\)/g,'$1').replace(/\[([^\]]+)\]\[\d*\]/g,'$1');
+ s=s.replace(/https?:\/\/\S+/g,'').replace(/\bwww\.\S+/g,'');
+ s=s.replace(/^\s*[\(\[]?\s*(?:source|sources|via|see also|contains)\s*[:\-]?[^\n]*$/gim,'').replace(/\(\s*(?:source|via)?\s*\)/gi,'');
+ s=s.replace(/\(This is an automatically generated summary\.?\)/gi,'');
+ s=s.replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+ return s};
+/* categories: split, tidy and drop junk like "In library" or people's names with years */
+const CATJUNK=/^(general|books?|accessible book|protected daisy|in library|lending library|large type books?|overdrive|open library|internet archive|fiction in english|english|english fiction|american fiction|reading level.*|nyt.*|new york times.*|bestsellers?|ebooks?|audiobooks?|spanish|french|german|translations?|juvenile|young adult fiction|textbooks?)$/i;
+function normCats(a){const out=[],seen=new Set();
+ (a||[]).forEach(raw=>String(raw||'').split(/\s*(?:\/|,|;|--|&|\|)\s*/).forEach(p=>{
+  p=p.replace(/[^\p{L}\p{N}' -]/gu,'').replace(/\s+/g,' ').trim();
+  if(p.length<3||p.length>26||/\d/.test(p)||CATJUNK.test(p))return;
+  p=p.toLowerCase().replace(/(^|[\s-])(\p{L})/gu,(m,x,y)=>x+y.toUpperCase());
+  const k=p.toLowerCase();if(!seen.has(k)){seen.add(k);out.push(p)}}));
+ return out}
+function bestCats(C){
+ const g=C.filter(c=>c.score>=60&&c.cats&&c.cats.length);if(!g.length)return [];
+ const cnt=new Map(),first=new Map();let n=0;
+ g.forEach(c=>{normCats(c.cats).forEach(k=>{const l=k.toLowerCase();cnt.set(l,(cnt.get(l)||0)+1);if(!first.has(l))first.set(l,[k,n++])})});
+ let arr=[...cnt.entries()].map(([l,c])=>({k:first.get(l)[0],c,o:first.get(l)[1]}));
+ const mx=Math.max(...arr.map(x=>x.c));
+ arr=arr.filter(x=>x.c>=Math.min(2,mx)).sort((x,y)=>y.c-x.c||x.o-y.o);
+ return arr.slice(0,6).map(x=>x.k)}
+/* ======== Languages for book info ======== */
+const LANGS=[['en','English'],['ro','Română'],['fr','Français'],['de','Deutsch'],['es','Español'],['it','Italiano'],['hu','Magyar'],['pl','Polski'],['pt','Português']];
+const OLL={ro:'rum',fr:'fre',de:'ger',es:'spa',it:'ita',hu:'hun',pl:'pol',pt:'por'};
+const APC={ro:'ro',fr:'fr',de:'de',es:'es',it:'it',hu:'hu',pl:'pl',pt:'pt'};
+const BKW=/novel|book|memoir|stor(?:y|ies)|collection|poems|anthology|roman|carte|nuvel|povest|poezi|buch|erz[aä]hlung|livre|nouvelle|romanzo|libro|novela|reg[eé]ny|k[oö]nyv|powie[sś][cć]|ksi[aą][zż]ka|livro/i;
+function detLang(x){x=String(x||'');
+ if(/[ăşţșț]/i.test(x)||(/[âî]/i.test(x)&&/\b(?:și|si|din|pentru|într|sau|care|mai|nu|de la)\b/i.test(x)))return 'ro';
+ if(/[őű]/i.test(x))return 'hu';if(/[ąęłńśźż]/i.test(x))return 'pl';if(/[äöüß]/i.test(x))return 'de';if(/[ñ¿¡]/.test(x))return 'es';return ''}
+function infoLangs(t,a){const s=new Set((S.il||[]).filter(l=>l!=='en'));const d=detLang(t+' '+a);if(d)s.add(d);return [...s]}
+function ilTog(c){const a=(S.il||[]).slice(),i=a.indexOf(c);if(i>=0)a.splice(i,1);else a.push(c);S.il=a;save();R()}
+/* ======== Romanian shops (Cărturești, Libris, Elefant) — read by the Android app ======== */
+const SHOPS={'carturesti.ro':'Cărturești','libris.ro':'Libris','elefant.ro':'Elefant'};
+let _WB=null;
+function webGet(){if(_WB)return _WB;try{const C=window.Capacitor;if(C&&((C.isNativePlatform&&C.isNativePlatform())||(C.getPlatform&&C.getPlatform()!=='web')))_WB=(C.Plugins&&C.Plugins.ShelfieWeb)||C.registerPlugin('ShelfieWeb')}catch(e){}return _WB}
+async function shopGet(u){const P=webGet();if(!P||!P.httpGet)return '';try{const r=await P.httpGet({url:u});return(r&&r.status<400&&r.text)||''}catch(x){return ''}}
+async function shopLinks(q){
+ const out=[],push=(u,dom)=>{if(/^https:/.test(u)&&!out.some(o=>o.u===u))out.push({u,dom})};
+ const h=await shopGet('https://html.duckduckgo.com/html/?q='+encodeURIComponent(q+' site:carturesti.ro OR site:libris.ro OR site:elefant.ro'));
+ if(h){new DOMParser().parseFromString(h,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';const m=u.match(/uddg=([^&]+)/);if(m)u=decodeURIComponent(m[1]);if(u.indexOf('//')===0)u='https:'+u;
+   const dom=Object.keys(SHOPS).find(k=>new RegExp('^https://(?:www\\.)?'+k.replace('.','\\.')+'/').test(u));if(dom)push(u.split('#')[0],dom)})}
+ if(!out.length){const s=await shopGet('https://carturesti.ro/product/search/'+encodeURIComponent(q));
+  if(s){new DOMParser().parseFromString(s,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';if(/\/carte\/[^/?#]+-\d+/.test(u)){if(u[0]==='/')u='https://carturesti.ro'+u;push(u.split('?')[0],'carturesti.ro')}})}}
+ return out.slice(0,4)}
+function shopParse(h,dom){
+ const d=new DOMParser().parseFromString(h,'text/html');let title='',desc='',cover='',pages=0,author='';
+ d.querySelectorAll('script[type="application/ld+json"]').forEach(sc=>{try{const j=JSON.parse(sc.textContent),arr=[].concat(j,(j&&j['@graph'])||[]);
+  arr.forEach(o=>{if(!o||typeof o!=='object')return;if(/Product|Book/i.test([].concat(o['@type']||[]).join(' '))){
+   title=title||o.name||'';desc=desc||o.description||'';cover=cover||(Array.isArray(o.image)?o.image[0]:o.image)||'';pages=pages||(+o.numberOfPages||0);
+   const au=o.author;author=author||(typeof au==='string'?au:(au&&(au.name||(au[0]&&au[0].name)))||'')}})}catch(x){}});
+ const mt=n=>{const e=d.querySelector('meta[property="'+n+'"],meta[name="'+n+'"]');return e?(e.getAttribute('content')||''):''};
+ title=title||mt('og:title')||((d.querySelector('h1')||{}).textContent||'');cover=cover||mt('og:image');
+ const txt=(d.body?d.body.textContent:'').replace(/\r/g,'').replace(/[ \t]+/g,' ');
+ const m=txt.match(/\bDescriere\s*\n+([\s\S]{80,7000}?)(?=\n\s*(?:Recenzii|Detalii produs|Specificatii|Specificații|Caracteristici|Comentarii|Produse similare|Alte produse|Review-uri|Informatii suplimentare)|$)/i);
+ if(m&&m[1].replace(/\s+/g,' ').trim().length>String(desc||'').length)desc=m[1];
+ desc=desc||mt('og:description')||mt('description');
+ const pm=txt.match(/(?:Nr\.?\s*pagini|Num[aă]r(?:ul)? de pagini|Pagini)\s*:?\s*(\d{2,4})|(\d{2,4})\s*pagini/i);if(!pages&&pm)pages=+(pm[1]||pm[2]);
+ title=String(title).replace(/\s*[|\-–—:]\s*(?:c[aă]rte|cumpara|c[aă]rturesti|libris|elefant)[^|]*$/i,'').trim();
+ return{title,desc:String(desc||'').replace(/[ \t]*\n[ \t]*/g,'\n'),cover:/^https?:/.test(cover)?cover:'',pages,author,txt:txt.toLowerCase(),src:SHOPS[dom]||dom}}
 async function findInfo(t,a,isbn,pages,only){
- const e=encodeURIComponent,ct=cleanT(t),au=(a||'').split(',')[0].trim(),last=au.split(' ').pop(),C=[],seen=new Set();
- const add=c=>{if(!c.title)return;c.desc=c.desc||'';const k=c.src+'|'+c.title.toLowerCase()+'|'+(c.author||'').toLowerCase()+'|'+c.desc.length;if(seen.has(k))return;seen.add(k);
+ const e=encodeURIComponent,ct=cleanT(t),au=(a||'').split(',')[0].trim(),last=au.split(' ').pop(),C=[],seen=new Set(),L=infoLangs(t,a);
+ const add=c=>{if(!c.title)return;c.desc=cleanDesc(c.desc||'');c.cats=c.cats||[];const k=c.src+'|'+String(c.title).toLowerCase()+'|'+(c.author||'').toLowerCase()+'|'+c.desc.length;if(seen.has(k))return;seen.add(k);
   const ts=sim(ct,c.title),as=au?sim(last,c.author||''):.5;c.score=Math.round(60*ts+30*as+(pages&&c.pages?(Math.abs(c.pages-pages)/pages<.3?10:0):5));C.push(c)};
- const gb=async()=>{const qs=[];if(isbn)qs.push('isbn:'+isbn);qs.push('intitle:'+ct+(au?' inauthor:'+au:''),ct+' '+au);for(const q of qs){let j=await jget('https://www.googleapis.com/books/v1/volumes?maxResults=10&printType=books&q='+e(q));((j&&j.items)||[]).forEach(x=>{let i=x.volumeInfo||{};add({src:'Google Books',title:i.title,author:(i.authors||[]).join(', '),desc:stripH(i.description||''),cover:i.imageLinks?(i.imageLinks.thumbnail||'').replace('http:','https:').replace('&edge=curl','').replace('zoom=1','zoom=2'):'',pages:i.pageCount})})}};
- const ol=async()=>{let j=await jget('https://openlibrary.org/search.json?limit=6&fields=key,title,author_name,cover_i,number_of_pages_median&q='+e(ct+' '+au));for(const d of ((j&&j.docs)||[]).slice(0,5)){let w=await jget('https://openlibrary.org'+d.key+'.json'),ds=w&&w.description&&(w.description.value||w.description);if(typeof ds!=='string'||ds.length<60){let ed=await jget('https://openlibrary.org'+d.key+'/editions.json?limit=6');for(const x of ((ed&&ed.entries)||[])){let y=x.description&&(x.description.value||x.description);if(typeof y==='string'&&y.length>60){ds=y;break}}}add({src:'Open Library',title:d.title,author:(d.author_name||[]).join(', '),desc:typeof ds==='string'?stripH(ds.split('\n----------')[0]):'',cover:d.cover_i?'https://covers.openlibrary.org/b/id/'+d.cover_i+'-L.jpg':'',pages:d.number_of_pages_median})}};
- const ab=async()=>{let j=await jget('https://itunes.apple.com/search?media=ebook&limit=8&term='+e(ct+' '+au));((j&&j.results)||[]).forEach(x=>add({src:'Apple Books',title:x.trackName,author:x.artistName,desc:stripH(x.description||''),cover:(x.artworkUrl100||'').replace('100x100bb','600x600bb'),pages:0}))};
- const wk=async()=>{let s=await jget('https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srlimit=4&srsearch='+e(ct+' '+(au?au+' ':'')+'novel book'));for(const r of ((s&&s.query&&s.query.search)||[])){if(sim(ct,r.title)<.6)continue;let p=await jget('https://en.wikipedia.org/api/rest_v1/page/summary/'+e(r.title));if(p&&p.extract&&p.extract.length>80&&/novel|book|memoir|story|stories|collection|poems|anthology/i.test(p.extract+(p.description||'')))add({src:'Wikipedia',title:r.title.replace(/\s*\(.*?\)\s*$/,''),author:last&&p.extract.toLowerCase().includes(last.toLowerCase())?au:'',desc:p.extract,cover:p.thumbnail?p.thumbnail.source:'',pages:0})}};
- const ia=async()=>{let j=await jget('https://archive.org/advancedsearch.php?output=json&rows=6&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=description&q='+e('title:('+ct+')'+(last?' AND creator:('+last+')':'')+' AND mediatype:texts'));((j&&j.response&&j.response.docs)||[]).forEach(x=>{let d=Array.isArray(x.description)?x.description.join(' '):x.description;add({src:'Internet Archive',title:Array.isArray(x.title)?x.title[0]:x.title,author:Array.isArray(x.creator)?x.creator.join(', '):(x.creator||''),desc:stripH(d||''),cover:'https://archive.org/services/img/'+x.identifier,pages:0})})};
- await Promise.all([['Google Books',gb],['Open Library',ol],['Apple Books',ab],['Wikipedia',wk],['Internet Archive',ia]].filter(x=>!only||only.includes(x[0])).map(x=>x[1]()));
+ const gbQ=async(qs,extra)=>{for(const q of qs){let j=await jget('https://www.googleapis.com/books/v1/volumes?maxResults=10&printType=books'+(extra||'')+'&q='+e(q));((j&&j.items)||[]).forEach(x=>{let i=x.volumeInfo||{};add({src:'Google Books',title:i.title,author:(i.authors||[]).join(', '),desc:stripH(i.description||''),cover:i.imageLinks?(i.imageLinks.thumbnail||'').replace('http:','https:').replace('&edge=curl','').replace('zoom=1','zoom=2'):'',pages:i.pageCount,cats:i.categories||[],pub:i.publisher||'',year:(i.publishedDate||'').slice(0,4)})})}};
+ const gb=async()=>{const qs=[];if(isbn)qs.push('isbn:'+isbn);qs.push('intitle:'+ct+(au?' inauthor:'+au:''),ct+' '+au);await gbQ(qs,'');for(const l of L)await gbQ(['intitle:'+ct+(au?' inauthor:'+au:''),ct+' '+au],'&langRestrict='+l)};
+ const olQ=async lang=>{let j=await jget('https://openlibrary.org/search.json?limit=6&fields=key,title,author_name,cover_i,number_of_pages_median,subject,first_publish_year'+(lang?'&language='+lang:'')+'&q='+e(ct+' '+au));for(const d of ((j&&j.docs)||[]).slice(0,5)){let w=await jget('https://openlibrary.org'+d.key+'.json'),dd=x=>{const y=x&&x.description;return typeof y==='string'?y:(y&&y.value)||''},ds=dd(w);if(cleanDesc(ds).length<60){let ed=await jget('https://openlibrary.org'+d.key+'/editions.json?limit=8');for(const x of ((ed&&ed.entries)||[])){let y=dd(x);if(cleanDesc(y).length>60){ds=y;break}}}add({src:'Open Library',title:d.title,author:(d.author_name||[]).join(', '),desc:stripH(ds),cover:d.cover_i?'https://covers.openlibrary.org/b/id/'+d.cover_i+'-L.jpg':'',pages:d.number_of_pages_median,cats:(d.subject||[]).slice(0,30).concat((w&&w.subjects)||[]),year:d.first_publish_year||''})}};
+ const ol=async()=>{await olQ('');for(const l of L)if(OLL[l])await olQ(OLL[l])};
+ const oi=async()=>{if(!isbn)return;let ed=await jget('https://openlibrary.org/isbn/'+e(isbn)+'.json');if(!ed)return;let w=ed.works&&ed.works[0]&&await jget('https://openlibrary.org'+ed.works[0].key+'.json'),dd=x=>{const y=x&&x.description;return typeof y==='string'?y:(y&&y.value)||''};
+  add({src:'Open Library',title:ed.title,author:au,desc:stripH(dd(ed)||dd(w)),cover:(ed.covers&&ed.covers[0]>0)?'https://covers.openlibrary.org/b/id/'+ed.covers[0]+'-L.jpg':'https://covers.openlibrary.org/b/isbn/'+isbn+'-L.jpg?default=false',pages:ed.number_of_pages||0,cats:(ed.subjects||[]).concat((w&&w.subjects)||[]),pub:(ed.publishers||[])[0]||'',year:String(ed.publish_date||'').slice(-4)})};
+ const abQ=async cc=>{let j=await jget('https://itunes.apple.com/search?media=ebook&limit=8'+(cc?'&country='+cc:'')+'&term='+e(ct+' '+au));((j&&j.results)||[]).forEach(x=>add({src:'Apple Books',title:x.trackName,author:x.artistName,desc:stripH(x.description||''),cover:(x.artworkUrl100||'').replace('100x100bb','600x600bb'),pages:0,cats:x.genres||[],year:(x.releaseDate||'').slice(0,4)}))};
+ const ab=async()=>{await abQ('');for(const l of L)if(APC[l])await abQ(APC[l])};
+ const wkQ=async l=>{const h='https://'+l+'.wikipedia.org';let s=await jget(h+'/w/api.php?action=query&list=search&format=json&origin=*&srlimit=4&srsearch='+e(ct+' '+(au?au+' ':'')+(l==='en'?'novel book':'')));for(const r of ((s&&s.query&&s.query.search)||[])){if(sim(ct,r.title)<.6)continue;let p=await jget(h+'/api/rest_v1/page/summary/'+e(r.title));if(p&&p.extract&&p.extract.length>80&&(BKW.test(p.extract+' '+(p.description||''))||(last&&p.extract.toLowerCase().includes(last.toLowerCase()))))add({src:l==='en'?'Wikipedia':'Wikipedia ('+l+')',title:r.title.replace(/\s*\(.*?\)\s*$/,''),author:last&&p.extract.toLowerCase().includes(last.toLowerCase())?au:'',desc:p.extract,cover:p.thumbnail?p.thumbnail.source:'',pages:0})}};
+ const wk=async()=>{await wkQ('en');for(const l of L)await wkQ(l)};
+ const ia=async()=>{let j=await jget('https://archive.org/advancedsearch.php?output=json&rows=6&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=description&fl[]=subject&q='+e('title:('+ct+')'+(last?' AND creator:('+last+')':'')+' AND mediatype:texts'));((j&&j.response&&j.response.docs)||[]).forEach(x=>{let d=Array.isArray(x.description)?x.description.join(' '):x.description;add({src:'Internet Archive',title:Array.isArray(x.title)?x.title[0]:x.title,author:Array.isArray(x.creator)?x.creator.join(', '):(x.creator||''),desc:stripH(d||''),cover:'https://archive.org/services/img/'+x.identifier,pages:0,cats:Array.isArray(x.subject)?x.subject:(x.subject?[x.subject]:[])})})};
+ const gt=async()=>{if(!last)return;let j=await jget('https://gutendex.com/books?search='+e(ct+' '+last));((j&&j.results)||[]).slice(0,4).forEach(x=>{const a2=(x.authors||[]).map(z=>String(z.name||'').split(', ').reverse().join(' ')).join(', ');add({src:'Project Gutenberg',title:x.title,author:a2,desc:((x.summaries||[])[0]||''),cover:(x.formats&&x.formats['image/jpeg'])||'',pages:0,cats:[].concat(x.subjects||[],x.bookshelves||[])})})};
+ const shops=async()=>{if(!L.includes('ro'))return;const P=webGet();if(!P||!P.httpGet)return;const links=await shopLinks(ct+' '+au);
+  await Promise.all(links.map(async o=>{const h=await shopGet(o.u);if(!h)return;const x=shopParse(h,o.dom);if(!x.title)return;
+   add({src:x.src,title:x.title,author:last&&x.txt.indexOf(last.toLowerCase())>=0?au:(x.author||''),desc:x.desc,cover:x.cover,pages:x.pages,cats:[]})}))};
+ const run=[['Google Books',gb],['Open Library',ol],['Open Library',oi],['Apple Books',ab],['Wikipedia',wk],['Internet Archive',ia],['Project Gutenberg',gt],['Romanian shops',shops]];
+ await Promise.all(run.filter(x=>!only||only.includes(x[0])).map(x=>x[1]().catch(()=>{})));
  return C.sort((x,y)=>y.score-x.score||y.desc.length-x.desc.length)}
 function bestInfo(C){const g=C.filter(c=>c.desc&&c.desc.length>60&&c.score>=75);if(!g.length)return null;
  g.forEach(x=>{let o=g.filter(y=>y!==x);x.cons=o.length?o.reduce((s,y)=>s+sim(x.desc.split(/\s+/).slice(0,50).join(' '),y.desc),0)/o.length:0});
  g.sort((x,y)=>(y.score-(y.src==='Internet Archive'?10:0)+25*y.cons)-(x.score-(x.src==='Internet Archive'?10:0)+25*x.cons)||y.desc.length-x.desc.length);return g[0]}
-async function getDesc(t,a,isbn,pages){getDesc.fail=false;const C=await findInfo(t,a,isbn,pages);getDesc.cands=C;const b=bestInfo(C);getDesc.meta=b;return b?b.desc:''}
-async function autoDesc(id,force){let b=bk(id);if(!b||b.ds)return;if(!force&&b.dt&&Date.now()-b.dt<3*864e5)return;b.dt=Date.now();v.dl=id;save();if(v.id===id&&!v.sh)dsRefresh();let ds=await getDesc(b.t,b.a,b.isbn,b.pages);b=bk(id);v.dl=null;if(b){if(ds&&!b.ds){b.ds=ds;b.dsrc=getDesc.meta.src;b.dsc=getDesc.meta.score;b.dt=0;save()}else if(!ds&&getDesc.fail){b.dt=Date.now()-3*864e5+6e4;save()}}if(v.id===id&&!v.sh)dsRefresh()}
+async function getDesc(t,a,isbn,pages){getDesc.fail=false;const C=await findInfo(t,a,isbn,pages);getDesc.cands=C;getDesc.cats=bestCats(C);const b=bestInfo(C);getDesc.meta=b;return b?b.desc:''}
+async function autoDesc(id,force){let b=bk(id);if(!b||b.ds)return;if(!force&&b.dt&&Date.now()-b.dt<3*864e5)return;b.dt=Date.now();v.dl=id;save();if(v.id===id&&!v.sh)dsRefresh();let ds=await getDesc(b.t,b.a,b.isbn,b.pages);b=bk(id);v.dl=null;if(b){if(ds&&!b.ds){b.ds=ds;b.dsrc=getDesc.meta.src;b.dsc=getDesc.meta.score;b.dt=0;if(!(b.cat||[]).length&&(getDesc.cats||[]).length)b.cat=getDesc.cats.slice();save()}else if(!ds&&getDesc.fail){b.dt=Date.now()-3*864e5+6e4;save()}}if(v.id===id&&!v.sh)dsRefresh()}
 async function showCands(id){let b=bk(id);v.cid=id;v.cands=null;R();v.cands=(await findInfo(b.t,b.a,b.isbn,b.pages)).filter(c=>c.desc||c.cover).slice(0,10);R()}
-async function useCand(i,k){let c=v.cands[i],b=bk(v.cid);if(!b||!c)return;if(k==='d'){b.ds=c.desc;b.dsrc=c.src;b.dsc=c.score;b.dt=0;v.cid=null}else{b.cover=await c2d(c.cover)}save();R()}
+async function useCand(i,k){let c=v.cands[i],b=bk(v.cid);if(!b||!c)return;if(k==='d'){b.ds=c.desc;b.dsrc=c.src;b.dsc=c.score;b.dt=0;v.cid=null;if(!(b.cat||[]).length&&(c.cats||[]).length)b.cat=normCats(c.cats).slice(0,6)}else{b.cover=await c2d(c.cover)}save();R()}
+/* ======== Categories and book type ======== */
+const BTI=[['','Not set'],['paperback','Paperback'],['hardcover','Hardcover'],['pocket','Pocket book'],['ebook','E-book'],['audio','Audio book']];
+const BTL=Object.fromEntries(BTI);
+function whBt(i){const e=$('#f-bt');if(e)e.value=BTI[i]?BTI[i][0]:''}
+function parseCats(x){const out=[],seen=new Set();String(x||'').split(/[,;\n]/).forEach(p=>{p=p.trim().replace(/^#+\s*/,'').replace(/\s+/g,' ').trim().slice(0,30);const k=p.toLowerCase();if(p&&!seen.has(k)){seen.add(k);out.push(p)}});return out.slice(0,14)}
+function catGo(c){v.q=c;v.tab='all';v.col=null;go('lib');scrollTo(0,0);R()}
+async function fillInfo(){
+ const t=$('#f-t').value.trim(),a=$('#f-a').value.trim();if(!t){toast('Type a title first');return}
+ toast('Searching online…');
+ const C=await findInfo(t,a,'',+$('#f-p').value||0),b=bestInfo(C),cats=bestCats(C);
+ if(cats.length&&$('#f-cat')&&!$('#f-cat').value.trim())$('#f-cat').value=cats.join(', ');
+ if(b&&b.desc&&$('#f-d')&&!$('#f-d').value.trim())$('#f-d').value=b.desc;
+ if(b&&b.pages&&$('#f-p')&&!+$('#f-p').value)$('#f-p').value=b.pages;
+ toast(cats.length||b?'Found info'+(cats.length?' · '+cats.length+' categories':''):'Nothing found online for this book')}
+async function autoCats(id){const b=bk(id);if(!b||(b.cat||[]).length)return false;const C=await findInfo(b.t,b.a,b.isbn,b.pages),c=bestCats(C);const b2=bk(id);if(b2&&c.length){b2.cat=c;save();return true}return false}
+async function allCats(){
+ const l=S.b.filter(b=>!(b.cat||[]).length);if(!l.length){alert('Every book already has categories.');return}
+ let n=0;for(let i=0;i<l.length;i++){const st=$('#ctst');if(st)st.textContent='Looking… '+i+' of '+l.length;if(await autoCats(l[i].id))n++;await new Promise(r=>setTimeout(r,350))}
+ alert('Found categories for '+n+' of '+l.length+' books.');R()}
+function LANGSEC(){const sel=S.il||[];
+ return '<h2>Languages for book info</h2><p class="mu">English is always searched. Turn on the languages of your books so descriptions, covers and categories are found in them too. Titles with ă, ș or ț are detected as Romanian automatically. For Romanian, Shelfie also checks Cărturești, Libris and Elefant (needs the updated Android app).</p><div class="row" style="flex-wrap:wrap;margin:0 0 6px">'+LANGS.filter(l=>l[0]!=="en").map(([c,n])=>'<button class="bt '+(sel.includes(c)?'pr':'')+'" onclick="ilTog(\''+c+'\')">'+(sel.includes(c)?'✓ ':'')+n+'</button>').join('')+'</div>'}
 async function allDesc(){let l=S.b.filter(b=>!b.ds),miss=[];if(!l.length){alert('Every book already has a description.');return}for(let i=0;i<l.length;i++){let st=$('#dsst');if(st)st.textContent='Looking… '+i+' of '+l.length;await autoDesc(l[i].id,1);if(!bk(l[i].id).ds)miss.push(l[i].t);await new Promise(r=>setTimeout(r,350))}alert('Found descriptions for '+(l.length-miss.length)+' of '+l.length+' books.'+(miss.length?'\n\nNo description found for:\n• '+miss.join('\n• '):''));R()}
 async function fillDesc(){let t=$('#f-t').value.trim();if(!t)return;let el=$('#f-d');el.placeholder='Looking…';let ds=await getDesc(t,$('#f-a').value.trim());el.placeholder='Description';if(ds)el.value=ds;else alert('No description found online.')}
 function dsT(s){let p=s.previousElementSibling,o=p.style.webkitLineClamp==='none';p.style.webkitLineClamp=o?'4':'none';s.textContent=o?'Read more ⌄':'Show less ⌃'}
@@ -947,6 +1073,17 @@ function shelfHTML(l){const st=SHP[SHP[S.ss]?S.ss:'auto'],p=shpPal(st),it=st.ite
  if(!st.wall)return h;
  return `<div style="background:${st.wall};border-radius:${st.arch?'50% 50% 18px 18px/110px 110px 18px 18px':'18px'};padding:${st.arch?'46px':'10px'} 8px 4px;box-shadow:inset 0 0 40px rgba(0,0,0,.25)${st.arch?';border:7px solid '+w0:''}">${st.lights?shpLights():''}${h}</div>`}
 function shelfPrev(k){const st=SHP[k],p=shpPal(st),it=st.items;return `<div style="background:${st.wall||'var(--cd)'};border-radius:16px;padding:8px 10px 0;overflow:hidden;border:1px solid var(--bd)"><div style="display:flex;align-items:flex-end;gap:6px;height:80px">${[0,1,2].map(i=>`<div style="flex:1">${dec(it[i%it.length],p,76)}</div>`).join('')}</div><div class="pl" style="margin:0 -10px;${plankCSS(st)}"></div></div>`}
+function csSet(k,x){S.cs=Object.assign({},S.cs||{});S.cs[k]=/^\d+$/.test(x)?+x:x;save();R()}
+function collSec(){
+ const o=csOpt(),sg=(k,opts)=>'<div class="seg" style="margin:6px 0">'+opts.map(([x,l])=>'<b class="'+(String(o[k])===String(x)?'on':'')+'" onclick="csSet(\''+k+'\',\''+x+'\')">'+l+'</b>').join('')+'</div>',
+  prev=(S.col||[])[0]||{id:'_p',n:'My long favourite fantasy series',i:'',c:0};
+ return '<h2>Collection cards</h2><p class="mu">Make the names in your Library easy to read. Pick the size, text size, where the text sits and how many covers show.</p><div style="pointer-events:none">'+cban(prev,'full',1)+'</div>'
+ +'<h3 style="margin:12px 0 2px">Card size</h3>'+sg('sz',[['s','Small'],['m','Medium'],['l','Large'],['x','Extra large']])
+ +'<h3 style="margin:12px 0 2px">Text size</h3>'+sg('ts',[['s','Small'],['m','Medium'],['l','Large'],['x','Extra large']])
+ +'<h3 style="margin:12px 0 2px">Text position</h3>'+sg('ha',[['l','Left'],['c','Centre'],['r','Right']])+sg('va',[['t','Top'],['m','Middle'],['b','Bottom']])
+ +'<h3 style="margin:12px 0 2px">Book covers on the card</h3>'+sg('cv',[['3','3'],['2','2'],['1','1'],['0','None']])+sg('cs',[['r','Right side'],['l','Left side']])
+ +'<div class="row"><button class="bt" onclick="S.cs=null;save();R()">Reset collection cards</button></div>';
+}
 function shelfSec(){const cur=SHP[S.ss]?S.ss:'auto',st=SHP[cur],wk=S.wd||'style',tx=S.wt||'grain';
  return `<h2>Shelf style</h2><p class="mu">How your Library shelf looks. Decorations sit between your books.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">${Object.keys(SHP).map(k=>`<div onclick="S.ss='${k}';save();R()" style="cursor:pointer;border-radius:18px;outline:3px solid ${cur===k?'var(--ac)':'transparent'};outline-offset:2px"><div style="font-size:12px;margin:0 4px 3px">${SHP[k].n}${cur===k?' ✓':''}</div>${shelfPrev(k)}</div>`).join('')}</div>
  <div class="seg" style="margin-top:12px"><b class="${S.dc===0?'':'on'}" onclick="S.dc=1;save();R()">Decorations on</b><b class="${S.dc===0?'on':''}" onclick="S.dc=0;save();R()">Books only</b></div>
@@ -954,7 +1091,7 @@ function shelfSec(){const cur=SHP[S.ss]?S.ss:'auto',st=SHP[cur],wk=S.wd||'style'
  <h3 style="margin:16px 0 6px">Wood texture</h3><div class="seg">${[['grain','Grain'],['smooth','Smooth'],['rustic','Rustic'],['planks','Planks']].map(([k,n])=>`<b class="${tx===k?'on':''}" onclick="S.wt='${k}';save();R()">${n}</b>`).join('')}</div>`}
 function MCUST(){const cur=document.documentElement.dataset.th,cu=S.cu||{ac:'#c2553a',bg:'#f7efe2'},TH=[['cream','Cream','#f7efe2','#b8651f'],['forest','Forest','#f2f5ec','#3f7a4b'],['midnight','Midnight','#180d2b','#a86bf0'],['rose','Rose','#fbeff0','#d1566b'],['ocean','Ocean','#eef5f9','#2b7fb8'],['lavender','Lavender','#f3effa','#7a5bd0'],['mocha','Mocha','#231a15','#d58b4c'],['custom','Custom',cu.bg,cu.ac]];return `<div class="card" style="display:block;cursor:default"><b>Your name</b><input class="in" value="${esc(S.nm||'')}" placeholder="Reader" onchange="S.nm=this.value.trim();save();R()"><b style="display:block;margin-top:12px">Color theme</b><div class="row" style="gap:14px">${TH.map(([k,l,bg,ac])=>`<div onclick="S.th='${k}';pairTh('${k}');save();R()" style="text-align:center;font-size:12px;cursor:pointer"><div style="width:56px;height:56px;border-radius:17px;margin:0 auto 4px;background:linear-gradient(135deg,${ac} 4%,${bg} 88%);box-shadow:inset 0 0 0 1px rgba(128,128,128,.25),0 3px 8px rgba(0,0,0,.12);outline:3px solid ${cur===k?'var(--tx)':'transparent'};outline-offset:2px"></div>${l}</div>`).join('')}</div>${cur==='custom'?`<div class="row" style="gap:18px"><div class="cnl" onclick="cpOpen('cu','ac')"><span class="cpsw" style="background:${cu.ac}"></span>Accent</div><div class="cnl" onclick="cpOpen('cu','bg')"><span class="cpsw" style="background:${cu.bg}"></span>Background</div></div><p class="mu">Pick any accent and background. Text colors adjust automatically.</p>`:''}<button class="bt" style="width:100%;margin-top:14px" onclick="v.adv=1;scrollTo(0,0);R()">Advanced themes${ADVN[cur]?' · '+ADVN[cur]:''} ›</button></div></div>${nsec()}${asec()}`}
 /* ---- advanced search (More > Covers & descriptions) ---- */
-const SRCS=['Google Books','Open Library','Apple Books','Wikipedia','Internet Archive'];
+const SRCS=['Google Books','Open Library','Apple Books','Wikipedia','Internet Archive','Project Gutenberg','Romanian shops'];
 function asOpen(id){const b=bk(id);v.as={id,t:b?b.t:'',a:b?b.a:'',on:SRCS.slice(),res:null,msg:''};v.cid=null;go('more');v.an=1;v.mp='tools';scrollTo(0,0);R()}
 function asSel(id){const b=bk(id);v.as={id,t:b?b.t:'',a:b?b.a:'',on:(v.as&&v.as.on)||SRCS.slice(),res:null,msg:''};R()}
 function asTg(x){const o=v.as.on,i=o.indexOf(x);i<0?o.push(x):o.length>1&&o.splice(i,1);R()}
@@ -978,7 +1115,7 @@ function ASUI(){const A=v.as||{id:'',t:'',a:'',on:SRCS,res:null},b=bk(A.id);
   return `<div class="asg"><div class="row" style="margin:14px 0 4px;flex-wrap:nowrap"><b style="flex:1">${x}</b><span class="mu">${it.length?it.length+' found':'nothing found'}</span></div>`+it.map(([c,i],j)=>{const g=c.score>=90?['exact match ✓','g']:c.score>=75?['likely match','g']:['weak match','r'];
    return `<div class="card asc ${j===0&&c.score>=75?'top':''}" style="display:block;cursor:default"><div style="display:flex;gap:10px">${c.cover?`<img src="${esc(c.cover)}" loading="lazy" style="width:52px;height:78px;object-fit:cover;border-radius:8px;flex:none" onerror="this.style.display='none'">`:''}<div style="min-width:0"><div style="font-weight:700">${esc(c.title)}</div><div class="mu" style="font-size:12px">${esc(c.author||'unknown author')}${c.pages?' · '+c.pages+' pages':''}</div><div style="font-size:12px;margin:2px 0" class="${g[1]}">${c.score}% · ${g[0]}</div><div class="mu dsx" style="font-size:13px">${c.desc?esc(c.desc.slice(0,150))+(c.desc.length>150?'…':''):'No description from this source'}</div></div></div><div class="row" style="margin:8px 0 0">${c.cover?`<button class="bt" onclick="asUse(${i},'c')">Use cover</button>`:''}${c.desc?`<button class="bt" onclick="asUse(${i},'d')">Use description</button>`:''}${c.cover&&c.desc?`<button class="bt pr" onclick="asUse(${i},'b')">Use both</button>`:''}</div></div>`}).join('')+`</div>`}).join('')+`</div>`}
  return h}
-function MTOOLS(){return `<h2>Covers</h2><p class="mu">Finds covers online for every book that doesn’t have one. Keep this page open while it works.</p><button class="bt pr" onclick="allcov()">Find all covers</button><p class="mu" id="cvst"></p><h2>Descriptions</h2><p class="mu" id="dsst">Find missing book descriptions online.</p><button class="bt pr" onclick="allDesc()">Find descriptions for all books</button><p class="mu">Searches Google Books, Open Library, Apple Books, Internet Archive and Wikipedia.</p>${ASUI()}`}
+function MTOOLS(){return `<h2>Covers</h2><p class="mu">Finds covers online for every book that doesn’t have one. Keep this page open while it works.</p><button class="bt pr" onclick="allcov()">Find all covers</button><p class="mu" id="cvst"></p><h2>Descriptions</h2><p class="mu" id="dsst">Find missing book descriptions online.</p><button class="bt pr" onclick="allDesc()">Find descriptions for all books</button><p class="mu">Searches Google Books, Open Library, Apple Books, Internet Archive, Wikipedia, Project Gutenberg and (for Romanian) Cărturești, Libris and Elefant.</p><h2>Categories</h2><p class=\"mu\" id=\"ctst\">Find categories like Horror or Fantasy for books that don’t have any.</p><button class=\"bt pr\" onclick=\"allCats()\">Find categories for all books</button>${LANGSEC()}${ASUI()}`}
 function MHUB(){const lb=S.lb?'Last backup: '+new Date(S.lb).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'Saves your whole library in one tap';
  const qb=`<div class="card" onclick="bkQuick()" style="align-items:center;gap:14px;border-color:var(--ac)"><span style="color:var(--ac)">${IC_.sync}</span><div class="fl"><div class="t">Quick backup</div><div class="mu">${lb}</div></div><span class="mu" style="font-size:13px">Tap</span></div>`;
  const it=(k,t,s)=>`<div class="card" onclick="v.an=1;v.mp='${k}';scrollTo(0,0);R()" style="align-items:center;gap:14px"><span style="color:var(--ac)">${IC_[k]}</span><div class="fl"><div class="t">${t}</div><div class="mu">${s}</div></div><span class="mu" style="font-size:22px">›</span></div>`;
@@ -990,14 +1127,14 @@ function MR(){if(v.adv)return ADV();
  return `<div class="${S.bl===0?'':'blr2'}"><div class="row"><button class="bt" onclick="v.an=1;v.mp=null;v.cnd=null;v.gf=null;v.cf=null;scrollTo(0,0);R()">← Back</button></div><h1>${ttl[v.mp]}</h1>${msg}${v.mp==='cust'?MCUST():v.mp==='sync'?MSYNC():v.mp==='goals'?MGOALS():MTOOLS()}</div>`}
 function D(){let b=bk(v.id);if(!b){v.p='home';return H()}
  let p=pc(b),run=S.t&&S.t.id===b.id,ss=S.s.filter(s=>s.b===b.id).reverse(),u=b.m==='pct'?'%':'p',ba=avg(u,b.id),oa=avg(u),id=b.id,ctl='',spd=ba||oa,rem=b.m==='pct'?100-(+b.cur||0):(b.m==='pages'||b.adv)&&b.pages?b.pages-(+b.cur||0):0,eta=spd&&rem>0&&b.st!=='done'?'<p class="mu" style="text-align:center">⏳ About '+fm(Math.round(rem/spd*3600))+' left at your pace</p>':'';
- if(b.m==='pages')ctl=`<div class="row pgr"><button class="bt" onclick="bump('${id}',-10)">−10</button><button class="bt" onclick="bump('${id}',-1)">−1</button><input class="in" type="number" value="${b.cur||0}" onchange="setCur('${id}',this.value)"><button class="bt" onclick="bump('${id}',1)">+1</button><button class="bt" onclick="bump('${id}',10)">+10</button></div><div class="row"><span class="mu">Total pages in your edition</span><input class="in" type="number" value="${b.pages||''}" placeholder="?" onchange="setTot('${id}',this.value)"></div>`;
- else if(b.m==='pct')ctl=`<div class="big" id="pv">${b.cur||0}%</div><input type="range" min="0" max="100" value="${b.cur||0}" oninput="$('#pv').textContent=this.value+'%'" onchange="setCur('${id}',this.value)">`;
+ if(b.m==='pages')ctl=`<div class="row pgr"><button class="bt" onclick="bump('${id}',-10)">−10</button><button class="bt" onclick="bump('${id}',-1)">−1</button><input class="in" type="number" value="${b.cur||0}" onchange="setCur('${id}',this.value)"><button class="bt" onclick="bump('${id}',1)">+1</button><button class="bt" onclick="bump('${id}',10)">+10</button></div><div class="row"><button class="bt pr" style="flex:1" onclick="pgwOpen('${id}')">Scroll to pick a page · finished or give up</button></div><div class="row"><span class="mu">Total pages in your edition</span><input class="in" type="number" value="${b.pages||''}" placeholder="?" onchange="setTot('${id}',this.value)"></div>`;
+ else if(b.m==='pct')ctl=`<div class="big" id="pv">${b.cur||0}%</div><input type="range" min="0" max="100" value="${b.cur||0}" oninput="$('#pv').textContent=this.value+'%'" onchange="setCur('${id}',this.value)"><div class="row"><button class="bt pr" style="flex:1" onclick="pgwOpen('${id}')">Scroll to pick a percent · finished or give up</button></div>`;
  else ctl=b.adv?advUI(b):b.ch.map((c,i)=>`<div class="ch"><input type="checkbox" ${c.d?'checked':''} onchange="chT('${id}',${i})"><input class="in" value="${esc(c.n)}" onchange="chN('${id}',${i},this.value)"><input class="in cp" type="number" placeholder="pages" value="${c.p||''}" onchange="chP('${id}',${i},this.value)"><button class="bt" onclick="chX('${id}',${i})">✕</button></div>`).join('')+cfBar(b)+`<div class="row"><input class="in" id="f-cn" type="number" placeholder="How many chapters?"><input class="in" id="f-cp" type="number" placeholder="Pages each (optional)"><button class="bt pr" onclick="chA('${id}')">Add</button></div><p class="mu">Add page counts to chapters for more accurate progress. Leave blank to count chapters equally.</p>`+advTog(b);
  return `<div class="${S.bl===0?'':'blr'}"><div class="row"><button class="bt" onclick="bye(()=>go(v.pp||'home',1))">← Back</button><span style="flex:1"></span><button class="bt" onclick="v.sh='edit';v.cv='';R()">Edit</button></div>
- <div class="row" style="align-items:flex-start;gap:14px"><div class="cvw">${cv(b,'cvl')}</div><div class="fl"><h1 class="dsx" style="font-size:24px;margin:0">${esc(b.t)}</h1><div class="mu">${esc(b.a)}${b.sr?' · '+esc(b.sr):''}</div><select class="in" onchange="setSt('${id}',this.value)">${[['toread','To read'],['reading','Reading'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b.st===k?'selected':''}>${l}</option>`).join('')}</select></div></div>
+ <div class="row" style="align-items:flex-start;gap:14px"><div class="cvw">${cv(b,'cvl')}</div><div class="fl"><h1 class="dsx" style="font-size:24px;margin:0">${esc(b.t)}</h1><div class="mu">${esc(b.a)}${b.sr?' · '+esc(b.sr):''}</div>${((b.cat||[]).length||b.bt)?`<div>${(b.cat||[]).map(c=>`<span class="cat" onclick="catGo('${esc(c)}')">#${esc(c)}</span>`).join('')}${b.bt?`<span class="cat bt">${BTL[b.bt]||''}</span>`:''}</div>`:''}<select class="in" onchange="setSt('${id}',this.value)">${[['toread','Want to read'],['reading','Reading'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b.st===k?'selected':''}>${l}</option>`).join('')}</select></div></div>
  ${meta(b)}${descSec(b)}<div style="text-align:center;margin-top:10px">${[1,2,3,4,5].map(n=>`<span onclick="rate('${id}',${n})" style="font-size:28px;cursor:pointer;color:${n<=(b.r||0)?'#e0a030':'var(--bd)'}">★</span>`).join('')}</div><div class="big">${p.toFixed(0)}%</div><div class="bar"><i style="width:${p}%"></i></div>${eta}
  <div class="seg">${[['pages','Pages'],['pct','Percent'],['ch','Chapters']].map(([k,l])=>`<b class="${b.m===k?'on':''}" onclick="setM('${id}','${k}')">${l}</b>`).join('')}</div>${ctl}
- <h2>Reading timer</h2>${nfLine()}${run?`<div class="big"><span class="tm"></span></div><button class="bt" style="width:100%;margin-bottom:8px" onclick="tpause()">${S.t.p?'Resume':'Pause'}</button><button class="bt pr" style="width:100%" onclick="v.sh='stop';R()">Stop and log session</button><button class="bt" style="width:100%;margin-top:8px" onclick="if(confirm('Discard this reading session? The time will not be saved.'))tdisc()">Discard</button>`:`<button class="bt pr" style="width:100%" onclick="tstart('${id}')" ${S.t?'disabled':''}>Start reading session</button>`}
+ <h2>Reading timer</h2>${nfLine()}${run?`<div class="big"><span class="tm"></span></div><button class="bt" style="width:100%;margin-bottom:8px" onclick="tpause()">${S.t.p?'Resume':'Pause'}</button><button class="bt pr" style="width:100%" onclick="tstopOpen()">Stop and log session</button><button class="bt" style="width:100%;margin-top:8px" onclick="if(confirm('Discard this reading session? The time will not be saved.'))tdisc()">Discard</button>`:`<button class="bt pr" style="width:100%" onclick="tstart('${id}')" ${S.t?'disabled':''}>Start reading session</button>`}
  ${ba?`<p class="mu">Your speed on this book: <b>${ba.toFixed(1)} ${U(u)}</b>${oa?` (${ba>=oa?'<span class="g">▲ ':'<span class="r">▼ '}${Math.abs((ba/oa-1)*100).toFixed(0)}% vs your overall average</span>)`:''}</p>`:''}
  ${ss.map(s=>{let sp=s.d>0&&s.k>30?s.d/s.k*3600:0,a=avg(s.u);return `<div class="ses"><span>${new Date(s.s).toLocaleDateString()}<br><span class="mu">${fm(s.k)}${s.d?` · +${s.d}${s.u==='%'?'%':' pages'}`:''}</span></span><span style="text-align:right">${sp?sp.toFixed(1)+' '+U(s.u):'-'}${sp&&a?`<br>${sp>=a?'<span class="g">▲ ':'<span class="r">▼ '}${Math.abs((sp/a-1)*100).toFixed(0)}% vs avg</span>`:''}</span></div>`}).join('')}<h2>Notes</h2><textarea class="in" rows="4" placeholder="Thoughts, quotes, favorite parts…" onchange="note('${id}',this.value)">${esc(b.nt||'')}</textarea></div>`}
 function T(){let ss=S.s,tot=ss.reduce((a,s)=>a+s.k,0),pa=avg('p'),qa=avg('%'),days=[...Array(7)].map((_,i)=>{let d=new Date();d.setDate(d.getDate()-6+i);d.setHours(0,0,0,0);let e=d.getTime()+864e5;return{l:d.toLocaleDateString(undefined,{weekday:'narrow'}),m:ss.filter(s=>s.s>=d.getTime()&&s.s<e).reduce((a,s)=>a+s.k,0)/60}}),mx=Math.max(1,...days.map(d=>d.m));
@@ -1008,17 +1145,19 @@ function T(){let ss=S.s,tot=ss.reduce((a,s)=>a+s.k,0),pa=avg('p'),qa=avg('%'),da
  <h2>Speed by book</h2>${per.length?per.map(x=>{let o=avg(x.u);return `<div class="ses"><span>${esc(x.b.t)}</span><span>${x.a.toFixed(1)} ${U(x.u)} ${o?(x.a>=o?'<span class="g">▲':'<span class="r">▼')+Math.abs((x.a/o-1)*100).toFixed(0)+'%</span>':''}</span></div>`}).join(''):'<p class="mu">Log a few timed sessions to see how fast you read.</p>'}`}
 function SH(){let b=v.sh==='edit'?bk(v.id):null;
  if(v.sh==='cpick')return CPSH();if(v.sh==='coledit')return COLEDIT();if(v.sh==='colmenu')return COLMENU();if(v.sh==='colbooks')return CBSH();
- if(v.sh==='colord')return COLORD();if(v.sh==='col')return COLSH();if(v.sh==='addcol')return ADDCOL();if(v.sh==='abperm')return ABPERM();if(v.sh==='abfirst')return ABFIRST();if(v.sh==='stop'){let bb=bk(S.t.id);if(bb.adv&&bb.ch.length)return advStopSh(bb);let q=bb.m==='pct'?'What percent are you at now?':bb.m==='pages'?'What page are you on now?':'Pages read this session (optional)';
-  return `<div class="sh"><div><h2 style="margin-top:0">Nice session! ${fm(el())}</h2><p class="mu">${q}</p><input class="in" id="f-n" type="number" value="${bb.m==='ch'?'':bb.cur||0}"><div class="row"><button class="bt" onclick="v.sh=null;R();nf()">Cancel</button><button class="bt pr" style="flex:1" onclick="tstop()">Save session</button></div></div></div>`}
+ if(v.sh==='pgw'&&bk(v.id))return PGSH(bk(v.id),0);if(v.sh==='gordg')return GORDG();if(v.sh==='colord')return COLORD();if(v.sh==='col')return COLSH();if(v.sh==='addcol')return ADDCOL();if(v.sh==='abperm')return ABPERM();if(v.sh==='abfirst')return ABFIRST();if(v.sh==='stop'){let bb=bk(S.t.id);if(bb.adv&&bb.ch.length)return advStopSh(bb);if(bb.m==='pages'||bb.m==='pct')return PGSH(bb,'stop');let q=bb.m==='pct'?'What percent are you at now?':bb.m==='pages'?'What page are you on now?':'Pages read this session (optional)';
+  return `<div class="sh"><div><h2 style="margin-top:0">Nice session! ${fm(el())}</h2><p class="mu">${q}</p><input class="in" id="f-n" type="number" value="${bb.m==='ch'?'':bb.cur||0}"><div class="row"><button class="bt" onclick="tstopCancel()">Cancel</button><button class="bt pr" style="flex:1" onclick="tstop()">Save session</button></div></div></div>`}
  return `<div class="sh"><div><h2 style="margin-top:0">${b?'Edit book':'Add a book'}</h2><div class="row"><input type="search" enterkeyhint="search" autocomplete="off" class="in" id="q" placeholder="Search title or author" value="${b?esc(b.t+' '+b.a):''}" onkeydown="if(event.key==='Enter')srch()"><button class="bt pr" onclick="srch()">Search</button></div><div id="res"></div><input class="in" id="f-t" placeholder="Title" value="${b?esc(b.t):''}"><input class="in" id="f-a" placeholder="Author" value="${b?esc(b.a):''}"><input class="in" id="f-p" type="number" placeholder="Total pages (optional)" value="${b&&b.pages?b.pages:''}">
 <textarea class="in" id="f-d" rows="4" placeholder="Description (filled in automatically, you can edit it)">${b?esc(b.ds||''):''}</textarea><p class="mu" style="margin:0 0 8px;text-decoration:underline;cursor:pointer" onclick="fillDesc()">Find description online</p>
+ <input class="in" id="f-cat" placeholder="Categories, separated by commas (Horror, Thriller)" value="${b?esc((b.cat||[]).join(', ')):''}"><p class="mu" style="margin:0 0 8px;text-decoration:underline;cursor:pointer" onclick="fillInfo()">Find categories, description and pages online</p>
+ <p class="mu" style="margin:8px 0 0">Book type — scroll to choose</p><input type="hidden" id="f-bt" value="${b&&b.bt||''}">${whHtml(BTI.map(x=>x[1]),Math.max(0,BTI.findIndex(x=>x[0]===(b&&b.bt||''))),'whBt','sm')}
  <select class="in" id="f-s">${[['reading','Reading now'],['toread','Want to read'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b&&b.st===k?'selected':''}>${l}</option>`).join('')}</select>
  <select class="in" id="f-m">${[['pages','Track by pages'],['pct','Track by percent (Kindle)'],['ch','Track by chapters']].map(([k,l])=>`<option value="${k}" ${b&&b.m===k?'selected':''}>${l}</option>`).join('')}</select>
  <p class="mu" style="margin-bottom:2px">Cover (photo or image from your device)</p><input type="file" accept="image/*" onchange="cov(event)">
  <div class="row"><button class="bt" onclick="v.sh=null;R()">Cancel</button>${b?`<button class="bt" onclick="del()">Delete</button>`:''}<button class="bt pr" style="flex:1" onclick="sv()">Save</button></div></div></div>`}
 function cov(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas'),k=Math.min(1,240/i.width);c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);v.cv=c.toDataURL('image/jpeg',.7)};i.src=r.result};r.readAsDataURL(f)}
 /* ======== XML backup (saved to the Downloads folder) ======== */
-var _FL=null;const BUILD_='1.2.0';
+var _FL=null;const BUILD_='1.4.1';
 var _flErr='';
 function flGet(){
  if(_FL)return _FL;
@@ -1357,7 +1496,7 @@ function gStatus(g){
 }
 function gActive(){
  const now=Date.now();
- return(S.goals||[]).filter(g=>{const r=gRange(g);return now>=r[0]&&now<r[1]}).sort((x,y)=>(x.t==='month'?0:1)-(y.t==='month'?0:1));
+ return(S.goals||[]).filter(g=>{const r=gRange(g);return now>=r[0]&&now<r[1]}).sort((x,y)=>S.go?0:(x.t==='month'?0:1)-(y.t==='month'?0:1));
 }
 function goGoals(){go('more');v.an=1;v.mp='goals';v.gf=null;scrollTo(0,0);R()}
 function goalsHome(k){
@@ -1378,7 +1517,7 @@ function MGOALS(){
  const gs=(S.goals||[]).slice(),now=Date.now(),R_=g=>gRange(g);
  const cur=gActive(),up=gs.filter(g=>R_(g)[0]>now).sort((a,b)=>R_(a)[0]-R_(b)[0]),past=gs.filter(g=>R_(g)[1]<=now).sort((a,b)=>R_(b)[0]-R_(a)[0]);
  const grp=(t,l)=>l.length?`<h2>${t}</h2>`+l.map(gCard).join(''):'';
- return`<p class="mu">Set a target for a month or a year. Only books you finish <b>after</b> making the goal count, plus any number you say you’ve already read.</p><button class="bt pr" onclick="gNew()">+ New goal</button>${grp('Now',cur)}${grp('Upcoming',up)}${grp('Past',past)}${gs.length?'':'<p class="mu" style="margin-top:14px">No goals yet.</p>'}`;
+ return`<p class="mu">Set a target for a month or a year. Only books you finish <b>after</b> making the goal count, plus any number you say you’ve already read.</p><div class="row" style="margin:0 0 6px"><button class="bt pr" onclick="gNew()">+ New goal</button>${gs.length>1?`<button class="bt" onclick="v.sh='gordg';R()">Reorder goals</button>`:''}</div>${grp('Now',cur)}${grp('Upcoming',up)}${grp('Past',past)}${gs.length?'':'<p class="mu" style="margin-top:14px">No goals yet.</p>'}`;
 }
 function gNew(){const d=new Date();v.gf={id:null,t:'year',y:d.getFullYear(),m:d.getMonth()+1,n:10,a:0,ib:0,pick:false,bk:[],rd:[],rp:false};R()}
 function gEdit(id){const g=(S.goals||[]).find(x=>x.id===id);if(!g)return;const d=new Date();v.gf={id:g.id,t:g.t,y:g.y,m:g.m||d.getMonth()+1,n:g.n,a:g.a||0,ib:g.ib?1:0,pick:!!(g.bk&&g.bk.length),bk:(g.bk||[]).slice(),rd:(g.rd||[]).slice(),rp:!!(g.rd&&g.rd.length),since:g.since,c:g.c};scrollTo(0,0);R()}
@@ -1390,9 +1529,10 @@ function gFiltR(q){document.querySelectorAll('.gpr').forEach(e=>{e.style.display
 function gFilt(q){document.querySelectorAll('.gpb:not(.gpr)').forEach(e=>{e.style.display=fzMatch(e.dataset.q,q)?'':'none'})}
 function gOrd(){
  const f=v.gf;if(!f||!f.pick||!f.bk.length)return '';
- return '<h3 style="margin:14px 0 6px;font-size:15px">Your books, in order</h3>'+f.bk.map((id,i)=>{const b=bk(id);if(!b)return '';
-  return `<div class="card" style="align-items:center;gap:8px;cursor:default;padding:8px 10px"><span class="mu" style="width:20px;text-align:center">${i+1}</span><div class="fl" style="min-width:0"><div class="t" style="white-space:normal">${esc(b.t)}</div></div><button class="bt" style="padding:6px 12px" ${i?'':'disabled'} onclick="gMv(${i},-1)">↑</button><button class="bt" style="padding:6px 12px" ${i<f.bk.length-1?'':'disabled'} onclick="gMv(${i},1)">↓</button><button class="bt" style="padding:6px 12px" onclick="gRm(${i})">✕</button></div>`}).join('');
+ return '<h3 style="margin:14px 0 4px;font-size:15px">Your books, in order</h3><p class="mu" style="margin:0 0 6px;font-size:13px">Hold ≡ and drag to change the order. ✕ removes a book.</p><div class="drl" data-cb="gDrag">'+f.bk.map((id,i)=>{const b=bk(id);if(!b)return '';
+  return `<div class="card dr" data-i="${i}" style="align-items:center;gap:8px;cursor:default;padding:10px 6px 10px 10px"><span class="mu" style="width:20px;text-align:center">${i+1}</span><div class="fl" style="min-width:0"><div class="t" style="white-space:normal">${esc(b.t)}</div></div><button class="bt" style="padding:6px 12px" onclick="gRm(${i})">✕</button>${DHI}</div>`}).join('')+'</div>';
 }
+function gDrag(o){const a=v.gf.bk;v.gf.bk=o.map(i=>a[i]);R()}
 function gMv(i,d){const a=v.gf.bk,j=i+d;if(j<0||j>=a.length)return;const t=a[i];a[i]=a[j];a[j]=t;R()}
 function gRm(i){v.gf.bk.splice(i,1);R()}
 function gTog(id,el){const f=v.gf,i=f.bk.findIndex(x=>x==id);if(i>=0)f.bk.splice(i,1);else f.bk.push(id);el.classList.toggle('on',i<0);el.querySelector('.gpk').textContent=i<0?'✓':'';const c=document.getElementById('gcnt');if(c)c.textContent=f.bk.length+' chosen';const o=document.getElementById('gord');if(o)o.innerHTML=gOrd()}
@@ -1575,11 +1715,14 @@ for(let i=0;i<l.length;i++){let b=l[i],t=b.t.split(/\s[:\u2013\u2014-]\s|:/)[0].
 v.msg=ok+' covers added.'+(miss.length?' '+miss.length+' not found.':'');alert(ok+' covers added.'+(miss.length?'\n\nNo cover found for:\n• '+miss.join('\n• '):''));scrollTo(0,0);R()}
 const rate=(id,n)=>ch(id,b=>b.r=b.r===n?0:n);
 const note=(id,x)=>{bk(id).nt=x;save()};
-function sv(){let t=$('#f-t').value.trim();if(!t)return;let d={t,a:$('#f-a').value.trim(),pages:+$('#f-p').value||0,ds:($('#f-d')?$('#f-d').value.trim():''),st:$('#f-s').value,m:$('#f-m').value};
+function sv(){let t=$('#f-t').value.trim();if(!t)return;let d={t,a:$('#f-a').value.trim(),pages:+$('#f-p').value||0,ds:($('#f-d')?$('#f-d').value.trim():''),st:$('#f-s').value,m:$('#f-m').value,cat:parseCats($('#f-cat')?$('#f-cat').value:''),bt:($('#f-bt')?$('#f-bt').value:'')};
  if(v.sh==='add'){let nb={id:uid(),...d,cur:d.st==='done'?d.pages:0,cover:v.cv,ch:[],r:0,sd:d.st==='reading'?Date.now():0,fd:d.st==='done'?Date.now():0};S.b.unshift(nb);if(!nb.ds)autoDesc(nb.id)}else{let b=bk(v.id);const om=b.m;Object.assign(b,d);if(om!==b.m){const nm=b.m;b.m=om;convM(b,nm)}if(b.m!=='ch')b.adv=0;advSync(b);if(d.st==='done'&&!b.fd)b.fd=Date.now();if(v.cv)b.cover=v.cv}
  v.sh=null;save();R()}
 function del(){if(confirm('Delete this book?')){(S.dl=S.dl||{})[v.id]=Date.now();(S.dp=S.dp||[]).push(v.id);MD=1;S.b=S.b.filter(b=>b.id!=v.id);v.sh=null;v.p='home';save();R()}}
-const ch=(id,f)=>{let b=bk(id);f(b);advSync(b);save();R()};
+/* when did you last read this book? newest session, or last time its progress changed */
+function lastRead(b){let t=b.lr||0;const L=S.s||[];for(let i=L.length-1;i>=0;i--){const x=L[i];if(x.b===b.id){const e=(x.s||0)+(x.k||0)*1000;if(e>t)t=e;break}}return t}
+function agoTxt(ts){const m=Math.floor((Date.now()-ts)/6e4);if(m<1)return 'just now';if(m<60)return m+'m ago';const h=Math.floor(m/60);if(h<24)return h+'h ago';const d=Math.floor(h/24);return d===1?'yesterday':d<7?d+' days ago':new Date(ts).toLocaleDateString([],{day:'numeric',month:'short'})}
+const ch=(id,f)=>{let b=bk(id);const c0=b.cur;f(b);if(b.cur!==c0)b.lr=Date.now();advSync(b);save();R()};
 const bump=(id,n)=>ch(id,b=>{b.cur=Math.max(0,(+b.cur||0)+n);if(b.pages&&b.cur>b.pages)b.cur=b.pages;if(b.st==='toread'){b.st='reading';b.sd=Date.now()}});
 const setCur=(id,x)=>ch(id,b=>{b.cur=Math.max(0,+x||0);if(b.st==='toread'){b.st='reading';b.sd=Date.now()}});
 const setTot=(id,x)=>ch(id,b=>b.pages=+x||0);
@@ -1612,7 +1755,79 @@ function tstop(){
 }
 function tstopV(n){let b=bk(S.t.id),k=el(),d=0,u=b.m==='pct'?'%':'p';
  if(b.m==='ch'&&!b.adv){d=+n||0}else if(n!==''){d=+n-(+b.cur||0);b.cur=+n;if((b.m==='pages'||b.adv)&&b.pages&&b.cur>=b.pages){b.st='done';b.fd=Date.now()}}
- S.s.push({b:b.id,s:S.t.s,k,d:d>0?d:0,u});MD=1;S.t=null;v.sh=null;advSync(b);save();R();nfClose()}
+ S.s.push({b:b.id,s:S.t.s,k,d:d>0?d:0,u});stApply(b);v.pw=null;v.ss=null;MD=1;S.t=null;v.sh=null;advSync(b);save();R();nfClose()}
+/* ======== Page wheel (scroll to choose), keyboard mode, reading status ======== */
+function whHtml(items,sel,cb,sub){
+ return '<div class="whb"><div class="whl '+(sub||'')+'" data-n="'+items.length+'" data-v="'+sel+'" data-cb="'+(cb||'')+'"><div class="wp"></div>'+items.map((l,i)=>'<div class="wi" data-i="'+i+'">'+l+'</div>').join('')+'<div class="wp"></div></div></div>';
+}
+document.addEventListener('animationstart',e=>{if(e.animationName==='whin')whInit(e.target)});
+/* ======== Drag-to-reorder lists: hold the ≡ handle and drag a row up or down ======== */
+const DHI='<span class="dh" aria-label="Drag to reorder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 9h14M5 15h14"/></svg></span>';
+function drBind(box){
+ if(!box||box._d)return;box._d=1;
+ box.addEventListener('pointerdown',e=>{
+  const h=e.target.closest('.dh');if(!h||!box.contains(h))return;
+  const row=h.closest('.dr');if(!row||row.parentNode!==box)return;
+  e.preventDefault();try{h.setPointerCapture(e.pointerId)}catch(_){}
+  const before=[...box.children].map(x=>x.dataset.i).join(),off=e.clientY-row.getBoundingClientRect().top,sc=box.closest('.acs');
+  let fy=e.clientY,raf=0,live=true;row.classList.add('dg');
+  const place=()=>{row.style.transform='';const nt=row.getBoundingClientRect().top;row.style.transform='translateY('+(fy-off-nt)+'px)'};
+  const step=()=>{
+   if(!live)return;
+   const rc=row.getBoundingClientRect(),cy=rc.top+rc.height/2,p=row.previousElementSibling,n=row.nextElementSibling;
+   if(p&&cy<p.getBoundingClientRect().top+p.offsetHeight/2){box.insertBefore(row,p);place()}
+   else if(n&&cy>n.getBoundingClientRect().top+n.offsetHeight/2){box.insertBefore(n,row);place()}
+   const r=sc?sc.getBoundingClientRect():{top:0,bottom:innerHeight-95};
+   if(fy<r.top+60){(sc||window).scrollBy(0,-12);place()}else if(fy>r.bottom-60){(sc||window).scrollBy(0,12);place()}
+   raf=requestAnimationFrame(step)};
+  const move=ev=>{fy=ev.clientY;place()};
+  const end=()=>{live=false;cancelAnimationFrame(raf);h.removeEventListener('pointermove',move);h.removeEventListener('pointerup',end);h.removeEventListener('pointercancel',end);
+   row.classList.remove('dg');row.style.transform='';
+   const kids=[...box.children];if(kids.map(x=>x.dataset.i).join()!==before){const cb=window[box.dataset.cb];if(cb)cb(kids.map(x=>+x.dataset.i))}};
+  h.addEventListener('pointermove',move);h.addEventListener('pointerup',end);h.addEventListener('pointercancel',end);
+  raf=requestAnimationFrame(step);
+ });
+}
+function whInit(el){
+ if(!el||el._i)return;el._i=1;
+ requestAnimationFrame(()=>{el.scrollTop=(+el.dataset.v||0)*44;whMark(el);el.addEventListener('scroll',()=>whMark(el),{passive:true});
+  el.addEventListener('click',e=>{const t=e.target.closest('.wi');if(t)el.scrollTo({top:(+t.dataset.i)*44,behavior:'smooth'})})});
+}
+new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes){if(n.nodeType!==1)continue;if(n.classList.contains('whl'))whInit(n);if(n.classList.contains('drl'))drBind(n);if(n.querySelector){n.querySelectorAll('.whl').forEach(whInit);n.querySelectorAll('.drl').forEach(drBind)}}}).observe(document.documentElement,{childList:true,subtree:true});
+function whMark(el){
+ const n=+el.dataset.n,i=Math.max(0,Math.min(n-1,Math.round(el.scrollTop/44)));
+ if(el._s===i)return;el._s=i;el.dataset.sel=i;
+ const w=el.querySelectorAll('.wi');el.querySelectorAll('.wi.on').forEach(x=>x.classList.remove('on'));if(w[i])w[i].classList.add('on');
+ const cb=el.dataset.cb;if(cb&&window[cb])window[cb](i,el);
+}
+function whGo(i){const w=document.querySelector('.whl');if(w)w.scrollTo({top:i*44,behavior:'smooth'});else{const n=$('#f-n');if(n)n.value=i}}
+function whPg(i){const n=$('#f-n');if(n)n.value=i;v.pw=i}
+function pkToggle(){const n=$('#f-n'),w=document.querySelector('.whl');v.pw=n?(+n.value||0):(w?+w.dataset.sel:v.pw);S.pk=S.pk==='k'?'w':'k';save();R()}
+function stPick(k){
+ v.ss=k==='r'?null:k;document.querySelectorAll('[data-k]').forEach(e=>e.classList.toggle('pr',e.dataset.k===k));
+ if(k==='all'){const b=bk(v.sh==='stop'&&S.t?S.t.id:v.id),t=b&&(b.m==='pct'?100:(+b.pages||0));if(t)whGo(t)}
+}
+function stApply(b){
+ const k=v.ss;
+ if(k==='all'){if(b.m==='pct')b.cur=100;else if(+b.pages)b.cur=+b.pages;b.st='done';b.fd=Date.now()}
+ else if(k==='dnf'){b.st='dnf'}
+ else if(b.m==='pct'&&+b.cur>=100&&b.st!=='done'){b.st='done';b.fd=Date.now()}
+}
+function PGSH(b,stop){
+ const pct=b.m==='pct',pg=+b.pages||0,tot=pct?100:(pg||Math.max(300,(+b.cur||0)+300)),
+  cur=Math.min(tot,Math.max(0,v.pw!=null?+v.pw:(+b.cur||0))),kb=S.pk==='k',items=[];
+ for(let i=0;i<=tot;i++)items.push(pct?i+'%':'p. '+i+(pg?' <small>('+(i/pg*100).toFixed(1).replace(/\.0$/,'')+'%)</small>':''));
+ const chips='<div class="row" style="margin:10px 0 0;flex-wrap:wrap">'+[['r','Keep reading'],['all','I’ve read it all!'],['dnf','Give up']].map(([k,l])=>'<button class="bt '+((v.ss||'r')===k?'pr':'')+'" data-k="'+k+'" onclick="stPick(\''+k+'\')">'+l+'</button>').join('')+'</div>';
+ const head=stop?'<h2 style="margin:0 0 2px">Nice session! '+fm(el())+'</h2><p class="mu" style="margin:0 0 4px">'+(pct?'What percent are you at now?':'How much did you read? Scroll to your page.')+'</p>':'<h2 style="margin:0 0 2px">'+esc(b.t)+'</h2><p class="mu" style="margin:0 0 4px">'+(pct?'What percent are you at?':'Which page are you on?')+'</p>';
+ const body=kb?'<input class="in" id="f-n" type="number" inputmode="numeric" value="'+cur+'" placeholder="'+(pct?'Percent':'Page')+'">':'<input type="hidden" id="f-n" value="'+cur+'">'+whHtml(items,cur,'whPg');
+ return '<div class="sh"><div>'+head+'<button class="bt" style="width:100%;margin:4px 0" onclick="pkToggle()">'+(kb?'Change to scroll wheel':'Change to keyboard mode')+'</button>'+body+chips
+  +'<div class="row"><button class="bt" onclick="'+(stop?'tstopCancel()':'pgwClose()')+'">Cancel</button><button class="bt pr" style="flex:1" onclick="'+(stop?'tstop()':'pgwSave()')+'">'+(stop?'Save session':'Save')+'</button></div></div></div>';
+}
+function pgwOpen(id){v.id=id;v.pw=null;v.ss=null;v.sh='pgw';R()}
+function pgwClose(){v.sh=null;v.pw=null;v.ss=null;R()}
+function pgwSave(){const id=v.id,n=Math.max(0,+$('#f-n').value||0);v.sh=null;ch(id,b=>{b.cur=n;if(+b.pages&&b.cur>b.pages)b.cur=b.pages;if(b.st==='toread'){b.st='reading';b.sd=Date.now()}stApply(b)});v.pw=null;v.ss=null}
+function tstopOpen(){if(!S.t)return;if(!S.t.p){S.t.p=Date.now();S.t.sp=1}v.pw=null;v.ss=null;v.sh='stop';save();scrollTo(0,0);R();nf()}
+function tstopCancel(){if(S.t&&S.t.sp){S.t.g=(S.t.g||0)+Date.now()-S.t.p;S.t.p=null;delete S.t.sp}v.sh=null;v.pw=null;v.ss=null;save();R();nf()}
 function csv(t){let r=[],w=[],c='',q=0;for(let i=0;i<t.length;i++){let h=t[i];if(q){if(h=='"'){if(t[i+1]=='"'){c+='"';i++}else q=0}else c+=h}else if(h=='"')q=1;else if(h==','){w.push(c);c=''}else if(h=='\n'||h=='\r'){if(h=='\r'&&t[i+1]=='\n')i++;w.push(c);c='';r.push(w);w=[]}else c+=h}if(c||w.length){w.push(c);r.push(w)}return r}
 function imp(e,txt){let f=txt==null?e.target.files[0]:1;if(!f)return;let rd=txt==null?new FileReader():{readAsText(){this.result=txt;this.onload()}};rd.onload=()=>{let r=csv(rd.result.replace(/^\uFEFF/,'')),h=r.shift()||[],ix=n=>h.indexOf(n),n=0;if(ix('Title')<0){v.msg='No Title column found. Is this the Goodreads export file?';scrollTo(0,0);R();return}
  for(let w of r){let t=(w[ix('Title')]||'').trim();if(!t)continue;let a=(w[ix('Author')]||'').trim();if(S.b.some(b=>b.t===t&&b.a===a))continue;let sh=w[ix('Exclusive Shelf')],st=sh==='read'?'done':sh==='currently-reading'?'reading':sh==='did-not-finish'?'dnf':'toread',p=+w[ix('Number of Pages')]||0;S.b.push({id:uid(),t,a,pages:p,st,m:'pages',cur:st==='done'?p:0,cover:'',ch:[],fd:st==='done'?(Date.parse((w[ix('Date Read')]||'').replace(/\//g,'-'))||0):0,r:+w[ix('My Rating')]||0});n++}
@@ -1646,7 +1861,7 @@ function advUI(b){
 }
 function advStopSh(b){
  let cc=b.cc||0;
- return `<div class="sh"><div><h2 style="margin-top:0">Nice session! ${fm(el())}</h2><p class="mu">Which chapter are you in, and what page of it are you on?</p><select class="in" id="f-c" onchange="$('#f-n').value=(+this.value===${cc}?${b.cpg||0}:0)">${b.ch.map((x,i)=>`<option value="${i}" ${i===cc?'selected':''}>${esc(x.n)}${+x.p?' · '+x.p+' pages':''}</option>`).join('')}</select><input class="in" id="f-n" type="number" inputmode="numeric" placeholder="Page in this chapter" value="${b.cpg||0}"><div class="row"><button class="bt" onclick="v.sh=null;R();nf()">Cancel</button><button class="bt pr" style="flex:1" onclick="tstop()">Save session</button></div></div></div>`;
+ return `<div class="sh"><div><h2 style="margin-top:0">Nice session! ${fm(el())}</h2><p class="mu">Which chapter are you in, and what page of it are you on?</p><select class="in" id="f-c" onchange="$('#f-n').value=(+this.value===${cc}?${b.cpg||0}:0)">${b.ch.map((x,i)=>`<option value="${i}" ${i===cc?'selected':''}>${esc(x.n)}${+x.p?' · '+x.p+' pages':''}</option>`).join('')}</select><input class="in" id="f-n" type="number" inputmode="numeric" placeholder="Page in this chapter" value="${b.cpg||0}"><div class="row"><button class="bt" onclick="tstopCancel()">Cancel</button><button class="bt pr" style="flex:1" onclick="tstop()">Save session</button></div></div></div>`;
 }
 
 /* ---- Timer in the notification panel ---- */
@@ -1775,7 +1990,7 @@ function tdisc(){S.t=null;save();R();nfClose()}
 function nfAct(a){
  if(!S.t)return nfClose();
  if(a==='pause')tpause();
- else if(a==='stop'){v.sh='stop';scrollTo(0,0);R()}
+ else if(a==='stop'){tstopOpen()}
  else{v.sh=null;R()}
 }
 if(NT){applyNth();nfSync();NT.addListener('timerChanged',nfSync)}
@@ -1867,6 +2082,7 @@ function bye(fn){var a=document.getElementById('app'),c=v.p==='book'?'bk-close':
  setTimeout(function(){a.classList.remove(c);if(v.bye!==tok)return;v.bye=0;if(v.p!==p0||v.col!==c0)return;scrollTo(0,0);fn();
   if(c==='col-close'){a.classList.remove('col-back');void a.offsetWidth;a.classList.add('col-back');setTimeout(function(){a.classList.remove('col-back')},400)}},c==='bk-close'?250:170)}
 function goBack(){
+ if(v.sh==='stop'&&S.t){tstopCancel();return 1}
  if(v.sh){v.sh=null;v.pc=null;R();return 1}
  if(v.cid){v.cid=null;R();return 1}
  if(v.p==='more'){if(v.adv){v.adv=0;R();return 1}if(v.mp){v.an=1;v.mp=null;R();return 1}}
