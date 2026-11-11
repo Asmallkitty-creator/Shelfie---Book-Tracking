@@ -539,6 +539,12 @@ html body #app.bk-open.bk-open .cvl{will-change:auto!important}
 .chd .cf{max-width:46%;flex:none}
 .chd .chm>.fl{flex:1;min-width:0}
 .chd .cht{overflow-wrap:anywhere;word-break:normal}
+
+/* opened collection: slim top bar + the same banner as the list */
+.chr{display:flex;align-items:center;gap:10px;margin:14px 0 0}
+.chr .ib2{background:var(--cd);color:var(--tx);border:1px solid var(--bd)}
+.chrt{font-size:14px;opacity:.75}
+.cb.full{margin:10px 0 8px}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
@@ -672,8 +678,9 @@ function gDragG(o){const a=S.goals||[];S.goals=o.map(i=>a[i]);S.go=1;S.mm=Date.n
 function COLSH(){return `<div class="sh"><div><h2 style="margin-top:0">New collection</h2><input class="in" id="cn" oninput="cisUp()" placeholder="Name (e.g. Beach reads)" value="${esc((v.dr||{}).n||'')}"><div class="cip"><span class="pv" id="cipv">${v.ci?`<img src="${v.ci}" alt="">`:'📚'}</span><input class="in" id="ce" oninput="cisUp()" placeholder="Emoji (optional)" maxlength="4" value="${esc((v.dr||{}).e||'')}" style="margin:0"></div><label class="bt" style="display:inline-block;cursor:pointer;margin:2px 0 8px">Use a picture instead<input type="file" accept="image/*" onchange="newIco(event)" style="display:none"></label>${cisUI()}${ccUI()}<div class="row"><button class="bt" onclick="v.sh=null;R()">Cancel</button><button class="bt pr" style="flex:1" onclick="savec()">Create</button></div></div></div>`}
 
 /* ---- Collections: header, options, add-books sheet ---- */
-function chead(c){const bs=S.b.filter(b=>(b.cl||[]).includes(c.id)),g=cgrad(c);
- return `<div class="chd" style="background:${cbk(c)};color:${ctc(c)}"><div class="chb"><span class="ib2" onclick="bye(()=>{v.col=null;R()})" role="button" aria-label="Back to all collections">‹</span><span class="fl"></span><span class="ib2" onclick="v.sh='colmenu';R()" role="button" aria-label="Collection options">⋯</span></div><div class="chm"><div class="fl"><div class="cht">${cic(c,'chd')} ${esc(c.n)}</div><div class="chn">${bs.length} book${bs.length===1?'':'s'}</div></div><div class="cf">${bs.slice(0,3).map((b,i)=>`<div style="transform:rotate(${(i-1)*8}deg);z-index:${i===1?3:1};margin-left:${i?-18:0}px">${cv(b,'cvf')}</div>`).join('')}</div></div></div><button class="bt pr chadd" onclick="cbOpen('${c.id}')">＋ Add books</button>`}
+function chead(c){
+ // same banner (size, text, covers) as in the collection list, so every opened collection is the same size
+ return `<div class="chr"><span class="ib2" onclick="bye(()=>{v.col=null;R()})" role="button" aria-label="Back to all collections">‹</span><span class="chrt">All collections</span><span style="flex:1"></span><span class="ib2" onclick="v.sh='colmenu';R()" role="button" aria-label="Collection options">⋯</span></div>${cban(c,'full',1)}<button class="bt pr chadd" onclick="cbOpen('${c.id}')">＋ Add books</button>`}
 function COLMENU(){const c=(S.col||[]).find(x=>x.id===v.col);if(!c)return '';
  return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs"><div class="grab"></div><div class="row" style="flex-wrap:nowrap;margin:0 0 6px"><div class="fl"><h2 style="margin:0">${cic(c)} ${esc(c.n)}</h2><div class="mu">Collection options</div></div><span class="xb" onclick="v.sh=null;R()">✕</span></div>
  <div class="mrow" onclick="cbOpen('${c.id}')"><span>＋</span><div class="fl">Add or remove books</div></div>
