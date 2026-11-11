@@ -103,9 +103,10 @@ html,body{max-width:100%;overflow-x:hidden}img{max-width:100%}input[type=file]{m
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* ---- v2: one-line progress buttons ---- */
-.pgr{flex-wrap:nowrap;gap:4px}
-.pgr .bt{flex:none;padding:8px 7px;font-size:13px;min-width:0}
-.pgr .in{flex:1 1 0;min-width:64px;width:auto;padding:9px 2px;text-align:center;font-size:15px;margin:0;-moz-appearance:textfield;appearance:textfield;text-overflow:clip}
+.pgr{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.7fr) minmax(0,1fr) minmax(0,1fr);gap:6px;width:100%;box-sizing:border-box;margin-left:0;margin-right:0}
+.pgr>*{min-width:0!important;width:100%!important;box-sizing:border-box;margin:0!important;text-align:center}
+.pgr .bt{padding:9px 0;font-size:14px;flex:none}
+.pgr .in{padding:9px 2px;font-size:15px;-moz-appearance:textfield;appearance:textfield}
 .pgr .in::-webkit-outer-spin-button,.pgr .in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 /* ---- v2: blurred panel behind More sub-pages ---- */
 .blr2{padding:2px 0}
@@ -117,7 +118,8 @@ html,body{max-width:100%;overflow-x:hidden}img{max-width:100%}input[type=file]{m
 .lt{display:flex;align-items:center;gap:6px;flex:none;white-space:nowrap;padding:9px 14px;border-radius:99px;background:var(--cd);border:1px solid var(--bd);font-size:14px;cursor:pointer;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .lt.on,.vsw span.on{background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 55%,#fff));color:#fff;border-color:transparent;box-shadow:0 4px 16px color-mix(in srgb,var(--ac) 40%,transparent)}
 .lsr{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;margin:0 0 10px}
-.lsr .in{margin:0}.lsr .pillsearch{flex:1;min-width:0;width:auto}.lsr select{width:auto;flex:none;border-radius:99px;padding:12px 14px}
+.lsr .in{margin:0}.lsr .pillsearch{flex:1;min-width:0;width:auto}.lsr select{width:auto;flex:none;max-width:44%;text-overflow:ellipsis;border-radius:99px;padding:12px 14px}
+.lsr .pillsearch{min-width:90px}
 .vsw{display:flex;gap:2px;padding:4px;border-radius:99px;background:var(--cd);border:1px solid var(--bd);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .vsw span{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 4px;border-radius:99px;font-size:13px;white-space:nowrap;cursor:pointer}
 .sech{display:flex;align-items:center;gap:8px;margin:22px 2px 10px}.sech h2{margin:0;flex:1;font-size:21px}.sech a{color:var(--ac);font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
@@ -812,7 +814,7 @@ function CBSH(){const c=(S.col||[]).find(x=>x.id===v.cbid);if(!c){return ''}
  <div class="cbl" id="cbl">${cbList()}</div>
  <button class="bt pr" id="cbb" style="width:100%;padding:14px;margin-top:10px" onclick="cbSave()">${cbLbl()}</button></div></div>`}
 function lst(){const so=S.so||'new',vw=(S.vw==='coll'?'grid':S.vw)||'shelf',l=S.b.filter(b=>(v.tab==='all'||b.st===v.tab)&&(!v.col||(b.cl||[]).includes(v.col))&&fzMatch(bhay(b),v.q));
- if(v.q){const sc=new Map(l.map(b=>[b,fzScore(bhay(b),v.q)]));l.sort((x,y)=>sc.get(y)-sc.get(x))}else if(so!=='new')l.sort((x,y)=>so==='title'?x.t.localeCompare(y.t):so==='author'?x.a.localeCompare(y.a):so==='prog'?pc(y)-pc(x):(y.r||0)-(x.r||0));
+ if(v.q){const sc=new Map(l.map(b=>[b,fzScore(bhay(b),v.q)]));l.sort((x,y)=>sc.get(y)-sc.get(x))}else if(v.tab==='done'&&(so==='new'||so==='old')){const fx=(b,m)=>b.fd||m;l.sort((x,y)=>so==='new'?fx(y,0)-fx(x,0):fx(x,1e15)-fx(y,1e15))}else if(so==='old')l.reverse();else if(so!=='new'){const cp=(p,q)=>String(p||'').localeCompare(String(q||''),undefined,{sensitivity:'base',numeric:true});l.sort((x,y)=>so==='title'?cp(x.t,y.t):so==='titled'?cp(y.t,x.t):so==='author'?cp(x.a,y.a)||cp(x.t,y.t):so==='authord'?cp(y.a,x.a)||cp(x.t,y.t):so==='prog'?pc(y)-pc(x):so==='progl'?pc(x)-pc(y):so==='ratel'?(x.r||0)-(y.r||0):(y.r||0)-(x.r||0))}
  if(!l.length)return v.col&&!v.q&&v.tab==='all'?`<div class="cemp"><div class="cemp-i">📚</div><b>This collection is empty</b><div class="mu">Pick books from your shelf to put here.</div><button class="bt pr" onclick="cbOpen('${v.col}')">＋ Add books</button></div>`:(v.col?'<p class="mu">No books match.</p>':'<p class="mu">Nothing here yet. Tap Add to start your shelf.</p>');
  if(vw==='shelf')return shelfHTML(!v.all&&!v.col&&v.tab==='all'&&!v.q&&l.length>8?l.slice(0,8):l);
  if(vw==='grid')return '<div class="gd">'+l.map(b=>`<div onclick="op('${b.id}')" style="cursor:pointer">${cv(b,'cvg')}<div class="bar" style="height:5px"><i style="width:${pc(b).toFixed(0)}%"></i></div><div class="t" style="font-size:13px">${esc(b.t)}</div></div>`).join('')+'</div>';
@@ -859,7 +861,7 @@ function LB(){const n=s=>S.b.filter(b=>b.st===s).length,cols=S.col||[],col=cols.
   ra=!filt&&!cv0&&S.b.length?`<div class="ra"><div class="sech" style="margin:0 0 10px"><span style="color:var(--ac);display:flex">${lbsv(LBIC.cal,22)}</span><h2 style="font-size:18px">Recently added</h2><a onclick="S.so='new';v.all=1;save();R()">See all <svg class="ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div><div class="rai">${S.b.slice(0,10).map(b=>`<div onclick="op('${b.id}')">${cv(b,'cvs')}</div>`).join('')}</div></div>`:'';
   return `<div class="${S.bl===0?'':'blr'}"><div class="lh"><div><h1 class="lht" style="margin-top:4px;margin-bottom:0">My Library</h1><div class="mu" style="display:flex;align-items:center;gap:6px;margin-top:4px">${lbsv(LBIC.reading,16)} ${S.b.length} books</div></div><span class="ib" onclick="const q=$('#sq');if(q){q.scrollIntoView({block:'center',behavior:'smooth'});q.focus()}">${lbsv(LBIC.search,21)}</span></div>
   <div class="ltabs">${tabs.map(([k,l,c])=>`<span class="lt ${v.tab===k?'on':''}" onclick="v.tab='${k}';R()">${lbsv(LBIC[k],17)}${l} (${c})</span>`).join('')}</div>
-  <div class="lsr"><input type="search" enterkeyhint="search" autocomplete="off" class="in pillsearch" id="sq" placeholder="Search your books…" value="${esc(v.q)}" oninput="v.q=this.value;$('#ls').innerHTML=lst()"><select class="in" onchange="S.so=this.value;save();R()">${[['new','Newest'],['title','Title'],['author','Author'],['prog','Progress'],['rate','Rating']].map(([a,c])=>`<option value="${a}" ${(S.so||'new')===a?'selected':''}>${c}</option>`).join('')}</select></div>
+  <div class="lsr"><input type="search" enterkeyhint="search" autocomplete="off" class="in pillsearch" id="sq" placeholder="Search your books…" value="${esc(v.q)}" oninput="v.q=this.value;$('#ls').innerHTML=lst()"><select class="in" onchange="S.so=this.value;save();R()">${[['new',v.tab==='done'?'Recently finished':'Newest added'],['old',v.tab==='done'?'Earliest finished':'Oldest added'],['title','Title A–Z'],['titled','Title Z–A'],['author','Author A–Z'],['authord','Author Z–A'],['prog','Most progress'],['progl','Least progress'],['rate','Top rated'],['ratel','Lowest rated']].map(([a,c])=>`<option value="${a}" ${(S.so||'new')===a?'selected':''}>${c}</option>`).join('')}</select></div>
   <div class="vsw">${views.map(([k,l])=>`<span class="${vw===k?'on':''}" onclick="S.vw='${k}';v.col=null;save();R()">${lbsv(LBIC[k],15)}${l}</span>`).join('')}</div>
   ${col?chead(col):''}${colSec}
   ${cv0?'':`<div class="sech"><h2>${col?'Books in this collection':'Your books'}</h2>${more?`<a onclick="v.all=${v.all?0:1};R()">${v.all?'Show less':'See all ('+S.b.length+') <svg class="ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'}</a>`:''}</div><div id="ls">${lst()}</div>`}${ra}</div>`}
