@@ -64,7 +64,7 @@ os.makedirs(pkg, exist_ok=True)
 for f in sorted(glob.glob('native/*.java')):
     shutil.copy(f, os.path.join(pkg, os.path.basename(f)))
     print('copied', f)
-for need in ('MainActivity.java', 'ShelfieFilesPlugin.java', 'ShelfieIconPlugin.java'):
+for need in ('MainActivity.java', 'ShelfieFilesPlugin.java', 'ShelfieIconPlugin.java', 'ShelfieWebPlugin.java'):
     if not os.path.exists(os.path.join(pkg, need)):
         raise SystemExit('BUILD STOPPED: native/' + need + ' is missing from the repo, so backups could not work.')
 if 'ShelfieFilesPlugin' not in open(os.path.join(pkg, 'MainActivity.java'), encoding='utf-8').read():

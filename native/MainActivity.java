@@ -15,6 +15,7 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(ShelfieTimerPlugin.class);
         registerPlugin(ShelfieFilesPlugin.class);
         registerPlugin(ShelfieIconPlugin.class);
+        registerPlugin(ShelfieWebPlugin.class);
         super.onCreate(savedInstanceState);
 
         // Draw edge to edge, then pad the page so it never sits under the
