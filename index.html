@@ -103,9 +103,10 @@ html,body{max-width:100%;overflow-x:hidden}img{max-width:100%}input[type=file]{m
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* ---- v2: one-line progress buttons ---- */
-.pgr{flex-wrap:nowrap;gap:6px}
-.pgr .bt{flex:none;padding:8px 11px;font-size:14px;min-width:0}
-.pgr .in{flex:1 1 0;min-width:0;width:auto;padding:9px 8px;text-align:center;font-size:15px;margin:0}
+.pgr{flex-wrap:nowrap;gap:4px}
+.pgr .bt{flex:none;padding:8px 7px;font-size:13px;min-width:0}
+.pgr .in{flex:1 1 0;min-width:64px;width:auto;padding:9px 2px;text-align:center;font-size:15px;margin:0;-moz-appearance:textfield;appearance:textfield;text-overflow:clip}
+.pgr .in::-webkit-outer-spin-button,.pgr .in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 /* ---- v2: blurred panel behind More sub-pages ---- */
 .blr2{padding:2px 0}
 [data-aes] .blr2{background:color-mix(in srgb,var(--endc,var(--bg)) 58%,var(--cd));border:1px solid var(--bd);border-radius:26px;padding:14px 14px 22px;-webkit-backdrop-filter:blur(28px) saturate(1.15);backdrop-filter:blur(28px) saturate(1.15)}
