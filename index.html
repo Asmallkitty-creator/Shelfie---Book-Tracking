@@ -1716,7 +1716,10 @@ function gStats(chips){
  // each book
  const ok=new Set(done.map(x=>String(x.id))),ids=g.bk&&g.bk.length?g.bk:null;
  let list=ids?ids.map(i=>bk(i)).filter(Boolean).concat((g.rd||[]).map(i=>bk(i)).filter(x=>x&&!ids.some(i=>i==x.id))):done.concat(S.b.filter(x=>x.st==='reading'&&!done.includes(x)));
- if(!ids)list=list.slice().sort((x,y)=>(x.st==='reading'?0:x.st==='done'?1:2)-(y.st==='reading'?0:y.st==='done'?1:2)||(y.fd||0)-(x.fd||0));
+ /* order: books in progress (most pages read first) -> not started / 0 pages -> gave up -> finished (most recent first) */
+ {const gR=x=>((x.m==='pages'||x.adv)&&x.pages)?(+x.cur||0):(x.pages?pc(x)/100*x.pages:pc(x)),
+  rk=x=>x.st==='done'?3:x.st==='dnf'?2:(x.st==='reading'&&gR(x)>0)?0:1;
+  list=list.slice().sort((x,y)=>rk(x)-rk(y)||(rk(x)===0?gR(y)-gR(x):rk(x)===3?(y.fd||0)-(x.fd||0):0))}
  const row=x=>{
   const p=pc(x),c=ok.has(String(x.id)),lbl=x.st==='done'?(c?((g.rd||[]).some(i=>i==x.id)?'Already read':'Finished '+dt(x.fd))+' · counts toward this goal':'Finished '+(x.fd?dt(x.fd):'')+' · before the goal started'):x.st==='reading'?(((x.m==='pages'||x.adv)&&x.pages?(x.cur||0)+' / '+x.pages+' pages · ':'')+Math.round(p)+'%'+(ids?'':' · counts when finished')):x.st==='dnf'?'Gave up':'Not started yet';
   return `<div class="card" style="align-items:center;gap:12px;cursor:pointer" onclick="op('${x.id}')"><div style="width:46px;flex:none">${cv(x,'cvs')}</div><div class="fl" style="min-width:0"><div class="t" style="white-space:normal">${esc(x.t)}</div><div class="mu">${esc(x.a)}</div><div class="bar"><i style="width:${p}%"></i></div><div class="mu ${x.st==='done'&&c?'g':''}" style="font-size:12px">${lbl}</div></div></div>`;
