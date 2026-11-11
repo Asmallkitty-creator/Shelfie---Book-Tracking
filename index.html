@@ -746,13 +746,10 @@ const tico=k=>`<img class="tic" src="${TICD[icVar()][TICK[k]]}" alt="" draggable
 function H(){const n=s=>S.b.filter(b=>b.st===s).length,y=new Date().getFullYear(),dn=S.b.filter(b=>b.st==='done'&&b.fd&&new Date(b.fd).getFullYear()===y).length,k=stk(),ex=(S.gl||0)*((Date.now()-new Date(y,0,1))/864e5)/365,gt=S.gl?(dn>=S.gl?'Goal reached!':dn>=ex?'on track':'about '+Math.ceil(ex-dn)+' behind pace'):'',
  rd=S.b.filter(b=>b.st==='reading').sort((a,b)=>lastRead(b)-lastRead(a)),nx=S.b.filter(b=>b.st==='toread').slice(0,10),fin=S.b.filter(b=>b.st==='done').sort((a,b)=>(b.fd||0)-(a.fd||0)).slice(0,10);
  const hero=b=>{const p=pc(b);return `<div class="row" style="margin:14px 6px 6px;justify-content:space-between"><b>${b.sd?'Day '+Math.max(1,Math.ceil((Date.now()-b.sd)/864e5)):'Reading'}</b><span>${(b.m==='pages'||b.adv)&&b.pages?`${b.cur||0} <span class="mu">/ ${b.pages}</span> `:''}(${p.toFixed(0)}%)</span></div><div class="card hero" onclick="op('${b.id}')"><div class="hb"><i style="width:${p}%"></i></div><div class="row" style="flex-wrap:nowrap;gap:16px">${cv(b,'cvh')}<div class="fl"><div class="t" style="white-space:normal;font-size:19px;font-family:Georgia,serif">${esc(b.t)}</div><div class="mu">${esc(b.a)}</div>${lastRead(b)?`<div class="mu" style="margin-top:8px;font-size:13px">Last read ${agoTxt(lastRead(b))}</div>`:''}${b.sd?`<div class="mu" style="margin-top:4px;font-size:13px">Started on ${dt(b.sd)}</div>`:''}${S.t&&S.t.id===b.id?'<div style="color:var(--ac);margin-top:6px">⏱ Session running</div>':''}</div></div></div>`};
- const heroIds=rd.slice(0,2).map(b=>b.id),rc=S.b.filter(b=>lastRead(b)>0&&heroIds.indexOf(b.id)<0).sort((a,b)=>lastRead(b)-lastRead(a)).slice(0,10);
- const rrail=l=>l.length?`<div class="row" style="margin:16px 0 0"><h2 style="margin:0;flex:1">Recent reads</h2></div><div class="rail">${l.map(b=>`<div class="rl" onclick="op('${b.id}')"><div style="position:relative">${cv(b,'cvr')}<i class="rb"></i></div><div class="t" style="margin-top:10px">${esc(b.t)}</div><div class="mu" style="color:var(--ac)">${agoTxt(lastRead(b))}</div></div>`).join('')}</div>`:'';
  const rail=(l,t,tab)=>l.length?`<div class="row" style="margin-bottom:0"><h2 style="margin:0;flex:1">${t}</h2><span class="tab" onclick="v.tab='${tab}';go('lib')">View all</span></div><div class="rail">${l.map(b=>`<div class="rl" onclick="op('${b.id}')"><div style="position:relative">${cv(b,'cvr')}<i class="rb"></i></div><div class="t" style="margin-top:10px">${esc(b.t)}</div><div class="mu" style="color:var(--ac)">${esc(b.a)}</div></div>`).join('')}</div>`:'';
  return `<div class="row" style="justify-content:space-between;margin-top:0"><h1 style="margin:0">Hi, ${esc(S.nm||'reader')}!</h1><span class="av" onclick="go('more')">📖</span></div>
  <div class="row"><input class="in pillsearch" style="flex:1" placeholder="Search for books" onfocus="go('lib')"><span class="sb" onclick="go('lib')">🔍</span></div>
- ${rd.length?`<h2 style="text-align:center">You’re currently reading ${rd.length} book${rd.length>1?'s':''}!</h2>${rd.slice(0,2).map(hero).join('')}`:'<p class="mu" style="text-align:center">Nothing in progress. Pick something from your up next list!</p>'}
- ${rrail(rc)}
+ ${rd.length?`<h2 style="text-align:center">You’re currently reading ${rd.length} book${rd.length>1?'s':''}!</h2>${rd.slice(0,3).map(hero).join('')}`:'<p class="mu" style="text-align:center">Nothing in progress. Pick something from your up next list!</p>'}
  <div class="tl">${[['toread','Want to Read'],['done','Finished'],['reading','Reading'],['dnf','Gave Up']].map(([s,l])=>`<div class="tile" onclick="v.tab='${s}';go('lib')"><div><b>${n(s)}</b>${l}</div><span class="ic">${tico(s)}</span></div>`).join('')}</div>
  <div class="tile" style="margin-bottom:12px" onclick="v.tab='all';go('lib')"><div style="flex:1;text-align:center"><b>${S.b.length}</b>My Bookshelf</div><span class="ic">${tico('shelf')}</span></div>
  ${goalsHome(k)}
@@ -1847,7 +1844,7 @@ function PGSH(b,stop){
   +'<div class="row"><button class="bt" onclick="'+(stop?'tstopCancel()':'pgwClose()')+'">Cancel</button><button class="bt pr" style="flex:1" onclick="'+(stop?'tstop()':'pgwSave()')+'">'+(stop?'Save session':'Save')+'</button></div>'+(stop?stDiscardBtn():'')+'</div></div>';
 }
 function pgwOpen(id){v.id=id;v.pw=null;v.ss=null;v.sh='pgw';R()}
-function pgwClose(){v.sh=null;v.pw=null;v.ss=null;R()}
+function pgwClose(){try{const e=$('#f-n'),b=bk(v.id);if(e&&b&&b.st==='reading'&&e.value!==''&&(+e.value)!==(+b.cur||0)){b.lr=Date.now();save()}}catch(x){}v.sh=null;v.pw=null;v.ss=null;R()}
 function pgwSave(){const id=v.id,n=Math.max(0,+$('#f-n').value||0);v.sh=null;ch(id,b=>{b.lr=Date.now();b.cur=n;if(+b.pages&&b.cur>b.pages)b.cur=b.pages;if(b.st==='toread'){b.st='reading';b.sd=Date.now()}stApply(b)});v.pw=null;v.ss=null}
 function tstopOpen(){if(!S.t)return;if(!S.t.p){S.t.p=Date.now();S.t.sp=1}v.pw=null;v.ss=null;v.sh='stop';save();scrollTo(0,0);R();nf()}
 function tstopCancel(){if(S.t&&S.t.sp){S.t.g=(S.t.g||0)+Date.now()-S.t.p;S.t.p=null;delete S.t.sp}v.sh=null;v.pw=null;v.ss=null;save();R();nf()}
@@ -1981,7 +1978,7 @@ async function nfSync(){
   let st=await NT.getState();
   if(st.pending){
    await NT.clearPending();
-   if(st.pendingKind==='discard'){if(S.t){const b0=bk(S.t.id);if(b0)b0.lr=Date.now();S.t=null;v.sh=null;save();R()}return}
+   if(st.pendingKind==='discard'){if(S.t){const b0=bk(S.t.id);if(b0&&b0.st==='reading')b0.lr=Date.now();S.t=null;v.sh=null;save();R()}return}
    if(S.t){
     S.t.g=st.g||0;S.t.p=st.pendingAt||Date.now();
     let b=bk(S.t.id),n=st.pendingN||'';
@@ -2009,7 +2006,7 @@ function barSync(){
  }catch(e){}
 }
 if(NT){const _R=R;R=function(){_R.apply(this,arguments);barSync()};barSync()}
-function tdisc(){if(S.t){const b0=bk(S.t.id);if(b0)b0.lr=Date.now()}S.t=null;save();R();nfClose()}
+function tdisc(){if(S.t){const b0=bk(S.t.id);if(b0&&b0.st==='reading')b0.lr=Date.now()}S.t=null;save();R();nfClose()}
 function nfAct(a){
  if(!S.t)return nfClose();
  if(a==='pause')tpause();
