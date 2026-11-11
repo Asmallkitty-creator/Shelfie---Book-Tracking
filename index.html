@@ -612,6 +612,16 @@ a:has(>.ar){display:inline-flex;align-items:center;gap:4px}.ar{width:1.1em;heigh
 .cgp::before{width:12px;height:2.5px}.cgp::after{width:2.5px;height:12px}
 .cb.rf .cgp{width:26px;height:26px;top:8px;right:8px}
 .cb.rf .cf{margin-right:36px!important}
+
+/* ---- clean UI fix: no scrollbars, no rubber-band, nav + sheets stay pinned ---- */
+html,body{overflow-x:clip!important;overscroll-behavior:none!important;scrollbar-width:none!important;-ms-overflow-style:none!important}
+html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:none!important;width:0!important;height:0!important;background:transparent!important}
+*{scrollbar-width:none!important}
+.nav,.pill,#tst{position:fixed!important;transform-origin:50% 100%}
+.nav{bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;top:auto!important;translate:none;will-change:auto}
+.sh{overscroll-behavior:contain!important}
+.sh>div,.cbl,.gpl,.whl{overscroll-behavior:contain!important;scrollbar-width:none!important}
+body:has(.sh){overflow:hidden!important}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
