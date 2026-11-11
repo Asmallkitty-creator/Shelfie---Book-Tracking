@@ -560,6 +560,22 @@ html body #app.bk-open.bk-open .cvl{will-change:auto!important}
 .omp{border:1px solid var(--bd);border-radius:14px;padding:6px 10px;font-size:13px;cursor:pointer}
 .omp.on{border-color:var(--ac);font-weight:700}
 .omlk{text-decoration:underline;cursor:pointer}
+
+/* ---- library collections: same full-width banner as an opened collection ---- */
+.cb.rf{flex:0 0 100%}
+.cb.rn{flex:0 0 42%;height:112px}
+.crail>.cb.rf:only-of-type{flex-basis:100%}
+/* ---- book page: smaller, tidier text ---- */
+.bkpg h1.dsx{font-size:19px;line-height:1.2}
+.bkpg h2{font-size:16px;margin:16px 0 8px}
+.bkpg .mu{font-size:13px}
+.bkpg .cvl{width:84px;height:124px;font-size:34px}
+.bkpg .cat{font-size:11px;padding:2px 9px;margin:5px 5px 0 0}
+.bkpg .in,.bkpg select.in{font-size:14px;padding:9px 12px}
+.bkpg .bt{font-size:14px;padding:8px 14px}
+.bkpg .big{font-size:32px}
+.bkpg .bcol{margin:10px 0 0}.bkpg .bch b{font-size:15px}.bkpg .bca{font-size:12px;padding:4px 10px}.bkpg .bcc{font-size:13px}
+.bkpg .row{gap:10px}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
@@ -788,7 +804,7 @@ function LB(){const n=s=>S.b.filter(b=>b.st===s).length,cols=S.col||[],col=cols.
   tabs=[['all','All',S.b.length],['reading','Reading',n('reading')],['toread','Up next',n('toread')],['done','Finished',n('done')],['dnf','Gave up',n('dnf')]],
   views=[['shelf','Shelf'],['grid','Grid'],['list','List'],['coll','Collection']],
   filt=v.tab!=='all'||!!v.q||!!v.col,cv0=vw==='coll'&&!v.col,
-  colSec=v.col?'':cv0?`<div class="sech"><h2>Collections</h2>${cols.length>1?`<a onclick="v.sh='colord';R()">Reorder</a>`:''}</div>${cols.map(c=>cban(c,'full')).join('')}${cnew('full')}`:`<div class="sech"><h2 style="display:flex;align-items:center;gap:8px"><span style="color:var(--ac);display:flex">${lbsv(LBIC.spark,20)}</span>Collections</h2><span style="flex:1"></span>${cols.length>1?`<a onclick="v.sh='colord';R()" style="margin-right:14px">Reorder</a>`:''}${cols.length?`<a onclick="S.vw='coll';save();R()">See all →</a>`:''}</div><div class="crail">${cols.map(c=>cban(c,cols.length===1?'one':'',0,2)).join('')}${cnew()}</div>`,
+  colSec=v.col?'':cv0?`<div class="sech"><h2>Collections</h2>${cols.length>1?`<a onclick="v.sh='colord';R()">Reorder</a>`:''}</div>${cols.map(c=>cban(c,'full')).join('')}${cnew('full')}`:`<div class="sech"><h2 style="display:flex;align-items:center;gap:8px"><span style="color:var(--ac);display:flex">${lbsv(LBIC.spark,20)}</span>Collections</h2><span style="flex:1"></span>${cols.length>1?`<a onclick="v.sh='colord';R()" style="margin-right:14px">Reorder</a>`:''}${cols.length?`<a onclick="S.vw='coll';save();R()">See all →</a>`:''}</div><div class="crail">${cols.map(c=>cban(c,'rf')).join('')}${cnew('rn')}</div>`,
   more=!filt&&vw==='shelf'&&S.b.length>8,
   ra=!filt&&!cv0&&S.b.length?`<div class="ra"><div class="sech" style="margin:0 0 10px"><span style="color:var(--ac);display:flex">${lbsv(LBIC.cal,22)}</span><h2 style="font-size:18px">Recently added</h2><a onclick="S.so='new';v.all=1;save();R()">See all →</a></div><div class="rai">${S.b.slice(0,10).map(b=>`<div onclick="op('${b.id}')">${cv(b,'cvs')}</div>`).join('')}</div></div>`:'';
   return `<div class="${S.bl===0?'':'blr'}"><div class="lh"><div><h1 style="margin-top:4px;margin-bottom:0">My Library</h1><div class="mu" style="display:flex;align-items:center;gap:6px;margin-top:4px">${lbsv(LBIC.reading,16)} ${S.b.length} books</div></div><span class="ib" onclick="const q=$('#sq');if(q){q.scrollIntoView({block:'center',behavior:'smooth'});q.focus()}">${lbsv(LBIC.search,21)}</span></div>
@@ -1168,8 +1184,8 @@ function D(){let b=bk(v.id);if(!b){v.p='home';return H()}
  if(b.fs)ctl=omCtl(b);else if(b.m==='pages')ctl=`<div class="row pgr"><button class="bt" onclick="bump('${id}',-10)">−10</button><button class="bt" onclick="bump('${id}',-1)">−1</button><input class="in" type="number" value="${b.cur||0}" onchange="setCur('${id}',this.value)"><button class="bt" onclick="bump('${id}',1)">+1</button><button class="bt" onclick="bump('${id}',10)">+10</button></div><div class="row"><span class="mu">Total pages in your edition</span><input class="in" type="number" value="${b.pages||''}" placeholder="?" onchange="setTot('${id}',this.value)"></div>`;
  else if(b.m==='pct')ctl=`<div class="big" id="pv">${b.cur||0}%</div><input type="range" min="0" max="100" value="${b.cur||0}" oninput="$('#pv').textContent=this.value+'%'" onchange="setCur('${id}',this.value)">`;
  else ctl=b.adv?advUI(b):b.ch.map((c,i)=>`<div class="ch"><input type="checkbox" ${c.d?'checked':''} onchange="chT('${id}',${i})"><input class="in" value="${esc(c.n)}" onchange="chN('${id}',${i},this.value)"><input class="in cp" type="number" placeholder="pages" value="${c.p||''}" onchange="chP('${id}',${i},this.value)"><button class="bt" onclick="chX('${id}',${i})">✕</button></div>`).join('')+cfBar(b)+`<div class="row"><input class="in" id="f-cn" type="number" placeholder="How many chapters?"><input class="in" id="f-cp" type="number" placeholder="Pages each (optional)"><button class="bt pr" onclick="chA('${id}')">Add</button></div><p class="mu">Add page counts to chapters for more accurate progress. Leave blank to count chapters equally.</p>`+advTog(b);
- return `<div class="${S.bl===0?'':'blr'}"><div class="row"><button class="bt" onclick="bye(()=>go(v.pp||'home',1))">← Back</button><span style="flex:1"></span><button class="bt" onclick="v.sh='edit';v.cv='';R()">Edit</button></div>
- <div class="row" style="align-items:flex-start;gap:14px"><div class="cvw">${cv(b,'cvl')}</div><div class="fl"><h1 class="dsx" style="font-size:24px;margin:0">${esc(b.t)}</h1><div class="mu">${esc(b.a)}${b.sr?' · '+esc(b.sr):''}</div>${((b.cat||[]).length||b.bt)?`<div>${(b.cat||[]).map(c=>`<span class="cat" onclick="catGo('${esc(c)}')">#${esc(c)}</span>`).join('')}${b.bt?`<span class="cat bt">${BTL[b.bt]||''}</span>`:''}</div>`:''}<select class="in" onchange="setSt('${id}',this.value)">${[['toread','Want to read'],['reading','Reading'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b.st===k?'selected':''}>${l}</option>`).join('')}</select></div></div>
+ return `<div class="bkpg ${S.bl===0?'':'blr'}"><div class="row"><button class="bt" onclick="bye(()=>go(v.pp||'home',1))">← Back</button><span style="flex:1"></span><button class="bt" onclick="v.sh='edit';v.cv='';R()">Edit</button></div>
+ <div class="row" style="align-items:flex-start;gap:14px"><div class="cvw">${cv(b,'cvl')}</div><div class="fl"><h1 class="dsx" style="margin:0">${esc(b.t)}</h1><div class="mu">${esc(b.a)}${b.sr?' · '+esc(b.sr):''}</div>${((b.cat||[]).length||b.bt)?`<div>${(b.cat||[]).map(c=>`<span class="cat" onclick="catGo('${esc(c)}')">#${esc(c)}</span>`).join('')}${b.bt?`<span class="cat bt">${BTL[b.bt]||''}</span>`:''}</div>`:''}<select class="in" onchange="setSt('${id}',this.value)">${[['toread','Want to read'],['reading','Reading'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b.st===k?'selected':''}>${l}</option>`).join('')}</select></div></div>
  ${meta(b)}${descSec(b)}<div style="text-align:center;margin-top:10px">${[1,2,3,4,5].map(n=>`<span onclick="rate('${id}',${n})" style="font-size:28px;cursor:pointer;color:${n<=(b.r||0)?'#e0a030':'var(--bd)'}">★</span>`).join('')}</div><div class="big">${p.toFixed(0)}%</div><div class="bar"><i style="width:${p}%"></i></div>${eta}
  ${b.fs?'':`<div class="seg">${[['pages','Pages'],['pct','Percent'],['ch','Chapters']].map(([k,l])=>`<b class="${b.m===k?'on':''}" onclick="setM('${id}','${k}')">${l}</b>`).join('')}</div>`}${ctl}
  <h2>Reading timer</h2>${nfLine()}${run?`<div class="big"><span class="tm"></span></div><button class="bt" style="width:100%;margin-bottom:8px" onclick="tpause()">${S.t.p?'Resume':'Pause'}</button><button class="bt pr" style="width:100%" onclick="tstopOpen()">Stop and log session</button><button class="bt" style="width:100%;margin-top:8px" onclick="if(confirm('Discard this reading session? The time will not be saved.'))tdisc()">Discard</button>`:`<button class="bt pr" style="width:100%" onclick="tstart('${id}')" ${S.t?'disabled':''}>Start reading session</button>`}
