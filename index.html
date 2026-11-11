@@ -562,9 +562,9 @@ html body #app.bk-open.bk-open .cvl{will-change:auto!important}
 .omlk{text-decoration:underline;cursor:pointer}
 
 /* ---- library collections: same full-width banner as an opened collection ---- */
-.cb.rf{flex:0 0 100%}
+.cb.rf{flex:0 0 86%}
 .cb.rn{flex:0 0 42%;height:112px}
-.crail>.cb.rf:only-of-type{flex-basis:100%}
+.crail{padding-right:12px}
 /* ---- book page: smaller, tidier text ---- */
 .bkpg h1.dsx{font-size:19px;line-height:1.2}
 .bkpg h2{font-size:16px;margin:16px 0 8px}
@@ -591,6 +591,9 @@ html body #app.bk-open.bk-open .cvl{will-change:auto!important}
 .hero .cvh{width:80px;height:118px;font-size:32px}
 .hero .fl .t{font-size:16px!important;line-height:1.25!important;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
 .hero .fl .mu{font-size:13px!important}
+
+.cb.rf .cgp{position:absolute;top:8px;right:8px;width:28px;height:28px;font-size:18px}
+.cb.rf{padding-right:12px}.cb.rf .cf{margin-right:22px;padding-right:0}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
@@ -812,7 +815,7 @@ const LBIC={all:'<path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1
 function csOpt(){return Object.assign({sz:'m',ts:'m',ha:'l',va:'m',cv:3,cs:'r'},S.cs||{})}
 function csH(){return {s:92,m:112,l:140,x:172}[csOpt().sz]||112}
 function cban(c,k,nolink,big){const o=csOpt(),bs=S.b.filter(b=>(b.cl||[]).includes(c.id)),H=big?Math.round(csH()*1.35):csH(),F={s:17,m:21,l:25,x:30}[o.ts]||21,
-  ch=Math.round(big===2?csH()*.66:H*(big?.58:.66)),cw=Math.round(ch*2/3),ta={l:'left',c:'center',r:'right'}[o.ha]||'left',vs={t:'flex-start',m:'center',b:'flex-end'}[o.va]||'center',ji={l:'flex-start',c:'center',r:'flex-end'}[o.ha]||'flex-start',nc=+o.cv||0;
+  ch=Math.round(k==='rf'?H*.55:big===2?csH()*.66:H*(big?.58:.66)),cw=Math.round(ch*2/3),ta={l:'left',c:'center',r:'right'}[o.ha]||'left',vs={t:'flex-start',m:'center',b:'flex-end'}[o.va]||'center',ji={l:'flex-start',c:'center',r:'flex-end'}[o.ha]||'flex-start',nc=+o.cv||0;
  return `<div class="cb ${k||''}" style="background:${cbk(c)};color:${ctc(c)};height:${H}px" ${nolink?'':`onclick="v.col='${c.id}';v.tab='all';R()"`}><div class="fl" style="text-align:${ta};align-self:${vs};max-height:${H-14}px;overflow:hidden"><div class="t cbt" style="font:700 ${F}px/1.15 Georgia,serif;-webkit-line-clamp:${Math.max(1,Math.floor((H-14-Math.round(F*.62)-8)/(F*1.15)))}">${cic(c,'cb')} ${esc(c.n)}</div><div style="font-size:${Math.max(12,Math.round(F*.62))}px;opacity:.75;display:flex;gap:5px;align-items:center;margin-top:3px;justify-content:${ji}">${lbsv(LBIC.reading,14)} ${bs.length} book${bs.length===1?'':'s'}</div></div>${nc?`<div class="cf" style="order:${o.cs==='l'?-1:0}">${bs.slice(0,nc).map((b,i,a)=>`<div style="transform:rotate(${(i-(a.length-1)/2)*8}deg);z-index:${i===1?3:1};margin-left:${i?-18:0}px;width:${cw}px;height:${ch}px">${cv(b,'cvf')}</div>`).join('')}</div>`:''}${nolink?'':`<span class="cg cgp" onclick="event.stopPropagation();cbOpen('${c.id}')" aria-label="Add books to ${esc(c.n)}">＋</span>`}</div>`}
 const cnew=k=>`<div class="cb new ${k||''}" style="height:${k?csH():Math.round(csH()*1.35)}px" onclick="v.sh='col';v.cc=0;v.ci='';v.dr=null;v.ccu=CL[0].slice();v.cbn='';v.cga=135;v.cip=0;R()"><span style="font-size:24px;line-height:1">＋</span><b style="font-size:14px">New collection</b></div>`;
 function LB(){const n=s=>S.b.filter(b=>b.st===s).length,cols=S.col||[],col=cols.find(c=>c.id===v.col),vw=S.vw||'shelf',
