@@ -594,6 +594,13 @@ html body #app.bk-open.bk-open .cvl{will-change:auto!important}
 
 .cb.rf .cgp{position:absolute;top:8px;right:8px;width:28px;height:28px;font-size:18px}
 .cb.rf{padding-right:12px}.cb.rf .cf{margin-right:22px;padding-right:0}
+
+/* collection banners in the library: words never split, text shrinks to fit, covers tucked to the side */
+.cb.rf .cbt{overflow-wrap:normal!important;word-break:keep-all!important;hyphens:none}
+.cb.rf{padding-left:16px;gap:6px}
+.cb.rf .fl{flex:1 1 0;min-width:0}
+.cb.rf .cf{margin-right:14px;margin-left:auto}
+.cb.rf .cf>div{margin-left:-22px!important}.cb.rf .cf>div:first-child{margin-left:0!important}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
@@ -2221,8 +2228,8 @@ function cbFit(){
   t.style.webkitLineClamp='unset';
   function over(){return fl.scrollHeight>fl.clientHeight+1||t.scrollWidth>t.clientWidth+1}
   function fit(min){var z=base;t.style.fontSize=z+'px';while(over()&&z>min){z-=1;t.style.fontSize=z+'px'}return !over()}
-  var ok=fit(cards[i].classList.contains('rf')?15:18);
-  while(!ok&&cnt>1){cnt--;kids[cnt].style.display='none';ok=fit(18)}
+  var rf=cards[i].classList.contains('rf');if(rf)t.style.fontSize='';var ok=fit(rf?12:18);if(rf&&!ok){ok=fit(10)}
+  while(!ok&&cnt>1&&!rf){cnt--;kids[cnt].style.display='none';ok=fit(18)}
   if(!ok){ok=fit(14)}
   if(!ok){ok=fit(11)}
  }
