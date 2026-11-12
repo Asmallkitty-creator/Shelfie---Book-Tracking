@@ -636,6 +636,11 @@ body:has(.sh){overflow:hidden!important}
 .bkpg .bkmeta select{flex:1 0 100%;margin-top:4px}
 .bkpg .fnd{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 6px}
 .bkpg .fnd a{margin:0;text-decoration:none;font-size:12.5px;padding:6px 12px}
+
+/* --- cover rises (fade + blur) from inside its own box, like the reference video --- */
+@keyframes bkClip3{0%,72%{clip-path:inset(-40px -40px 0 -40px)}100%{clip-path:inset(-40px -40px -18.8% -40px)}}
+html body #app.bk-open.bk-open.bk-open .cvl{animation:bkCover .97s linear .42s backwards,mFloatT 5.5s ease-in-out infinite!important;animation-delay:.42s,calc(var(--ph,0) * -1s)!important;will-change:transform,opacity,filter}
+html body #app.bk-open.bk-open.bk-open .cvw{animation:bkClip3 .97s linear .42s backwards!important}
 </style></head><body><div id="app"></div>
 <script>
 var NT=null;
