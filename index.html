@@ -736,7 +736,8 @@ function fzScore(hay,q){
   if(!best)return 0;tot+=best}
  return tot/toks.length}
 function fzMatch(hay,q){return fzScore(hay,q)>0}
-const bhay=b=>b.t+' '+b.a+' '+((b.cat||[]).join(' '))+' '+(b.sr||'');
+const BTX={paperback:'paperback softcover',hardcover:'hardcover hardback',pocket:'pocket book pocket-size',ebook:'ebook e-book e book digital kindle',audio:'audio book audiobook audio-book listening'};
+const bhay=b=>b.t+' '+b.a+' '+((b.cat||[]).join(' '))+' '+(b.sr||'')+(b.bt?' '+(BTX[b.bt]||b.bt):'');
 function bcol(b){const cols=(S.col||[]),mine=(b.cl||[]).map(id=>cols.find(c=>c.id===id)).filter(Boolean);
  return `<div class="bcol"><div class="bch"><b>Collections</b><span class="bca" onclick="bcAdd('${b.id}')">${mine.length?'Edit':'＋ Add'}</span></div>${mine.length?`<div class="bcr">${mine.map(c=>`<span class="bcc" style="background:${cbk(c)}"><span onclick="bcOpen('${c.id}')">${cic(c)} ${esc(c.n)}</span><i onclick="bcRm('${b.id}','${c.id}')" role="button" aria-label="Remove from ${esc(c.n)}">✕</i></span>`).join('')}</div>`:`<div class="mu bce">Not in any collection yet.</div>`}</div>`}
 function bcAdd(id){const b=bk(id);v.pc=(b&&b.cl||[]).slice();v.sh='addcol';R()}
@@ -838,7 +839,7 @@ function cbAll(){const f=cbFilt().map(x=>x.id),all=f.length&&f.every(x=>v.cbs.in
 function cbSave(){const id=v.cbid;{const rm=S.b.filter(b=>(b.cl||[]).includes(id)&&!v.cbs.includes(b.id)).length;if(rm&&!confirm('Remove '+rm+(rm===1?' book':' books')+' from this collection?'))return}S.b.forEach(b=>{const has=(b.cl||[]).includes(id),want=v.cbs.includes(b.id);if(want&&!has){b.cl=(b.cl||[]).concat(id)}else if(!want&&has){b.cl=b.cl.filter(x=>x!==id)}});v.sh=null;S.mm=Date.now();MD=1;save();R()}
 function CBSH(){const c=(S.col||[]).find(x=>x.id===v.cbid);if(!c){return ''}
  return `<div class="sh" onclick="if(event.target===this){v.sh=null;R()}"><div class="acs cbsh"><div class="grab"></div><div class="row" style="flex-wrap:nowrap;margin:0 0 8px"><div class="fl"><h2 style="margin:0">Add books</h2><div class="mu">to ${cic(c)} ${esc(c.n)}</div></div><span class="xb" onclick="v.sh=null;R()">✕</span></div>
- <input type="search" enterkeyhint="search" autocomplete="off" class="in pillsearch" id="cbq" placeholder="Search your books…" value="${esc(v.cbq||'')}" oninput="v.cbq=this.value;$('#cbl').innerHTML=cbList();cbUp()">
+ <input type="search" enterkeyhint="search" autocomplete="off" class="in pillsearch" id="cbq" placeholder="Search title, author, format…" value="${esc(v.cbq||'')}" oninput="v.cbq=this.value;$('#cbl').innerHTML=cbList();cbUp()">
  <div class="row" style="margin:4px 2px;justify-content:space-between"><span class="mu" id="cbs">${v.cbs.length} selected</span><span class="cball" id="cba" onclick="cbAll()">Select all</span></div>
  <div class="cbl" id="cbl">${cbList()}</div>
  <button class="bt pr" id="cbb" style="width:100%;padding:14px;margin-top:10px" onclick="cbSave()">${cbLbl()}</button></div></div>`}
@@ -1015,7 +1016,7 @@ async function jget(u){
  catch(x){if(tm)clearTimeout(tm);getDesc.fail=true;return null}
 }
 /* tidy a description: remove links, "[1]: http://…" lines, "Source:" lines, auto-summary notes */
-const cleanDesc=s=>{s=String(s||'');
+const cleanDesc=s=>{s=String(s||'').replace(/\s*\\n\s*/g,'\n');
  s=s.split(/\n-{5,}/)[0].replace(/\r/g,'');
  s=s.replace(/^\s*\[\d+\]:\s*\S+.*$/gm,'');
  s=s.replace(/\[([^\]]*)\]\((?:https?:)?[^)]*\)/g,'$1').replace(/\[([^\]]+)\]\[\d*\]/g,'$1');
@@ -1025,7 +1026,7 @@ const cleanDesc=s=>{s=String(s||'');
  s=s.replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
  return s};
 /* categories: split, tidy and drop junk like "In library" or people's names with years */
-const CATJUNK=/^(general|books?|accessible book|protected daisy|in library|lending library|large type books?|overdrive|open library|internet archive|fiction in english|english|english fiction|american fiction|reading level.*|nyt.*|new york times.*|bestsellers?|ebooks?|audiobooks?|spanish|french|german|translations?|juvenile|young adult fiction|textbooks?)$/i;
+const CATJUNK=/^(acas[aă]|home|c[aă]r[tț]i|carte|produse|categorii|toate .*|oferte.*|noutati|noutăți|promo.*|librarie|librărie|general|books?|accessible book|protected daisy|in library|lending library|large type books?|overdrive|open library|internet archive|fiction in english|english|english fiction|american fiction|reading level.*|nyt.*|new york times.*|bestsellers?|ebooks?|audiobooks?|spanish|french|german|translations?|juvenile|young adult fiction|textbooks?)$/i;
 function normCats(a){const out=[],seen=new Set();
  (a||[]).forEach(raw=>String(raw||'').split(/\s*(?:\/|,|;|--|&|\|)\s*/).forEach(p=>{
   p=p.replace(/[^\p{L}\p{N}' -]/gu,'').replace(/\s+/g,' ').trim();
@@ -1041,6 +1042,8 @@ function bestCats(C){
  const mx=Math.max(...arr.map(x=>x.c));
  arr=arr.filter(x=>x.c>=Math.min(2,mx)).sort((x,y)=>y.c-x.c||x.o-y.o);
  return arr.slice(0,6).map(x=>x.k)}
+const CATRX=[['Romance',/dragoste|romantic|love story|romance|iubire/i],['Thriller',/thriller|suspans|suspense/i],['Mystery',/mister|poli[tț]ist|detectiv|mystery|crime|crim[aă]/i],['Fantasy',/fantasy|fantastic|vr[aă]jitor|dragon/i],['Science Fiction',/science.?fiction|\bsf\b|distopi|dystopi|extraterestr/i],['Horror',/horror|groaz[aă]/i],['Historical',/istoric|historical|r[aă]zboi|evul mediu/i],['Biography',/biografi|memorii|autobiografi|memoir/i],['Self-Help',/dezvoltare personal|self.?help|motiva[tț]ional/i],['Poetry',/poezi|versuri|poem|poetry/i],['Philosophy',/filosof|philosoph/i],['Psychology',/psiholog|psycholog/i],['Children',/pentru copii|children/i],['Young Adult',/young adult|adolescen|tineri|teen/i],['Classic',/clasic|classic/i],['Fiction',/\broman\b|nuvel|povestire|novel|fiction|poveste/i]];
+function inferCats(t){t=String(t||'');const o=[];CATRX.forEach(([k,r])=>{if(o.length<4&&r.test(t))o.push(k)});return o}
 /* ======== Languages for book info ======== */
 const LANGS=[['en','English'],['ro','Română'],['fr','Français'],['de','Deutsch'],['es','Español'],['it','Italiano'],['hu','Magyar'],['pl','Polski'],['pt','Português']];
 const OLL={ro:'rum',fr:'fre',de:'ger',es:'spa',it:'ita',hu:'hun',pl:'pol',pt:'por'};
@@ -1067,20 +1070,21 @@ async function shopLinks(q){
   if(s){new DOMParser().parseFromString(s,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';if(/\/carte\/[^/?#]+-\d+/.test(u)){if(u[0]==='/')u='https://carturesti.ro'+u;push(u.split('?')[0],'carturesti.ro')}})}}
  return out.slice(0,8)}
 function shopParse(h,dom){
- const d=new DOMParser().parseFromString(h,'text/html');let title='',desc='',cover='',pages=0,author='';
+ const d=new DOMParser().parseFromString(h,'text/html');let title='',desc='',cover='',pages=0,author='';const cats=[],pushC=x=>{[].concat(x||[]).forEach(y=>{const n=typeof y==='string'?y:(y&&y.name);if(n&&typeof n==='string')cats.push(n)})};
  d.querySelectorAll('script[type="application/ld+json"]').forEach(sc=>{try{const j=JSON.parse(sc.textContent),arr=[].concat(j,(j&&j['@graph'])||[]);
-  arr.forEach(o=>{if(!o||typeof o!=='object')return;if(/Product|Book/i.test([].concat(o['@type']||[]).join(' '))){
+  arr.forEach(o=>{if(!o||typeof o!=='object')return;if(/BreadcrumbList/i.test([].concat(o['@type']||[]).join(' '))){[].concat(o.itemListElement||[]).slice(0,-1).forEach(e=>{const nm=e&&(e.name||(e.item&&e.item.name));if(nm)cats.push(nm)})}pushC(o.category);pushC(o.genre);if(/Product|Book/i.test([].concat(o['@type']||[]).join(' '))){
    title=title||o.name||'';desc=desc||o.description||'';cover=cover||(Array.isArray(o.image)?o.image[0]:o.image)||'';pages=pages||(+o.numberOfPages||0);
    const au=o.author;author=author||(typeof au==='string'?au:(au&&(au.name||(au[0]&&au[0].name)))||'')}})}catch(x){}});
  const mt=n=>{const e=d.querySelector('meta[property="'+n+'"],meta[name="'+n+'"]');return e?(e.getAttribute('content')||''):''};
  title=title||mt('og:title')||((d.querySelector('h1')||{}).textContent||'');cover=cover||mt('og:image');
+ if(!cats.length){[...d.querySelectorAll('[class*="readcrumb"] a,nav[aria-label*="readcrumb"] a,[itemtype*="BreadcrumbList"] [itemprop=name]')].map(x=>(x.textContent||'').trim()).filter(x=>x&&x.length<40&&sim(title,x)<.6).forEach(x=>cats.push(x))}
  const txt=(d.body?d.body.textContent:'').replace(/\r/g,'').replace(/[ \t]+/g,' ');
  const m=txt.match(/\bDescriere\s*\n+([\s\S]{80,7000}?)(?=\n\s*(?:Recenzii|Detalii produs|Specificatii|Specificații|Caracteristici|Comentarii|Produse similare|Alte produse|Review-uri|Informatii suplimentare)|$)/i);
  if(m&&m[1].replace(/\s+/g,' ').trim().length>String(desc||'').length)desc=m[1];
  desc=desc||mt('og:description')||mt('description');
  const pm=txt.match(/(?:Nr\.?\s*pagini|Num[aă]r(?:ul)? de pagini|Pagini)\s*:?\s*(\d{2,4})|(\d{2,4})\s*pagini/i);if(!pages&&pm)pages=+(pm[1]||pm[2]);
  title=String(title).replace(/\s*[|\-–—:]\s*(?:c[aă]rte|cumpara|c[aă]rturesti|libris|elefant|bookzone|okian|emag|humanitas|polirom|nemira|litera|goodreads)[^|]*$/i,'').trim();
- return{title,desc:String(desc||'').replace(/[ \t]*\n[ \t]*/g,'\n'),cover:/^https?:/.test(cover)?cover:'',pages,author,txt:txt.toLowerCase(),src:SHOPS[dom]||dom}}
+ return{cats:cats.slice(0,8),title,desc:String(desc||'').replace(/[ \t]*\n[ \t]*/g,'\n'),cover:/^https?:/.test(cover)?cover:'',pages,author,txt:txt.toLowerCase(),src:SHOPS[dom]||dom}}
 async function findInfo(t,a,isbn,pages,only){
  const e=encodeURIComponent,ct=cleanT(t),au=(a||'').split(',')[0].trim(),last=au.split(' ').pop(),C=[],seen=new Set(),L=infoLangs(t,a);
  const add=c=>{if(!c.title)return;c.desc=cleanDesc(c.desc||'');c.cats=c.cats||[];const k=c.src+'|'+String(c.title).toLowerCase()+'|'+(c.author||'').toLowerCase()+'|'+c.desc.length;if(seen.has(k))return;seen.add(k);
@@ -1099,14 +1103,14 @@ async function findInfo(t,a,isbn,pages,only){
  const gt=async()=>{if(!last)return;let j=await jget('https://gutendex.com/books?search='+e(ct+' '+last));((j&&j.results)||[]).slice(0,4).forEach(x=>{const a2=(x.authors||[]).map(z=>String(z.name||'').split(', ').reverse().join(' ')).join(', ');add({src:'Project Gutenberg',title:x.title,author:a2,desc:((x.summaries||[])[0]||''),cover:(x.formats&&x.formats['image/jpeg'])||'',pages:0,cats:[].concat(x.subjects||[],x.bookshelves||[])})})};
  const shops=async()=>{if(!L.includes('ro'))return;const P=webGet();if(!P||!P.httpGet)return;const links=await shopLinks(ct+' '+au);
   await Promise.all(links.map(async o=>{const h=await shopGet(o.u);if(!h)return;const x=shopParse(h,o.dom);if(!x.title)return;
-   add({src:x.src,title:x.title,author:last&&x.txt.indexOf(last.toLowerCase())>=0?au:(x.author||''),desc:x.desc,cover:x.cover,pages:x.pages,cats:[]})}))};
+   add({src:x.src,title:x.title,author:last&&x.txt.indexOf(last.toLowerCase())>=0?au:(x.author||''),desc:x.desc,cover:x.cover,pages:x.pages,cats:x.cats||[]})}))};
  const run=[['Google Books',gb],['Open Library',ol],['Open Library',oi],['Apple Books',ab],['Wikipedia',wk],['Internet Archive',ia],['Project Gutenberg',gt],['Romanian shops',shops]];
  await Promise.all(run.filter(x=>!only||only.includes(x[0])).map(x=>x[1]().catch(()=>{})));
  return C.sort((x,y)=>y.score-x.score||y.desc.length-x.desc.length)}
 function bestInfo(C){const g=C.filter(c=>c.desc&&c.desc.length>60&&c.score>=75);if(!g.length)return null;
  g.forEach(x=>{let o=g.filter(y=>y!==x);x.cons=o.length?o.reduce((s,y)=>s+sim(x.desc.split(/\s+/).slice(0,50).join(' '),y.desc),0)/o.length:0});
  g.sort((x,y)=>(y.score-(y.src==='Internet Archive'?10:0)+25*y.cons)-(x.score-(x.src==='Internet Archive'?10:0)+25*x.cons)||y.desc.length-x.desc.length);return g[0]}
-async function getDesc(t,a,isbn,pages){getDesc.fail=false;const C=await findInfo(t,a,isbn,pages);getDesc.cands=C;getDesc.cats=bestCats(C);const b=bestInfo(C);getDesc.meta=b;return b?b.desc:''}
+async function getDesc(t,a,isbn,pages){getDesc.fail=false;const C=await findInfo(t,a,isbn,pages);getDesc.cands=C;const b=bestInfo(C);getDesc.cats=bestCats(C);if(!getDesc.cats.length)getDesc.cats=inferCats(t+' '+(b?b.desc:''));getDesc.meta=b;return b?b.desc:''}
 async function autoDesc(id,force){let b=bk(id);if(!b||b.ds)return;if(!force&&b.dt&&Date.now()-b.dt<3*864e5)return;b.dt=Date.now();v.dl=id;save();if(v.id===id&&!v.sh)dsRefresh();let ds=await getDesc(b.t,b.a,b.isbn,b.pages);b=bk(id);v.dl=null;if(b){if(ds&&!b.ds){b.ds=ds;b.dsrc=getDesc.meta.src;b.dsc=getDesc.meta.score;b.dt=0;if(!(b.cat||[]).length&&(getDesc.cats||[]).length)b.cat=getDesc.cats.slice();save()}else if(!ds&&getDesc.fail){b.dt=Date.now()-3*864e5+6e4;save()}}if(v.id===id&&!v.sh)dsRefresh()}
 async function showCands(id){let b=bk(id);v.cid=id;v.cands=null;R();v.cands=(await findInfo(b.t,b.a,b.isbn,b.pages)).filter(c=>c.desc||c.cover).slice(0,10);R()}
 async function useCand(i,k){let c=v.cands[i],b=bk(v.cid);if(!b||!c)return;if(k==='d'){b.ds=c.desc;b.dsrc=c.src;b.dsc=c.score;b.dt=0;v.cid=null;if(!(b.cat||[]).length&&(c.cats||[]).length)b.cat=normCats(c.cats).slice(0,6)}else{b.cover=await c2d(c.cover)}save();R()}
@@ -1119,12 +1123,13 @@ function catGo(c){v.q=c;v.tab='all';v.col=null;go('lib');scrollTo(0,0);R()}
 async function fillInfo(){
  const t=$('#f-t').value.trim(),a=$('#f-a').value.trim();if(!t){toast('Type a title first');return}
  toast('Searching online…');
- const C=await findInfo(t,a,'',+$('#f-p').value||0),b=bestInfo(C),cats=bestCats(C);
+ const C=await findInfo(t,a,'',+$('#f-p').value||0),b=bestInfo(C);let cats=bestCats(C);if(!cats.length)cats=inferCats(t+' '+(($('#f-d')&&$('#f-d').value)||(b&&b.desc)||''));
+ if(b&&b.desc)v.fdm={text:b.desc,src:b.src,score:b.score};
  if(cats.length&&$('#f-cat')&&!$('#f-cat').value.trim())$('#f-cat').value=cats.join(', ');
  if(b&&b.desc&&$('#f-d')&&!$('#f-d').value.trim())$('#f-d').value=b.desc;
  if(b&&b.pages&&$('#f-p')&&!+$('#f-p').value)$('#f-p').value=b.pages;
  toast(cats.length||b?'Found info'+(cats.length?' · '+cats.length+' categories':''):'Nothing found online for this book')}
-async function autoCats(id){const b=bk(id);if(!b||(b.cat||[]).length)return false;const C=await findInfo(b.t,b.a,b.isbn,b.pages),c=bestCats(C);const b2=bk(id);if(b2&&c.length){b2.cat=c;save();return true}return false}
+async function autoCats(id){const b=bk(id);if(!b||(b.cat||[]).length)return false;const C=await findInfo(b.t,b.a,b.isbn,b.pages);let c=bestCats(C);if(!c.length)c=inferCats(b.t+' '+(b.ds||(bestInfo(C)||{}).desc||''));const b2=bk(id);if(b2&&c.length){b2.cat=c;save();return true}return false}
 async function allCats(){
  const l=S.b.filter(b=>!(b.cat||[]).length);if(!l.length){alert('Every book already has categories.');return}
  let n=0;const miss=[];
@@ -1142,16 +1147,24 @@ function CATMISS(){const m=v.cm||{ids:[]},bs=m.ids.map(bk).filter(Boolean);
 function LANGSEC(){const sel=S.il||[];
  return '<h2>Languages for book info</h2><p class="mu">English is always searched. Turn on the languages of your books so descriptions, covers and categories are found in them too. Titles with ă, ș or ț are detected as Romanian automatically. For Romanian, Shelfie also checks Cărturești, Libris, Elefant, Bookzone, Okian, eMAG, Humanitas, Polirom, Nemira, Litera, Printre Rânduri and more (needs the updated Android app).</p><div class="row" style="flex-wrap:wrap;margin:0 0 6px">'+LANGS.filter(l=>l[0]!=="en").map(([c,n])=>'<button class="bt '+(sel.includes(c)?'pr':'')+'" onclick="ilTog(\''+c+'\')">'+(sel.includes(c)?'✓ ':'')+n+'</button>').join('')+'</div>'}
 async function allDesc(){let l=S.b.filter(b=>!b.ds),miss=[];if(!l.length){alert('Every book already has a description.');return}for(let i=0;i<l.length;i++){let st=$('#dsst');if(st)st.textContent='Looking… '+i+' of '+l.length;await autoDesc(l[i].id,1);if(!bk(l[i].id).ds)miss.push(l[i].t);await new Promise(r=>setTimeout(r,350))}alert('Found descriptions for '+(l.length-miss.length)+' of '+l.length+' books.'+(miss.length?'\n\nNo description found for:\n• '+miss.join('\n• '):''));R()}
-async function fillDesc(){let t=$('#f-t').value.trim();if(!t)return;let el=$('#f-d');el.placeholder='Looking…';let ds=await getDesc(t,$('#f-a').value.trim());el.placeholder='Description';if(ds)el.value=ds;else alert('No description found online.')}
+async function fillDesc(){let t=$('#f-t').value.trim();if(!t)return;let el=$('#f-d');el.placeholder='Looking…';let ds=await getDesc(t,$('#f-a').value.trim());el.placeholder='Description';if(ds){el.value=ds;v.fdm={text:ds,src:getDesc.meta.src,score:getDesc.meta.score};const fc=$('#f-cat');if(fc&&!fc.value.trim()&&(getDesc.cats||[]).length)fc.value=getDesc.cats.join(', ')}else alert('No description found online.')}
 function dsT(s){let p=s.previousElementSibling,o=p.style.webkitLineClamp==='none';p.style.webkitLineClamp=o?'4':'none';s.textContent=o?'Read more ⌄':'Show less ⌃'}
 function candPanel(b){if(v.cid!==b.id)return'';
  if(!v.cands)return '<div class="card" style="display:block;cursor:default"><p class="mu" style="margin:0">Searching Google Books, Open Library, Apple Books, Internet Archive and Wikipedia…</p></div>';
  return `<div style="margin-top:8px"><b>Other matches</b> <span class="mu" style="cursor:pointer;text-decoration:underline" onclick="asOpen('${b.id}')">Advanced search</span> · <span class="mu" style="cursor:pointer;text-decoration:underline" onclick="v.cid=null;R()">Close</span>`+(v.cands.length?v.cands.map((c,i)=>`<div class="card" style="display:block;cursor:default;margin-top:8px"><div style="display:flex;gap:10px">${c.cover?`<img src="${esc(c.cover)}" style="width:48px;height:72px;object-fit:cover;border-radius:8px" onerror="this.style.display='none'">`:''}<div style="min-width:0"><div style="font-weight:700">${esc(c.title)}</div><div class="mu" style="font-size:12px">${esc(c.author||'unknown author')} · ${c.src} · ${c.score}% match${c.pages?' · '+c.pages+' pages':''}</div><div class="mu" style="font-size:13px">${esc(c.desc.slice(0,140))}${c.desc.length>140?'…':''}</div></div></div><div class="row" style="margin-top:6px">${c.desc?`<button class="bt" onclick="useCand(${i},'d')">Use description</button>`:''}${c.cover?`<button class="bt" onclick="useCand(${i},'c')">Use cover</button>`:''}</div></div>`).join(''):'<p class="mu">Nothing found in any source.</p>')+'</div>'}
 function descSec(b){return '<div id="dsw">'+descSec0(b)+'</div>'}
 function dsRefresh(){const e=document.getElementById('dsw'),b=bk(v.id);if(v.p!=='book'||!b)return;if(e)e.innerHTML=descSec0(b);else R()}
-function descSec0(b){let h='<h2 style="margin:16px 0 6px;font-size:19px">About this book</h2>';
+async function idSrc(id){let b=bk(id);if(!b||!b.ds||b.dsrc)return;b.sx=Date.now();v.ssrc=id;save();dsRefresh();
+ const C=await findInfo(b.t,b.a,b.isbn,b.pages);b=bk(id);v.ssrc=null;if(!b)return;
+ const h=x=>String(x||'').replace(/\s+/g,' ').trim().toLowerCase().slice(0,160),mine=h(cleanDesc(b.ds));
+ const m=C.filter(c=>c.desc&&sim(mine,h(c.desc))>=.8).sort((x,y)=>y.score-x.score)[0];
+ b.ds=cleanDesc(b.ds);if(m){b.dsrc=m.src;b.dsc=m.score}
+ let grew=0;if(!(b.cat||[]).length){let c=bestCats(C);if(!c.length)c=inferCats(b.t+' '+b.ds);if(c.length){b.cat=c;grew=1}}
+ save();if(grew&&v.p==='book'&&v.id===id&&!v.sh)R();else dsRefresh()}
+async function findCats(id){const b=bk(id);if(!b)return;toast('Looking for categories…');const C=await findInfo(b.t,b.a,b.isbn,b.pages);let c=bestCats(C);if(!c.length)c=inferCats(b.t+' '+(b.ds||(bestInfo(C)||{}).desc||''));const b2=bk(id);if(b2&&c.length){b2.cat=c;save();R();toast('Added '+c.length+' categories')}else toast('No categories found online. You can add them in Edit.')}
+function descSec0(b){if(b.ds&&!b.dsrc&&v.ssrc!==b.id&&(!b.sx||Date.now()-b.sx>=3*864e5))setTimeout(()=>idSrc(b.id),800);let h='<h2 style="margin:16px 0 6px;font-size:19px">About this book</h2>';
  const lk=(t,f)=>`<span style="color:var(--ac);font-weight:700;cursor:pointer" onclick="${f}">${t}</span>`;
- if(b.ds)return h+`<div style="background:var(--cd);border:1px solid var(--bd);border-radius:18px;padding:12px 14px"><div class="dsx" style="line-height:1.5;white-space:pre-line;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;font-size:15px;color:var(--tx)">${esc(b.ds)}</div>${b.ds.length>180?'<span style="color:var(--ac);font-weight:700;font-size:14px;cursor:pointer;display:inline-block;margin-top:6px" onclick="dsT(this)">Read more ⌄</span>':''}<div class="mu" style="font-size:12px;margin-top:6px">${b.dsrc?'Source: '+esc(b.dsrc)+(b.dsc?' · '+(b.dsc>=90?'title & author match ✓':b.dsc>=75?'likely match ✓':'check this'):''):'Added by you'} · ${lk('Not right? Check other sources',`showCands('${b.id}')`)}</div></div>${candPanel(b)}`;
+ if(b.ds)return h+`<div style="background:var(--cd);border:1px solid var(--bd);border-radius:18px;padding:12px 14px"><div class="dsx" style="line-height:1.5;white-space:pre-line;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;font-size:15px;color:var(--tx)">${esc(String(b.ds).replace(/\s*\\n\s*/g,'\n'))}</div>${b.ds.length>180?'<span style="color:var(--ac);font-weight:700;font-size:14px;cursor:pointer;display:inline-block;margin-top:6px" onclick="dsT(this)">Read more ⌄</span>':''}<div class="mu" style="font-size:12px;margin-top:6px">${b.dsrc?'Source: '+esc(b.dsrc)+(b.dsc?' · '+(b.dsc>=90?'title & author match ✓':b.dsc>=75?'likely match ✓':'check this'):''):(v.ssrc===b.id?'Checking source…':'Added by you')} · ${lk('Not right? Check other sources',`showCands('${b.id}')`)}</div></div>${candPanel(b)}`;
  if(v.dl===b.id||!b.dt||Date.now()-b.dt>=3*864e5){if(v.dl!==b.id)setTimeout(()=>autoDesc(b.id),800);return h+'<p class="mu">Looking in Google Books, Open Library, Apple Books, Internet Archive and Wikipedia…</p>'}
  return h+`<p class="mu">Nothing matched this book in Google Books, Open Library, Apple Books, Internet Archive or Wikipedia. ${lk('Try again',`autoDesc('${b.id}',1)`)} · ${lk('Check other sources',`showCands('${b.id}')`)} · ${lk('Add one yourself',"v.sh='edit';v.cv='';R()")}</p>${candPanel(b)}`}
 const ADVN={dreamy:'Ghost night',galaxy:'Galaxy',deep:'Ocean deep',cozy:'Cozy library',sunset:'Sunset',aurora:'Aurora blue',moonsea:'Moonlit sea',sword:'Sea sword',sky:'Blue sky',garden:'Tulip garden',zen:'Zen garden',rain:'Ripple pond',wreath:'Rose frame',candy:'Aurora',pixel:'Pixel sunset',fireflies:'Night lights',dunes:'Desert dusk',mybg:'My picture'};
@@ -1273,17 +1286,40 @@ function D(){let b=bk(v.id);if(!b){v.p='home';return H()}
  else ctl=b.adv?advUI(b):b.ch.map((c,i)=>`<div class="ch"><input type="checkbox" ${c.d?'checked':''} onchange="chT('${id}',${i})"><input class="in" value="${esc(c.n)}" onchange="chN('${id}',${i},this.value)"><input class="in cp" type="number" placeholder="pages" value="${c.p||''}" onchange="chP('${id}',${i},this.value)"><button class="bt" onclick="chX('${id}',${i})">✕</button></div>`).join('')+cfBar(b)+`<div class="row"><input class="in" id="f-cn" type="number" placeholder="How many chapters?"><input class="in" id="f-cp" type="number" placeholder="Pages each (optional)"><button class="bt pr" onclick="chA('${id}')">Add</button></div><p class="mu">Add page counts to chapters for more accurate progress. Leave blank to count chapters equally.</p>`+advTog(b);
  return `<div class="bkpg ${S.bl===0?'':'blr'}"><div class="row"><button class="bt" onclick="bye(()=>go(v.pp||'home',1))">← Back</button><span style="flex:1"></span><button class="bt" onclick="v.sh='edit';v.cv='';R()">Edit</button></div>
  <div class="bkhd"><div class="cvw">${cv(b,'cvl')}</div><div class="fl"><h1 class="dsx" style="margin:0">${esc(b.t)}</h1><div class="mu au">${esc(b.a)}${b.sr?' · '+esc(b.sr):''}</div></div></div>
- <div class="bkmeta">${(b.cat||[]).map(c=>`<span class="cat" onclick="catGo('${esc(c)}')">#${esc(c)}</span>`).join('')}${b.bt?`<span class="cat bt">${BTL[b.bt]||''}</span>`:''}<select class="in" onchange="setSt('${id}',this.value)">${[['toread','Want to read'],['reading','Reading'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b.st===k?'selected':''}>${l}</option>`).join('')}</select></div>
+ <div class="bkmeta">${(b.cat||[]).map(c=>`<span class="cat" onclick="catGo('${esc(c)}')">#${esc(c)}</span>`).join('')}${(b.cat||[]).length?'':`<span class="cat" style="cursor:pointer" onclick="findCats('${id}')">＋ Find categories</span>`}${b.bt?`<span class="cat bt">${BTL[b.bt]||''}</span>`:''}<select class="in" onchange="setSt('${id}',this.value)">${[['toread','Want to read'],['reading','Reading'],['done','Finished'],['dnf','Did not finish']].map(([k,l])=>`<option value="${k}" ${b.st===k?'selected':''}>${l}</option>`).join('')}</select></div>
  ${meta(b)}${descSec(b)}<div style="text-align:center;margin-top:10px">${[1,2,3,4,5].map(n=>`<span onclick="rate('${id}',${n})" style="font-size:28px;cursor:pointer;color:${n<=(b.r||0)?'#e0a030':'var(--bd)'}">★</span>`).join('')}</div><div class="big">${p.toFixed(0)}%</div><div class="bar"><i style="width:${p}%"></i></div>${eta}
  ${b.fs?'':`<div class="seg">${[['pages','Pages'],['pct','Percent'],['ch','Chapters']].map(([k,l])=>`<b class="${b.m===k?'on':''}" onclick="setM('${id}','${k}')">${l}</b>`).join('')}</div>`}${ctl}
  <h2>Reading timer</h2>${nfLine()}${run?`<div class="big"><span class="tm"></span></div><button class="bt" style="width:100%;margin-bottom:8px" onclick="tpause()">${S.t.p?'Resume':'Pause'}</button><button class="bt pr" style="width:100%" onclick="tstopOpen()">Stop and log session</button><button class="bt" style="width:100%;margin-top:8px" onclick="if(confirm('Discard this reading session? The time will not be saved.'))tdisc()">Discard</button>`:`<button class="bt pr" style="width:100%" onclick="tstart('${id}')" ${S.t?'disabled':''}>Start reading session</button>`}
  ${ba?`<p class="mu">Your speed on this book: <b>${ba.toFixed(1)} ${U(u)}</b>${oa?` (${ba>=oa?'<span class="g">▲ ':'<span class="r">▼ '}${Math.abs((ba/oa-1)*100).toFixed(0)}% vs your overall average</span>)`:''}</p>`:''}
  ${ss.map(s=>{let sp=s.d>0&&s.k>30?s.d/s.k*3600:0,a=avg(s.u);return `<div class="ses"><span>${new Date(s.s).toLocaleDateString()}<br><span class="mu">${fm(s.k)}${s.d?` · +${s.d}${s.u==='%'?'%':' pages'}`:''}</span></span><span style="text-align:right">${sp?sp.toFixed(1)+' '+U(s.u):'-'}${sp&&a?`<br>${sp>=a?'<span class="g">▲ ':'<span class="r">▼ '}${Math.abs((sp/a-1)*100).toFixed(0)}% vs avg</span>`:''}</span></div>`}).join('')}<h2>Notes</h2><textarea class="in" rows="4" placeholder="Thoughts, quotes, favorite parts…" onchange="note('${id}',this.value)">${esc(b.nt||'')}</textarea></div>`}
+function sPg(x){if(x.u!=='%')return +x.d||0;const b=bk(x.b);return b&&b.pages?Math.round((+x.d||0)/100*b.pages):0}
+function RS(){
+ const rg=v.rg||'week',mt=v.rm||'time',now=new Date(),t0=new Date(now);t0.setHours(0,0,0,0);
+ let from,n,bi,lb,ttl;
+ const dayIx=(ts,f)=>{const d=new Date(ts);d.setHours(0,0,0,0);return Math.round((d.getTime()-f)/864e5)};
+ if(rg==='day'){from=t0.getTime();n=24;bi=x=>new Date(x.s).getHours();lb=i=>i%6===0?String(i):'';ttl='Today'}
+ else if(rg==='week'){const f=new Date(t0);f.setDate(f.getDate()-6);from=f.getTime();n=7;bi=x=>dayIx(x.s,from);lb=i=>{const d=new Date(from);d.setDate(d.getDate()+i);return d.toLocaleDateString(undefined,{weekday:'narrow'})};ttl='Last 7 days'}
+ else{const f=new Date(now.getFullYear(),now.getMonth(),1);from=f.getTime();n=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();bi=x=>new Date(x.s).getDate()-1;lb=i=>((i+1)%5===0||i===0)?String(i+1):'';ttl=now.toLocaleDateString(undefined,{month:'long'})}
+ const end=rg==='day'?from+864e5:rg==='week'?t0.getTime()+864e5:new Date(now.getFullYear(),now.getMonth()+1,1).getTime();
+ const xs=S.s.filter(x=>x.s>=from&&x.s<end),tm=Array(n).fill(0),pg=Array(n).fill(0);
+ xs.forEach(x=>{const i=bi(x);if(i>=0&&i<n){tm[i]+=x.k;pg[i]+=sPg(x)}});
+ const tk=tm.reduce((a,c)=>a+c,0),tp=pg.reduce((a,c)=>a+c,0),vals=mt==='time'?tm.map(k=>k/60):pg,mx=Math.max(1,...vals),
+  days=rg==='day'?1:rg==='week'?7:now.getDate(),
+  fh=m=>m>=60?(Math.round(m/6)/10)+'h':Math.round(m)+'m',
+  pace=tk>30&&tp?(tp/tk*3600).toFixed(1):'-',
+  t4=rg==='day'?['Pace',pace,'pages per hour']:['Daily average',fm(Math.round(tk/days)),Math.round(tp/days)+' pages a day'],
+  tab=(k,l)=>`<span class="tab ${rg===k?'on':''}" onclick="v.rg='${k}';R()">${l}</span>`,
+  sg=(k,l)=>`<b class="${mt===k?'on':''}" onclick="v.rm='${k}';R()">${l}</b>`,
+  sm=n>12,
+  bars=vals.map((x,i)=>`<div style="--n:${i}" title="${esc(lb(i)||'')} ${mt==='time'?fh(x):x+' pages'}"><span style="font-size:${sm?9:11}px">${!sm&&x?(mt==='time'?fh(x):x):''}</span><i style="height:${x/mx*80}%"></i><em style="font-style:normal;font-size:${sm?9:11}px;white-space:nowrap;min-height:13px">${lb(i)}</em></div>`).join('');
+ return `<h2>Reading activity</h2><div class="row">${tab('day','Today')}${tab('week','Week')}${tab('month','Month')}</div>
+ <div class="st" style="margin-top:10px"><div><b>${fm(tk)}</b>time read</div><div><b>${tp}</b>pages read</div><div><b>${xs.length}</b>${xs.length===1?'session':'sessions'}</div><div><b>${t4[1]}</b>${t4[2]}</div></div>
+ <div class="card" style="display:block;cursor:default;margin-top:10px"><div class="row" style="margin:0"><b>${esc(ttl)}</b><span style="flex:1"></span><div class="seg" style="margin:0">${sg('time','Time')}${sg('pages','Pages')}</div></div>${tk||tp?'':'<p class="mu" style="margin:8px 0 0">Nothing logged '+(rg==='day'?'today yet':'in this period')+'.</p>'}<div class="wk" style="height:130px;gap:${sm?3:6}px">${bars}</div></div>`}
 function T(){let ss=S.s,tot=ss.reduce((a,s)=>a+s.k,0),pa=avg('p'),qa=avg('%'),days=[...Array(7)].map((_,i)=>{let d=new Date();d.setDate(d.getDate()-6+i);d.setHours(0,0,0,0);let e=d.getTime()+864e5;return{l:d.toLocaleDateString(undefined,{weekday:'narrow'}),m:ss.filter(s=>s.s>=d.getTime()&&s.s<e).reduce((a,s)=>a+s.k,0)/60}}),mx=Math.max(1,...days.map(d=>d.m));
  let per=S.b.map(b=>({b,a:avg(b.m==='pct'?'%':'p',b.id),u:b.m==='pct'?'%':'p'})).filter(x=>x.a);
  if(v.sm==='goals')return `<h1>Stats</h1>${yr()}`;
  return `<h1>Stats</h1>${yr()}<div class="st"><div><b>${S.b.filter(b=>b.st==='done').length}</b>books finished</div><div><b>${fm(tot)}</b>total reading time</div><div><b>${pa?pa.toFixed(1):'-'}</b>pages per hour</div><div><b>${qa?qa.toFixed(1):'-'}</b>percent per hour</div><div><b>${stk()}</b>day streak</div><div><b>${ss.length}</b>sessions logged</div></div>
- <h2>Last 7 days (minutes)</h2><div class="wk">${days.map((d,i)=>`<div style="--n:${i}"><span>${Math.round(d.m)||''}</span><i style="height:${d.m/mx*80}%"></i>${d.l}</div>`).join('')}</div>
+ ${RS()}
  <h2>Speed by book</h2>${per.length?per.map(x=>{let o=avg(x.u);return `<div class="ses"><span>${esc(x.b.t)}</span><span>${x.a.toFixed(1)} ${U(x.u)} ${o?(x.a>=o?'<span class="g">▲':'<span class="r">▼')+Math.abs((x.a/o-1)*100).toFixed(0)+'%</span>':''}</span></div>`}).join(''):'<p class="mu">Log a few timed sessions to see how fast you read.</p>'}`}
 function SH(){let b=v.sh==='edit'?bk(v.id):null;
  if(v.sh==='omni')return OMSH();if(v.sh==='catmiss')return CATMISS();
@@ -1895,7 +1931,7 @@ for(let i=0;i<l.length;i++){let b=l[i],t=b.t.split(/\s[:\u2013\u2014-]\s|:/)[0].
 v.msg=ok+' covers added.'+(miss.length?' '+miss.length+' not found.':'');alert(ok+' covers added.'+(miss.length?'\n\nNo cover found for:\n• '+miss.join('\n• '):''));scrollTo(0,0);R()}
 const rate=(id,n)=>ch(id,b=>b.r=b.r===n?0:n);
 const note=(id,x)=>{bk(id).nt=x;save()};
-function sv(){let t=$('#f-t').value.trim();if(!t)return;let d={t,a:$('#f-a').value.trim(),pages:+$('#f-p').value||0,ds:($('#f-d')?$('#f-d').value.trim():''),st:$('#f-s').value,m:$('#f-m').value,cat:parseCats($('#f-cat')?$('#f-cat').value:''),bt:($('#f-bt')?$('#f-bt').value:'')};
+function sv(){let t=$('#f-t').value.trim();if(!t)return;let d={t,a:$('#f-a').value.trim(),pages:+$('#f-p').value||0,ds:($('#f-d')?$('#f-d').value.trim():''),st:$('#f-s').value,m:$('#f-m').value,cat:parseCats($('#f-cat')?$('#f-cat').value:''),bt:($('#f-bt')?$('#f-bt').value:'')};if(d.ds&&v.fdm&&String(v.fdm.text).trim()===d.ds){d.dsrc=v.fdm.src;d.dsc=v.fdm.score}else if(v.sh==='edit'){const ob=bk(v.id);if(ob&&ob.ds&&String(ob.ds).trim()!==d.ds){d.dsrc='';d.dsc=0}}
  if(v.sh==='add'){let nb={id:uid(),...d,cur:d.st==='done'?d.pages:0,cover:v.cv,ch:[],r:0,sd:d.st==='reading'?Date.now():0,fd:d.st==='done'?Date.now():0};S.b.unshift(nb);if(!nb.ds)autoDesc(nb.id)}else{let b=bk(v.id);const om=b.m;Object.assign(b,d);if(om!==b.m){const nm=b.m;b.m=om;convM(b,nm)}if(b.m!=='ch')b.adv=0;advSync(b);if(d.st==='done'&&!b.fd)b.fd=Date.now();if(v.cv)b.cover=v.cv}
  v.sh=null;save();R()}
 function del(){if(confirm('Delete this book?')){(S.dl=S.dl||{})[v.id]=Date.now();(S.dp=S.dp||[]).push(v.id);MD=1;S.b=S.b.filter(b=>b.id!=v.id);v.sh=null;v.p='home';save();R()}}
