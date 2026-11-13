@@ -1060,11 +1060,16 @@ let _WB=null;
 function webGet(){if(_WB)return _WB;try{const C=window.Capacitor;if(C&&((C.isNativePlatform&&C.isNativePlatform())||(C.getPlatform&&C.getPlatform()!=='web')))_WB=(C.Plugins&&C.Plugins.ShelfieWeb)||C.registerPlugin('ShelfieWeb')}catch(e){}return _WB}
 async function shopGet(u){const P=webGet();if(!P||!P.httpGet)return '';try{const r=await P.httpGet({url:u});return(r&&r.status<400&&r.text)||''}catch(x){return ''}}
 async function shopLinks(q){
- const out=[],push=(u,dom)=>{if(/^https:/.test(u)&&!out.some(o=>o.u===u)&&out.filter(o=>o.dom===dom).length<2)out.push({u,dom})};
+ const out=[],push=(u,dom,mx)=>{if(/^https:/.test(u)&&!out.some(o=>o.u===u)&&out.filter(o=>o.dom===dom).length<(mx||2))out.push({u,dom})};
  const doms=Object.keys(SHOPS),grp=[doms.slice(0,7),doms.slice(7,16),doms.slice(16)];
  const parse=h=>{if(!h)return;new DOMParser().parseFromString(h,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';const m=u.match(/uddg=([^&]+)/);if(m)u=decodeURIComponent(m[1]);if(u.indexOf('//')===0)u='https:'+u;
    const dom=doms.find(k=>new RegExp('^https://(?:[a-z0-9-]+\\.)?'+k.replace(/\./g,'\\.')+'/').test(u));if(dom&&!/\/(?:search|cautare|catalogsearch|tag|categorie)/i.test(u))push(u.split('#')[0],dom)})};
- const hs=await Promise.all([...grp.map(g=>shopGet('https://html.duckduckgo.com/html/?q='+encodeURIComponent(q+' carte '+g.map(d=>'site:'+d).join(' OR ')))),shopGet('https://www.bing.com/search?q='+encodeURIComponent(q+' carte cumpara'))]);
+ const lbU='https://www.libris.ro/librarie-online?ft='+encodeURIComponent(q);
+ const hs0=await Promise.all([shopGet(lbU),...grp.map(g=>shopGet('https://html.duckduckgo.com/html/?q='+encodeURIComponent(q+' carte '+g.map(d=>'site:'+d).join(' OR ')))),shopGet('https://www.bing.com/search?q='+encodeURIComponent(q+' carte cumpara'))]);
+ const hs=hs0.slice(1);
+ /* Libris: read its own search results first, instead of hoping DuckDuckGo/Bing list the product pages */
+ if(hs0[0]){new DOMParser().parseFromString(hs0[0],'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';if(u.indexOf('//')===0)u='https:'+u;else if(u[0]==='/')u='https://www.libris.ro'+u;u=u.split('#')[0].split('?')[0];
+  if(/^https:\/\/(?:www\.)?libris\.ro\/(?:carte|carte-engleza)\/[^\/]+\/\d+$/.test(u)||/^https:\/\/(?:www\.)?libris\.ro\/[^\/?]+--p\d+\.html$/.test(u))push(u,'libris.ro',5)})}
  hs.forEach(parse);
  if(!out.length){const s=await shopGet('https://carturesti.ro/product/search/'+encodeURIComponent(q));
   if(s){new DOMParser().parseFromString(s,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';if(/\/carte\/[^/?#]+-\d+/.test(u)){if(u[0]==='/')u='https://carturesti.ro'+u;push(u.split('?')[0],'carturesti.ro')}})}}
@@ -1076,14 +1081,18 @@ function shopParse(h,dom){
    title=title||o.name||'';desc=desc||o.description||'';cover=cover||(Array.isArray(o.image)?o.image[0]:o.image)||'';pages=pages||(+o.numberOfPages||0);
    const au=o.author;author=author||(typeof au==='string'?au:(au&&(au.name||(au[0]&&au[0].name)))||'')}})}catch(x){}});
  const mt=n=>{const e=d.querySelector('meta[property="'+n+'"],meta[name="'+n+'"]');return e?(e.getAttribute('content')||''):''};
- title=title||mt('og:title')||((d.querySelector('h1')||{}).textContent||'');cover=cover||mt('og:image');
+ title=title||mt('og:title')||((d.querySelector('h1')||{}).textContent||'');cover=cover||(/logo|feature-image/i.test(mt('og:image'))?'':mt('og:image'));
+ if(!cover&&/libris/i.test(dom)){const ims=[...d.querySelectorAll('img[src*="pozeprod"],img[data-src*="pozeprod"]')],im=ims.find(i=>sim(title,i.getAttribute('alt')||'')>.5)||ims[0];if(im)cover=im.getAttribute('src')||im.getAttribute('data-src')||''}
+ if(cover.indexOf('//')===0)cover='https:'+cover;
  if(!cats.length){[...d.querySelectorAll('[class*="readcrumb"] a,nav[aria-label*="readcrumb"] a,[itemtype*="BreadcrumbList"] [itemprop=name]')].map(x=>(x.textContent||'').trim()).filter(x=>x&&x.length<40&&sim(title,x)<.6).forEach(x=>cats.push(x))}
  const txt=(d.body?d.body.textContent:'').replace(/\r/g,'').replace(/[ \t]+/g,' ');
- const m=txt.match(/\bDescriere\s*\n+([\s\S]{80,7000}?)(?=\n\s*(?:Recenzii|Detalii produs|Specificatii|Specificații|Caracteristici|Comentarii|Produse similare|Alte produse|Review-uri|Informatii suplimentare)|$)/i);
+ const m=txt.match(/\bDescriere(?:a produsului)?\s*\n+([\s\S]{80,7000}?)(?=\n\s*(?:Recenzii|Detaliile produsului|Detalii produs|Specificatii|Specificații|Caracteristici|Comentarii|Produse similare|Alte produse|Review-uri|Informatii suplimentare)|$)/i);
  if(m&&m[1].replace(/\s+/g,' ').trim().length>String(desc||'').length)desc=m[1];
  desc=desc||mt('og:description')||mt('description');
  const pm=txt.match(/(?:Nr\.?\s*pagini|Num[aă]r(?:ul)? de pagini|Pagini)\s*:?\s*(\d{2,4})|(\d{2,4})\s*pagini/i);if(!pages&&pm)pages=+(pm[1]||pm[2]);
  title=String(title).replace(/\s*[|\-–—:]\s*(?:c[aă]rte|cumpara|c[aă]rturesti|libris|elefant|bookzone|okian|emag|humanitas|polirom|nemira|litera|goodreads)[^|]*$/i,'').trim();
+ if(!cats.length){const cm=txt.match(/Categoria\s*:\s*([^\n]{2,120}?)(?=\s*(?:Autor|Editura|An aparitie|Editie|Nr\.?\s*pagini|Varsta|Cod|Format|Colectie|Serie)\s*:|\n|$)/);if(cm)cm[1].split(',').forEach(x=>{x=x.trim();if(x&&x.length<40)cats.push(x)})}
+ if(author){const sfx=' - '+String(author).trim();if(String(title).toLowerCase().endsWith(sfx.toLowerCase()))title=String(title).slice(0,-sfx.length).trim()}
  return{cats:cats.slice(0,8),title,desc:String(desc||'').replace(/[ \t]*\n[ \t]*/g,'\n'),cover:/^https?:/.test(cover)?cover:'',pages,author,txt:txt.toLowerCase(),src:SHOPS[dom]||dom}}
 async function findInfo(t,a,isbn,pages,only){
  const e=encodeURIComponent,ct=cleanT(t),au=(a||'').split(',')[0].trim(),last=au.split(' ').pop(),C=[],seen=new Set(),L=infoLangs(t,a);
@@ -1277,7 +1286,7 @@ function MR(){if(v.adv)return ADV();
  return `<div class="${S.bl===0?'':'blr2'}"><div class="row"><button class="bt" onclick="v.an=1;v.mp=null;v.cnd=null;v.gf=null;v.cf=null;scrollTo(0,0);R()">← Back</button></div><h1>${ttl[v.mp]}</h1>${msg}${v.mp==='cust'?MCUST():v.mp==='sync'?MSYNC():v.mp==='goals'?MGOALS():MTOOLS()}</div>`}
 
 function findOnline(b){const q=encodeURIComponent((b.t+' '+(b.a||'')).trim()),qt=encodeURIComponent(b.t),
- L=[['Google','https://www.google.com/search?q='+q+'+carte'],['Cărturești','https://carturesti.ro/product/search/'+qt],['Libris','https://www.libris.ro/?q='+q],['Elefant','https://www.elefant.ro/search?SearchTerm='+q],['Bookzone','https://www.bookzone.ro/cautare?q='+q],['Okian','https://www.okian.ro/catalogsearch/result/?q='+q],['eMAG','https://www.emag.ro/search/'+qt+'%20'+encodeURIComponent((b.a||'').split(',')[0])],['Libhumanitas','https://www.libhumanitas.ro/catalogsearch/result/?q='+q],['Goodreads','https://www.goodreads.com/search?q='+q],['Anticariat','https://www.google.com/search?q='+q+'+anticariat+carte']];
+ L=[['Google','https://www.google.com/search?q='+q+'+carte'],['Cărturești','https://carturesti.ro/product/search/'+qt],['Libris','https://www.libris.ro/librarie-online?ft='+q],['Elefant','https://www.elefant.ro/search?SearchTerm='+q],['Bookzone','https://www.bookzone.ro/cautare?q='+q],['Okian','https://www.okian.ro/catalogsearch/result/?q='+q],['eMAG','https://www.emag.ro/search/'+qt+'%20'+encodeURIComponent((b.a||'').split(',')[0])],['Libhumanitas','https://www.libhumanitas.ro/catalogsearch/result/?q='+q],['Goodreads','https://www.goodreads.com/search?q='+q],['Anticariat','https://www.google.com/search?q='+q+'+anticariat+carte']];
  return '<h2 style="margin:16px 0 4px;font-size:19px">Find this book online</h2><div class="fnd">'+L.map(x=>'<a class="cat" href="'+x[1]+'" target="_blank" rel="noopener">'+x[0]+' ↗</a>').join('')+'</div>'}
 function D(){let b=bk(v.id);if(!b){v.p='home';return H()}
  let p=pc(b),run=S.t&&S.t.id===b.id,ss=S.s.filter(s=>s.b===b.id).reverse(),u=b.m==='pct'?'%':'p',ba=avg(u,b.id),oa=avg(u),id=b.id,ctl='',spd=ba||oa,rem=b.m==='pct'?100-(+b.cur||0):(b.m==='pages'||b.adv)&&b.pages?b.pages-(+b.cur||0):0,eta=spd&&rem>0&&b.st!=='done'?'<p class="mu" style="text-align:center">⏳ About '+fm(Math.round(rem/spd*3600))+' left at your pace</p>':'';
