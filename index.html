@@ -85,7 +85,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .sh{position:fixed;inset:0;background:#0007;z-index:5;display:flex;align-items:flex-end;justify-content:center}.sh>div{background:var(--bg);width:100%;max-width:560px;border-radius:26px 26px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px));max-height:90%;overflow:auto}
 .ch{display:flex;gap:6px;align-items:center;margin:6px 0}.ch .in{margin:0}.ch .cp{width:70px;flex:none}
 .ses{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--bd);font-size:14px}
-.wk{display:flex;gap:6px;align-items:flex-end;height:110px;margin:8px 0}.wk div{flex:1;text-align:center;font-size:11px;color:var(--mu);display:flex;flex-direction:column;justify-content:flex-end;height:100%}.wk i{display:block;background:var(--ac);border-radius:5px 5px 0 0;min-height:2px}
+.wk{display:flex;gap:6px;align-items:flex-end;height:110px;margin:8px 0}.wk div{flex:1;text-align:center;font-size:11px;color:var(--mu);display:flex;flex-direction:column;justify-content:flex-end;height:100%}.wk i{display:block;background:var(--ac);border-radius:5px 5px 0 0;min-height:2px}.rsp{display:flex;align-items:flex-end;gap:2px;height:150px;margin:8px 0 0;border-bottom:1px solid var(--bd)}.rsp>div{flex:1;min-width:0;height:100%;position:relative;display:flex;align-items:flex-end;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}.rsp i{display:block;width:100%;background:var(--ac);border-radius:4px 4px 0 0;min-height:2px;opacity:.9}.rsp>div.on i{opacity:1;box-shadow:0 0 0 2px var(--tx)}.rsp span{position:absolute;left:50%;writing-mode:vertical-rl;transform:translateX(-50%) rotate(180deg);font-size:10px;line-height:1;color:var(--mu);white-space:nowrap;pointer-events:none}.rsx{display:flex;gap:2px;margin:4px 0 0}.rsx div{flex:1;min-width:0;height:15px;position:relative;font-size:10px;color:var(--mu)}.rsx em{font-style:normal;position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap}.rstip{margin:8px 0 0;font-size:13px;min-height:18px;color:var(--mu)}#app.pg-in .rsp i{transform-origin:50% 100%;animation:mRise2 .9s cubic-bezier(.3,.7,.25,1) calc(.15s + var(--n,0) * .03s) backwards}#app.pg-in .rsp span{animation:mLbl2 .5s ease-out calc(.8s + var(--n,0) * .03s) backwards}
 .st{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}.st>div{background:var(--cd);border:1px solid var(--bd);border-radius:18px;padding:12px}.st b{font:700 22px Georgia,serif;display:block;color:var(--ac)}
 input[type=range]{width:100%;accent-color:var(--ac)}
 
@@ -668,7 +668,7 @@ let _sv=0,_st=0;const flushSave=()=>{if(!_sv)return;_sv=0;clearTimeout(_st);try{
 const uid=()=>Math.random().toString(36).slice(2,9);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const bk=id=>S.b.find(b=>b.id==id);
-const fm=k=>k<60?k+'s':k>=3600?Math.floor(k/3600)+'h '+Math.round(k%3600/60)+'m':Math.round(k/60)+'m';
+const fm=k=>{if(k<60)return k+'s';const m=Math.round(k/60);return m>=60?Math.floor(m/60)+'h '+(m%60)+'m':m+'m'};
 function pc(b){if(b.st==='done')return 100;if(b.m==='pct')return Math.min(100,+b.cur||0);
  if(b.adv&&b.pages)return Math.min(100,(+b.cur||0)/b.pages*100);
  if(b.m==='ch'&&b.ch.length){let w=b.ch.every(c=>+c.p>0),t=w?b.ch.reduce((a,c)=>a+ +c.p,0):b.ch.length,d=b.ch.filter(c=>c.d).reduce((a,c)=>a+(w?+c.p:1),0);return d/t*100}
@@ -1058,32 +1058,49 @@ function ilTog(c){const a=(S.il||[]).slice(),i=a.indexOf(c);if(i>=0)a.splice(i,1
 const SHOPS={'carturesti.ro':'Cărturești','libris.ro':'Libris','elefant.ro':'Elefant','bookzone.ro':'Bookzone','okian.ro':'Okian','emag.ro':'eMAG','libhumanitas.ro':'Humanitas','humanitas.ro':'Humanitas','polirom.ro':'Polirom','nemira.ro':'Nemira','litera.ro':'Litera','librarie.net':'Librarie.net','printrerandurri.ro':'Printre Rânduri','cartepedia.ro':'Cărtepedia','librarianet.ro':'Librarie.net','art.ro':'ART','cartier.ro':'Cartier','paralela45.ro':'Paralela 45','rao.ro':'RAO','curteaveche.ro':'Curtea Veche','trei.ro':'Trei','bookzone.ro':'Bookzone','anticariatonline.ro':'Anticariat','goodreads.com':'Goodreads'};
 let _WB=null;
 function webGet(){if(_WB)return _WB;try{const C=window.Capacitor;if(C&&((C.isNativePlatform&&C.isNativePlatform())||(C.getPlatform&&C.getPlatform()!=='web')))_WB=(C.Plugins&&C.Plugins.ShelfieWeb)||C.registerPlugin('ShelfieWeb')}catch(e){}return _WB}
-async function shopGet(u){const P=webGet(),L=(window.SHLOG=window.SHLOG||[]),n=String(u).replace(/^https?:\/\//,'').slice(0,48);if(!P||!P.httpGet){L.push(n+' → no native web plugin');return ''}try{const r=await P.httpGet({url:u});L.push(n+' → '+(r?r.status:'?')+', '+((r&&r.text)?r.text.length:0)+' chars');return(r&&r.status<400&&r.text)||''}catch(x){L.push(n+' → error: '+String((x&&x.message)||x).slice(0,50));return ''}}
+async function shopGet(u){const P=webGet(),L=(window.SHLOG=window.SHLOG||[]),n=String(u).replace(/^https?:\/\/(?:www\.)?/,'').slice(0,60);
+ if(!P||!P.httpGet){L.push(n+' → no native web plugin');return ''}
+ try{const r=await P.httpGet({url:u}),t=(r&&r.text)||'',st=r?+r.status:0;
+  const blocked=st===202||st===429||/anomaly-modal|Just a moment\.\.\.|cf-chl-|Attention Required|Access Denied|unusual traffic/i.test(t.slice(0,8000));
+  L.push(n+' → '+(st||'?')+', '+t.length+' chars'+(blocked?' (blocked by a bot check)':''));
+  return(!blocked&&st>0&&st<400&&t)||''}
+ catch(x){L.push(n+' → error: '+String((x&&x.message)||x).slice(0,50));return ''}}
 async function shopLinks(q){
- const out=[],push=(u,dom,mx)=>{if(/^https:/.test(u)&&!out.some(o=>o.u===u)&&out.filter(o=>o.dom===dom).length<(mx||2))out.push({u,dom})};
- const doms=Object.keys(SHOPS),grp=[doms.slice(0,7),doms.slice(7,16),doms.slice(16)];
- /* a shop's own search result only counts if its address contains words from what was typed (so a default/bestseller list is never shown as "results") */
- const qw=_sw(q).filter(w=>w.length>=3);
- const slugOk=u=>{if(!qw.length)return false;const sl=_sw(String(u).replace(/^https:\/\/[^\/]+\//,'').replace(/[-_\/.]+/g,' ').replace(/\d+/g,' '));return qw.filter(w=>sl.some(t=>t===w||t.startsWith(w)||(t.length>=4&&w.startsWith(t)))).length/qw.length>=.5};
+ const out=[],e=encodeURIComponent,doms=Object.keys(SHOPS),nd=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+ const push=(u,dom,mx)=>{if(/^https:/.test(u)&&!out.some(o=>o.u===u)&&out.filter(o=>o.dom===dom).length<(mx||2))out.push({u,dom})};
+ const slugOkW=(u,qw)=>{if(!qw.length)return false;const sl=_sw(String(u).replace(/^https:\/\/[^\/]+\//,'').replace(/[-_\/.]+/g,' ').replace(/\d+/g,' '));return qw.filter(w=>sl.some(t=>t===w||t.startsWith(w)||(t.length>=4&&w.startsWith(t)))).length/qw.length>=.5};
  const b64u=x=>{try{x=x.replace(/-/g,'+').replace(/_/g,'/');while(x.length%4)x+='=';return atob(x)}catch(e){return ''}};
- const parse=h=>{if(!h)return;new DOMParser().parseFromString(h,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';const m=u.match(/uddg=([^&]+)/);if(m)u=decodeURIComponent(m[1]);
+ /* links from a web-search results page (DuckDuckGo, Mojeek, Brave…) */
+ const parse=h=>{if(!h)return;new DOMParser().parseFromString(h,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';const m=u.match(/uddg=([^&]+)/);if(m)try{u=decodeURIComponent(m[1])}catch(x){}
    const bm=u.match(/bing\.com\/ck\/a\?.*?[?&]u=a1([A-Za-z0-9_-]+)/);if(bm)u=b64u(bm[1])||u;
    if(u.indexOf('//')===0)u='https:'+u;
    const dom=doms.find(k=>new RegExp('^https://(?:[a-z0-9-]+\\.)?'+k.replace(/\./g,'\\.')+'/').test(u));if(dom&&!/\/(?:search|cautare|catalogsearch|tag|categorie)/i.test(u))push(u.split('#')[0],dom,dom==='libris.ro'?3:2)})};
- const e=encodeURIComponent,lbC=['https://www.libris.ro/search?iv.q=','https://www.libris.ro/search?iv.categ=Carti&iv.q='],nl=lbC.length;
- const hs0=await Promise.all([...lbC.map(x=>shopGet(x+e(q))),
-  shopGet('https://html.duckduckgo.com/html/?q='+e(q+' site:libris.ro')),
-  ...grp.map(g=>shopGet('https://html.duckduckgo.com/html/?q='+e(q+' carte '+g.map(d=>'site:'+d).join(' OR ')))),
-  shopGet('https://www.bing.com/search?q='+e(q+' carte cumpara')),
-  shopGet('https://www.bing.com/search?q='+e(q+' site:libris.ro')),
-  shopGet('https://carturesti.ro/product/search/'+e(q))]);
- const lbH=hs0.slice(0,nl),cH=hs0[hs0.length-1],hs=hs0.slice(nl,hs0.length-1);
- /* Libris' own search pages first (only links that match what was typed), then the web-search results */
- lbH.forEach(h=>{if(!h)return;new DOMParser().parseFromString(h,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';if(u.indexOf('//')===0)u='https:'+u;else if(u[0]==='/')u='https://www.libris.ro'+u;u=u.split('#')[0].split('?')[0];
-  if((/^https:\/\/(?:www\.)?libris\.ro\/(?:carte|carte-engleza)\/[^\/]+\/\d+$/.test(u)||/^https:\/\/(?:www\.)?libris\.ro\/[^\/?]+--p\d+\.html$/.test(u))&&slugOk(u))push(u,'libris.ro',3)})});
- hs.forEach(parse);
- /* Cărturești's own search page, always (only links that match what was typed) */
- if(cH){new DOMParser().parseFromString(cH,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';if(/\/carte\/[^/?#]+-\d+/.test(u)){if(u[0]==='/')u='https://carturesti.ro'+u;u=u.split('?')[0];if(slugOk(u))push(u,'carturesti.ro',3)}})}
+ /* a shop's own search page: every address in it (links AND addresses hidden in scripts/JSON), kept only if it looks like a book page that matches what was typed */
+ const BAD=/\/(?:search|cautare|catalogsearch|tag|categorie|categorii|cos|cont|login|contact|blog|promo|oferte|noutati|autor|editura|colectie|brand|brands|c|cart|checkout|wishlist|pagina)(?:[\/?.#-]|$)/i;
+ const SH=[
+  {dom:'libris.ro',base:'https://www.libris.ro',u:['https://www.libris.ro/search?iv.q=','https://www.libris.ro/search?iv.categ=Carti&iv.q='],ok:u=>/\.html$/.test(u)||/\/carte(?:-engleza)?\/[^\/]+\/\d+$/.test(u)},
+  {dom:'carturesti.ro',base:'https://carturesti.ro',u:['https://carturesti.ro/product/search/'],ok:u=>/\/carte\/[^\/?#]+-\d+/.test(u)},
+  {dom:'elefant.ro',base:'https://www.elefant.ro',u:['https://www.elefant.ro/search?SearchTerm='],ok:u=>/[a-z]-[a-z]/i.test(u)},
+  {dom:'okian.ro',base:'https://www.okian.ro',u:['https://www.okian.ro/catalogsearch/result/?q='],ok:u=>/\.html$/.test(u)},
+  {dom:'bookzone.ro',base:'https://www.bookzone.ro',u:['https://www.bookzone.ro/cautare?q='],ok:u=>/[a-z]-[a-z]/i.test(u)}];
+ const fromShop=(h,s,qw)=>{if(!h)return;const seen=new Set(),add=u=>{u=String(u||'').trim().replace(/\\\//g,'/').replace(/&amp;/g,'&');if(!u||/^(?:javascript|mailto|tel|data):/i.test(u))return;
+   if(u.indexOf('//')===0)u='https:'+u;else if(u[0]==='/')u=s.base+u;else if(!/^https?:/i.test(u))return;
+   u=u.replace(/^http:/,'https:').split('#')[0].split('?')[0].replace(/\/+$/,'');
+   if(seen.has(u))return;seen.add(u);
+   if(!new RegExp('^https://(?:[a-z0-9-]+\\.)?'+s.dom.replace(/\./g,'\\.')+'/','i').test(u))return;
+   if(BAD.test(u.replace(/^https:\/\/[^\/]+/,''))||!s.ok(u)||!slugOkW(u,qw))return;push(u,s.dom,3)};
+  try{new DOMParser().parseFromString(h,'text/html').querySelectorAll('a[href]').forEach(a=>add(a.getAttribute('href')))}catch(x){}
+  (h.match(/https?:(?:\\?\/){2}[a-z0-9.-]+(?:\\?\/[^"'\s<>\\)]*)*/gi)||[]).forEach(add);
+  (h.match(/["'](\/[a-z0-9][^"'\s<>\\]*\.html)["']/gi)||[]).forEach(m=>add(m.slice(1,-1)))};
+ /* try what was typed, then without accents (ş/ș/ţ/ț differ between shops), then just the first words */
+ const vars=[q],nq=nd(q);if(nq!==q)vars.push(nq);const ws=String(q).trim().split(/\s+/);if(ws.length>3)vars.push(ws.slice(0,3).join(' '));
+ for(const qq of vars){const qw=_sw(qq).filter(w=>w.length>=3);
+  const hs=await Promise.all(SH.flatMap(s=>s.u.map(x=>shopGet(x+e(qq)).then(h=>({s,h})))));
+  hs.forEach(o=>fromShop(o.h,o.s,qw));
+  if(out.length)break}
+ /* web search is only a fallback now (it blocks apps that send many requests): one engine at a time, stop as soon as there are enough links */
+ const ENG=[x=>'https://html.duckduckgo.com/html/?q='+e(x+' carte'),x=>'https://lite.duckduckgo.com/lite/?q='+e(x+' carte libris carturesti elefant'),x=>'https://www.mojeek.com/search?q='+e(x+' carte libris carturesti'),x=>'https://search.brave.com/search?q='+e(x+' carte cumpara')];
+ for(const f of ENG){if(out.length>=4)break;parse(await shopGet(f(q)))}
  return out.slice(0,12)}
 
 function shopParse(h,dom){
@@ -1332,10 +1349,16 @@ function RS(){
   tab=(k,l)=>`<span class="tab ${rg===k?'on':''}" onclick="v.rg='${k}';R()">${l}</span>`,
   sg=(k,l)=>`<b class="${mt===k?'on':''}" onclick="v.rm='${k}';R()">${l}</b>`,
   sm=n>12,
+  PH=34,
+  tipTx=vals.map((x,i)=>(rg==='day'?i+':00 – '+(i+1)+':00':rg==='month'?new Date(from+i*864e5+432e5).toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'}):lb(i))+' · '+(tm[i]?fm(Math.round(tm[i])):'nothing read')+(pg[i]?' · '+pg[i]+' pages':'')),
+  bars2=vals.map((x,i)=>`<div style="--n:${i}" class="" onclick="rsTip(${i},this)"><span style="bottom:calc((100% - ${PH}px)*${(x/mx).toFixed(4)} + 3px)">${x?(mt==='time'?fh(x):x):''}</span><i style="height:calc((100% - ${PH}px)*${(x/mx).toFixed(4)})"></i></div>`).join(''),
+  xl=vals.map((x,i)=>`<div><em>${rg==='day'?(i%3===0?i:''):((i+1)%5===0||i===0?i+1:'')}</em></div>`).join(''),
   bars=vals.map((x,i)=>`<div style="--n:${i}" title="${esc(lb(i)||'')} ${mt==='time'?fh(x):x+' pages'}"><span style="font-size:${sm?9:11}px">${!sm&&x?(mt==='time'?fh(x):x):''}</span><i style="height:${x/mx*80}%"></i><em style="font-style:normal;font-size:${sm?9:11}px;white-space:nowrap;min-height:13px">${lb(i)}</em></div>`).join('');
+ window.RSTX=tipTx;
  return `<h2>Reading activity</h2><div class="row">${tab('day','Today')}${tab('week','Week')}${tab('month','Month')}</div>
  <div class="st" style="margin-top:10px"><div><b>${fm(tk)}</b>time read</div><div><b>${tp}</b>pages read</div><div><b>${xs.length}</b>${xs.length===1?'session':'sessions'}</div><div><b>${t4[1]}</b>${t4[2]}</div></div>
- <div class="card" style="display:block;cursor:default;margin-top:10px"><div class="row" style="margin:0"><b>${esc(ttl)}</b><span style="flex:1"></span><div class="seg" style="margin:0">${sg('time','Time')}${sg('pages','Pages')}</div></div>${tk||tp?'':'<p class="mu" style="margin:8px 0 0">Nothing logged '+(rg==='day'?'today yet':'in this period')+'.</p>'}<div class="wk" style="height:130px;gap:${sm?3:6}px">${bars}</div></div>`}
+ <div class="card" style="display:block;cursor:default;margin-top:10px"><div class="row" style="margin:0"><b>${esc(ttl)}</b><span style="flex:1"></span><div class="seg" style="margin:0">${sg('time','Time')}${sg('pages','Pages')}</div></div>${tk||tp?'':'<p class="mu" style="margin:8px 0 0">Nothing logged '+(rg==='day'?'today yet':'in this period')+'.</p>'}${sm?`<div class="rsp">${bars2}</div><div class="rsx">${xl}</div><div class="rstip" id="rstip">Tap a bar to see that ${rg==='day'?'hour':'day'}.</div>`:`<div class="wk" style="height:130px;gap:6px">${bars}</div>`}</div>`}
+function rsTip(i,el){window.RSTIPS=window.RSTIPS||[];const t=document.getElementById('rstip');if(!t)return;document.querySelectorAll('.rsp>div.on').forEach(x=>x.classList.remove('on'));if(el)el.classList.add('on');t.textContent=(window.RSTX||[])[i]||''}
 function T(){let ss=S.s,tot=ss.reduce((a,s)=>a+s.k,0),pa=avg('p'),qa=avg('%'),days=[...Array(7)].map((_,i)=>{let d=new Date();d.setDate(d.getDate()-6+i);d.setHours(0,0,0,0);let e=d.getTime()+864e5;return{l:d.toLocaleDateString(undefined,{weekday:'narrow'}),m:ss.filter(s=>s.s>=d.getTime()&&s.s<e).reduce((a,s)=>a+s.k,0)/60}}),mx=Math.max(1,...days.map(d=>d.m));
  let per=S.b.map(b=>({b,a:avg(b.m==='pct'?'%':'p',b.id),u:b.m==='pct'?'%':'p'})).filter(x=>x.a);
  if(v.sm==='goals')return `<h1>Stats</h1>${yr()}`;
@@ -1357,7 +1380,7 @@ function SH(){let b=v.sh==='edit'?bk(v.id):null;
  <div class="row"><button class="bt" onclick="v.sh=null;R()">Cancel</button>${b?`<button class="bt" onclick="del()">Delete</button>`:''}<button class="bt pr" style="flex:1" onclick="sv()">Save</button></div></div></div>`}
 function cov(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{let i=new Image();i.onload=()=>{let c=document.createElement('canvas'),k=Math.min(1,240/i.width);c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);v.cv=c.toDataURL('image/jpeg',.7)};i.src=r.result};r.readAsDataURL(f)}
 /* ======== XML backup (saved to the Downloads folder) ======== */
-var _FL=null;const BUILD_='1.4.2';
+var _FL=null;const BUILD_='1.4.3';
 var _flErr='';
 function flGet(){
  if(_FL)return _FL;
@@ -1703,7 +1726,7 @@ function goalsHome(k){
  gMig();
  const act=gActive().slice(0,3);
  const rows=act.map(g=>{const have=gHave(g),st=gStatus(g);return`<div style="margin-top:12px"><div class="row" style="margin:0"><b style="font-size:14px">${gIc(g)}${gTitle(g)}${g.bk&&g.bk.length?' · my picks':''}</b><span style="flex:1"></span><span class="mu">${have} / ${g.n}</span></div><div class="bar"><i style="width:${Math.min(100,g.n?have/g.n*100:0)}%"></i></div><div class="mu ${st[1]}">${st[0]}</div></div>`}).join('');
- return`<div class="card" style="display:block;cursor:default"><div class="row" style="margin:0;flex-wrap:nowrap;align-items:center;gap:10px"><span class="ic" style="flex:none;display:flex;cursor:pointer" onclick="goGoals()">${gTic()}</span><b style="flex:1">Reading goals</b><button class="bt" style="padding:6px 14px" onclick="goGoals()">${(S.goals||[]).length?'Manage':'+ Add goal'}</button></div>${rows||'<div class="mu" style="margin-top:8px">Set a goal for this month or this year.</div>'}<div class="mu" style="margin-top:10px"><span style="color:var(--ac);display:inline-flex;vertical-align:-4px;margin-right:5px">${lbsv(GFL,18)}</span>${k?k+' day reading streak':'Log a session today to start a streak'}</div></div>`;
+ return`<div class="card" style="display:block;cursor:default"><div class="row" style="margin:0;flex-wrap:nowrap;align-items:center;gap:10px"><span class="ic" style="flex:none;display:flex;cursor:pointer" onclick="goGoals()">${gTic()}</span><b style="flex:1">Reading goals</b><button class="bt" style="padding:6px 14px" onclick="goGoals()">${(S.goals||[]).length?'Manage':'+ Add goal'}</button></div>${rows||'<div class="mu" style="margin-top:8px">Set a goal for this month or this year.</div>'}<div class="row" style="margin:12px 0 0;gap:8px"><button class="bt" style="padding:6px 14px" onclick="gNewT('month')">+ Month goal</button><button class="bt" style="padding:6px 14px" onclick="gNewT('year')">+ Year goal</button></div><div class="mu" style="margin-top:10px"><span style="color:var(--ac);display:inline-flex;vertical-align:-4px;margin-right:5px">${lbsv(GFL,18)}</span>${k?k+' day reading streak':'Log a session today to start a streak'}</div></div>`;
 }
 function gCard(g){
  const have=gHave(g),st=gStatus(g);
@@ -1717,9 +1740,10 @@ function MGOALS(){
  const gs=(S.goals||[]).slice(),now=Date.now(),R_=g=>gRange(g);
  const cur=gActive(),up=gs.filter(g=>R_(g)[0]>now).sort((a,b)=>R_(a)[0]-R_(b)[0]),past=gs.filter(g=>R_(g)[1]<=now).sort((a,b)=>R_(b)[0]-R_(a)[0]);
  const grp=(t,l)=>l.length?`<h2>${t}</h2>`+l.map(gCard).join(''):'';
- return`<p class="mu">Set a target for a month or a year. Only books you finish <b>after</b> making the goal count, plus any number you say you’ve already read.</p><div class="row" style="margin:0 0 6px"><button class="bt pr" onclick="gNew()">+ New goal</button>${gs.length>1?`<button class="bt" onclick="v.sh='gordg';R()">Reorder goals</button>`:''}</div>${grp('Now',cur)}${grp('Upcoming',up)}${grp('Past',past)}${gs.length?'':'<p class="mu" style="margin-top:14px">No goals yet.</p>'}`;
+ return`<p class="mu">Set a target for a month or a year. Only books you finish <b>after</b> making the goal count, plus any number you say you’ve already read.</p><div class="row" style="margin:0 0 6px"><button class="bt pr" onclick="gNew('month')">+ Month goal</button><button class="bt pr" onclick="gNew('year')">+ Year goal</button>${gs.length>1?`<button class="bt" onclick="v.sh='gordg';R()">Reorder goals</button>`:''}</div>${grp('Now',cur)}${grp('Upcoming',up)}${grp('Past',past)}${gs.length?'':'<p class="mu" style="margin-top:14px">No goals yet.</p>'}`;
 }
-function gNew(){const d=new Date();v.gf={id:null,t:'year',y:d.getFullYear(),m:d.getMonth()+1,n:10,a:0,ib:0,pick:false,bk:[],rd:[],rp:false};R()}
+function gNew(t){t=t==='month'?'month':'year';const d=new Date();v.gf={id:null,t:t,y:d.getFullYear(),m:d.getMonth()+1,n:t==='month'?3:10,a:0,ib:0,pick:false,bk:[],rd:[],rp:false};R()}
+function gNewT(t){go('more');v.an=1;v.mp='goals';scrollTo(0,0);gNew(t)}
 function gEdit(id){const g=(S.goals||[]).find(x=>x.id===id);if(!g)return;const d=new Date();v.gf={id:g.id,t:g.t,y:g.y,m:g.m||d.getMonth()+1,n:g.n,a:g.a||0,ib:g.ib?1:0,pick:!!(g.bk&&g.bk.length),bk:(g.bk||[]).slice(),rd:(g.rd||[]).slice(),rp:!!(g.rd&&g.rd.length),since:g.since,c:g.c};scrollTo(0,0);R()}
 function gSet(k,val){const f=v.gf;f[k]=val;if(k==='t'){if(val==='month'&&f.n===10)f.n=3;if(val==='year'&&f.n===3)f.n=10}R()}
 function gPickMode(c){v.gf.pick=c;R()}
@@ -1918,9 +1942,10 @@ async function srch(){let q=$('#q').value.trim(),r=$('#res');if(!q)return;const 
   l.innerHTML=v.res.map((d,i)=>`<div class="card" onclick="pick(${i})">${d.cover?`<img class="cv" src="${esc(d.cover)}" loading="lazy" onerror="this.style.visibility='hidden'">`:`<div class="cv" style="background:var(--mu)">?</div>`}<div class="fl"><div class="t">${esc(d.title)}</div><div class="mu">${esc(d.author||'unknown author')}</div><div class="mu">${esc(d.srcs.slice(0,3).join(' · '))}${d.year?' · '+esc(d.year):''}${d.pages?' · '+d.pages+' pages':''}</div></div></div>`).join('');
   if(st){if(pend.size)st.textContent='Still searching: '+[...pend].join(', ')+'…';else if(v.res.length)st.textContent='';else{st.innerHTML=esc('No results. Try just the title or the author.'+(hasShops?'':' Romanian shops are only searched in the Android app.'))+((window.SHLOG||[]).length?'<br><span style="font-size:11px;opacity:.65">Details:<br>'+(window.SHLOG||[]).map(esc).join('<br>')+'</span>':'')}}};
  const run=(n,f)=>{pend.add(n);Promise.resolve().then(f).then(a=>(a||[]).forEach(c=>add(c.src||n,c))).catch(()=>{}).then(()=>{pend.delete(n);draw()})};
- const olQ=async lang=>{let j=await jget('https://openlibrary.org/search.json?limit=10&fields=title,author_name,number_of_pages_median,cover_i,first_publish_year,subject'+(lang?'&language='+lang:'')+'&q='+e(q));return((j&&j.docs)||[]).map(d=>({title:d.title,author:(d.author_name||[]).slice(0,2).join(', '),pages:d.number_of_pages_median,cover:d.cover_i?'https://covers.openlibrary.org/b/id/'+d.cover_i+'-M.jpg':'',year:d.first_publish_year||'',cats:(d.subject||[]).slice(0,20)}))};
- const gbQ=async x=>{let j=await jget('https://www.googleapis.com/books/v1/volumes?maxResults=12&printType=books'+x+'&q='+e(q));return((j&&j.items)||[]).map(z=>{let i=z.volumeInfo||{};return{title:i.title,author:(i.authors||[]).slice(0,2).join(', '),pages:i.pageCount,cover:i.imageLinks?(i.imageLinks.thumbnail||'').replace('http:','https:').replace('&edge=curl',''):'',desc:stripH(i.description||''),cats:i.categories||[],year:(i.publishedDate||'').slice(0,4)}})};
- const abQ=async cc=>{let j=await jget('https://itunes.apple.com/search?media=ebook&limit=10'+(cc?'&country='+cc:'')+'&term='+e(q));return((j&&j.results)||[]).map(x=>({title:x.trackName,author:x.artistName,cover:(x.artworkUrl100||'').replace('100x100bb','400x400bb'),desc:stripH(x.description||''),cats:x.genres||[],year:(x.releaseDate||'').slice(0,4)}))};
+ const QV=(()=>{const a=[q],n=String(q).normalize('NFD').replace(/[\u0300-\u036f]/g,'');if(n!==q)a.push(n);return a})();
+ const olQ=async lang=>[].concat(...await Promise.all(QV.map(async qq=>{let j=await jget('https://openlibrary.org/search.json?limit=10&fields=title,author_name,number_of_pages_median,cover_i,first_publish_year,subject'+(lang?'&language='+lang:'')+'&q='+e(qq));return((j&&j.docs)||[]).map(d=>({title:d.title,author:(d.author_name||[]).slice(0,2).join(', '),pages:d.number_of_pages_median,cover:d.cover_i?'https://covers.openlibrary.org/b/id/'+d.cover_i+'-M.jpg':'',year:d.first_publish_year||'',cats:(d.subject||[]).slice(0,20)}))})));
+ const gbQ=async x=>[].concat(...await Promise.all(QV.map(async qq=>{let j=await jget('https://www.googleapis.com/books/v1/volumes?maxResults=12&printType=books'+x+'&q='+e(qq));return((j&&j.items)||[]).map(z=>{let i=z.volumeInfo||{};return{title:i.title,author:(i.authors||[]).slice(0,2).join(', '),pages:i.pageCount,cover:i.imageLinks?(i.imageLinks.thumbnail||'').replace('http:','https:').replace('&edge=curl',''):'',desc:stripH(i.description||''),cats:i.categories||[],year:(i.publishedDate||'').slice(0,4)}})})));
+ const abQ=async cc=>[].concat(...await Promise.all(QV.map(async qq=>{let j=await jget('https://itunes.apple.com/search?media=ebook&limit=10'+(cc?'&country='+cc:'')+'&term='+e(qq));return((j&&j.results)||[]).map(x=>({title:x.trackName,author:x.artistName,cover:(x.artworkUrl100||'').replace('100x100bb','400x400bb'),desc:stripH(x.description||''),cats:x.genres||[],year:(x.releaseDate||'').slice(0,4)}))})));
  const shops=async()=>{const out=[];const links=await shopLinks(q);await Promise.all(links.slice(0,12).map(async o=>{const h=await shopGet(o.u);if(!h)return;const x=shopParse(h,o.dom);if(x.title&&srRel(q,{title:x.title,author:x.author||''})>=.34)out.push({src:x.src,title:x.title,author:x.author||'',pages:x.pages,cover:x.cover,desc:x.desc})}));return out};
  run('Open Library',async()=>[].concat(...await Promise.all([olQ(''),olQ('rum')])));
  run('Google Books',async()=>[].concat(...await Promise.all([gbQ(''),gbQ('&langRestrict=ro')])));
