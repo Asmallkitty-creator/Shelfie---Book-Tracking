@@ -1062,18 +1062,30 @@ async function shopGet(u){const P=webGet();if(!P||!P.httpGet)return '';try{const
 async function shopLinks(q){
  const out=[],push=(u,dom,mx)=>{if(/^https:/.test(u)&&!out.some(o=>o.u===u)&&out.filter(o=>o.dom===dom).length<(mx||2))out.push({u,dom})};
  const doms=Object.keys(SHOPS),grp=[doms.slice(0,7),doms.slice(7,16),doms.slice(16)];
- const parse=h=>{if(!h)return;new DOMParser().parseFromString(h,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';const m=u.match(/uddg=([^&]+)/);if(m)u=decodeURIComponent(m[1]);if(u.indexOf('//')===0)u='https:'+u;
-   const dom=doms.find(k=>new RegExp('^https://(?:[a-z0-9-]+\\.)?'+k.replace(/\./g,'\\.')+'/').test(u));if(dom&&!/\/(?:search|cautare|catalogsearch|tag|categorie)/i.test(u))push(u.split('#')[0],dom)})};
- const lbU='https://www.libris.ro/librarie-online?ft='+encodeURIComponent(q);
- const hs0=await Promise.all([shopGet(lbU),...grp.map(g=>shopGet('https://html.duckduckgo.com/html/?q='+encodeURIComponent(q+' carte '+g.map(d=>'site:'+d).join(' OR ')))),shopGet('https://www.bing.com/search?q='+encodeURIComponent(q+' carte cumpara'))]);
- const hs=hs0.slice(1);
- /* Libris: read its own search results first, instead of hoping DuckDuckGo/Bing list the product pages */
- if(hs0[0]){new DOMParser().parseFromString(hs0[0],'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';if(u.indexOf('//')===0)u='https:'+u;else if(u[0]==='/')u='https://www.libris.ro'+u;u=u.split('#')[0].split('?')[0];
-  if(/^https:\/\/(?:www\.)?libris\.ro\/(?:carte|carte-engleza)\/[^\/]+\/\d+$/.test(u)||/^https:\/\/(?:www\.)?libris\.ro\/[^\/?]+--p\d+\.html$/.test(u))push(u,'libris.ro',5)})}
+ /* a shop's own search result only counts if its address contains words from what was typed (so a default/bestseller list is never shown as "results") */
+ const qw=_sw(q).filter(w=>w.length>=3);
+ const slugOk=u=>{if(!qw.length)return false;const sl=_sw(String(u).replace(/^https:\/\/[^\/]+\//,'').replace(/[-_\/.]+/g,' ').replace(/\d+/g,' '));return qw.filter(w=>sl.some(t=>t===w||t.startsWith(w)||(t.length>=4&&w.startsWith(t)))).length/qw.length>=.5};
+ const b64u=x=>{try{x=x.replace(/-/g,'+').replace(/_/g,'/');while(x.length%4)x+='=';return atob(x)}catch(e){return ''}};
+ const parse=h=>{if(!h)return;new DOMParser().parseFromString(h,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';const m=u.match(/uddg=([^&]+)/);if(m)u=decodeURIComponent(m[1]);
+   const bm=u.match(/bing\.com\/ck\/a\?.*?[?&]u=a1([A-Za-z0-9_-]+)/);if(bm)u=b64u(bm[1])||u;
+   if(u.indexOf('//')===0)u='https:'+u;
+   const dom=doms.find(k=>new RegExp('^https://(?:[a-z0-9-]+\\.)?'+k.replace(/\./g,'\\.')+'/').test(u));if(dom&&!/\/(?:search|cautare|catalogsearch|tag|categorie)/i.test(u))push(u.split('#')[0],dom,dom==='libris.ro'?3:2)})};
+ const e=encodeURIComponent,lbC=['https://www.libris.ro/search?q=','https://www.libris.ro/search?term=','https://www.libris.ro/search?query=','https://www.libris.ro/librarie-online?ft='],nl=lbC.length;
+ const hs0=await Promise.all([...lbC.map(x=>shopGet(x+e(q))),
+  shopGet('https://html.duckduckgo.com/html/?q='+e(q+' site:libris.ro')),
+  ...grp.map(g=>shopGet('https://html.duckduckgo.com/html/?q='+e(q+' carte '+g.map(d=>'site:'+d).join(' OR ')))),
+  shopGet('https://www.bing.com/search?q='+e(q+' carte cumpara')),
+  shopGet('https://www.bing.com/search?q='+e(q+' site:libris.ro')),
+  shopGet('https://carturesti.ro/product/search/'+e(q))]);
+ const lbH=hs0.slice(0,nl),cH=hs0[hs0.length-1],hs=hs0.slice(nl,hs0.length-1);
+ /* Libris' own search pages first (only links that match what was typed), then the web-search results */
+ lbH.forEach(h=>{if(!h)return;new DOMParser().parseFromString(h,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';if(u.indexOf('//')===0)u='https:'+u;else if(u[0]==='/')u='https://www.libris.ro'+u;u=u.split('#')[0].split('?')[0];
+  if((/^https:\/\/(?:www\.)?libris\.ro\/(?:carte|carte-engleza)\/[^\/]+\/\d+$/.test(u)||/^https:\/\/(?:www\.)?libris\.ro\/[^\/?]+--p\d+\.html$/.test(u))&&slugOk(u))push(u,'libris.ro',3)})});
  hs.forEach(parse);
- if(!out.length){const s=await shopGet('https://carturesti.ro/product/search/'+encodeURIComponent(q));
-  if(s){new DOMParser().parseFromString(s,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';if(/\/carte\/[^/?#]+-\d+/.test(u)){if(u[0]==='/')u='https://carturesti.ro'+u;push(u.split('?')[0],'carturesti.ro')}})}}
- return out.slice(0,8)}
+ /* Cărturești's own search page, always (only links that match what was typed) */
+ if(cH){new DOMParser().parseFromString(cH,'text/html').querySelectorAll('a[href]').forEach(a=>{let u=a.getAttribute('href')||'';if(/\/carte\/[^/?#]+-\d+/.test(u)){if(u[0]==='/')u='https://carturesti.ro'+u;u=u.split('?')[0];if(slugOk(u))push(u,'carturesti.ro',3)}})}
+ return out.slice(0,12)}
+
 function shopParse(h,dom){
  const d=new DOMParser().parseFromString(h,'text/html');let title='',desc='',cover='',pages=0,author='';const cats=[],pushC=x=>{[].concat(x||[]).forEach(y=>{const n=typeof y==='string'?y:(y&&y.name);if(n&&typeof n==='string')cats.push(n)})};
  d.querySelectorAll('script[type="application/ld+json"]').forEach(sc=>{try{const j=JSON.parse(sc.textContent),arr=[].concat(j,(j&&j['@graph'])||[]);
@@ -1901,15 +1913,15 @@ async function srch(){let q=$('#q').value.trim(),r=$('#res');if(!q)return;const 
   const o=keys[k];if(o){if(!o.cover&&c.cover)o.cover=c.cover;if(!o.pages&&c.pages)o.pages=c.pages;if(c.desc&&(!o.desc||(isShop&&(!o.shop||c.desc.length>o.desc.length)))){o.desc=c.desc;if(isShop)o.shop=1}if(!(o.cats||[]).length&&(c.cats||[]).length)o.cats=c.cats;if(!o.year&&c.year)o.year=c.year;if(o.srcs.indexOf(src)<0)o.srcs.push(src);return}
   const n={title:t,author:a,pages:+c.pages||0,cover:c.cover||'',desc:c.desc||'',cats:c.cats||[],year:c.year||'',shop:isShop&&c.desc?1:0,srcs:[src]};keys[k]=n;R0.push(n)};
  const draw=()=>{if(id!==SRQ)return;const st=$('#srst'),l=$('#srl');if(!l)return;
-  let all=R0.map(x=>({x,s:srRel(q,x)})),good=all.filter(y=>y.s>=.4);if(!good.length)good=all.slice().sort((a,b)=>b.s-a.s).slice(0,8);
-  good.sort((a,b)=>b.s-a.s||(b.x.cover?1:0)-(a.x.cover?1:0)||b.x.srcs.length-a.x.srcs.length);v.res=good.slice(0,20).map(y=>y.x);
+  let all=R0.map(x=>({x,s:srRel(q,x)})),good=all.filter(y=>y.s>=.4);if(!good.length)good=all.filter(y=>y.s>0).sort((a,b)=>b.s-a.s).slice(0,8);
+  good.sort((a,b)=>b.s-a.s||(b.x.cover?1:0)-(a.x.cover?1:0)||b.x.srcs.length-a.x.srcs.length);{const gp={},ord=[];good.forEach(y=>{const k=y.x.srcs[0];if(!gp[k]){gp[k]=[];ord.push(k)}gp[k].push(y.x)});const rr=[];for(let i=0;rr.length<good.length&&i<good.length;i++)ord.forEach(k=>{if(gp[k][i])rr.push(gp[k][i])});v.res=rr.slice(0,20)}
   l.innerHTML=v.res.map((d,i)=>`<div class="card" onclick="pick(${i})">${d.cover?`<img class="cv" src="${esc(d.cover)}" loading="lazy" onerror="this.style.visibility='hidden'">`:`<div class="cv" style="background:var(--mu)">?</div>`}<div class="fl"><div class="t">${esc(d.title)}</div><div class="mu">${esc(d.author||'unknown author')}</div><div class="mu">${esc(d.srcs.slice(0,3).join(' · '))}${d.year?' · '+esc(d.year):''}${d.pages?' · '+d.pages+' pages':''}</div></div></div>`).join('');
   if(st){if(pend.size)st.textContent='Still searching: '+[...pend].join(', ')+'…';else st.textContent=v.res.length?'':'No results. Try just the title or the author.'+(hasShops?'':' Romanian shops are only searched in the Android app.')}};
  const run=(n,f)=>{pend.add(n);Promise.resolve().then(f).then(a=>(a||[]).forEach(c=>add(c.src||n,c))).catch(()=>{}).then(()=>{pend.delete(n);draw()})};
  const olQ=async lang=>{let j=await jget('https://openlibrary.org/search.json?limit=10&fields=title,author_name,number_of_pages_median,cover_i,first_publish_year,subject'+(lang?'&language='+lang:'')+'&q='+e(q));return((j&&j.docs)||[]).map(d=>({title:d.title,author:(d.author_name||[]).slice(0,2).join(', '),pages:d.number_of_pages_median,cover:d.cover_i?'https://covers.openlibrary.org/b/id/'+d.cover_i+'-M.jpg':'',year:d.first_publish_year||'',cats:(d.subject||[]).slice(0,20)}))};
  const gbQ=async x=>{let j=await jget('https://www.googleapis.com/books/v1/volumes?maxResults=12&printType=books'+x+'&q='+e(q));return((j&&j.items)||[]).map(z=>{let i=z.volumeInfo||{};return{title:i.title,author:(i.authors||[]).slice(0,2).join(', '),pages:i.pageCount,cover:i.imageLinks?(i.imageLinks.thumbnail||'').replace('http:','https:').replace('&edge=curl',''):'',desc:stripH(i.description||''),cats:i.categories||[],year:(i.publishedDate||'').slice(0,4)}})};
  const abQ=async cc=>{let j=await jget('https://itunes.apple.com/search?media=ebook&limit=10'+(cc?'&country='+cc:'')+'&term='+e(q));return((j&&j.results)||[]).map(x=>({title:x.trackName,author:x.artistName,cover:(x.artworkUrl100||'').replace('100x100bb','400x400bb'),desc:stripH(x.description||''),cats:x.genres||[],year:(x.releaseDate||'').slice(0,4)}))};
- const shops=async()=>{const out=[];const links=await shopLinks(q);await Promise.all(links.slice(0,8).map(async o=>{const h=await shopGet(o.u);if(!h)return;const x=shopParse(h,o.dom);if(x.title)out.push({src:x.src,title:x.title,author:x.author||'',pages:x.pages,cover:x.cover,desc:x.desc})}));return out};
+ const shops=async()=>{const out=[];const links=await shopLinks(q);await Promise.all(links.slice(0,12).map(async o=>{const h=await shopGet(o.u);if(!h)return;const x=shopParse(h,o.dom);if(x.title&&srRel(q,{title:x.title,author:x.author||''})>=.34)out.push({src:x.src,title:x.title,author:x.author||'',pages:x.pages,cover:x.cover,desc:x.desc})}));return out};
  run('Open Library',async()=>[].concat(...await Promise.all([olQ(''),olQ('rum')])));
  run('Google Books',async()=>[].concat(...await Promise.all([gbQ(''),gbQ('&langRestrict=ro')])));
  run('Apple Books',async()=>[].concat(...await Promise.all([abQ(''),abQ('ro')])));
